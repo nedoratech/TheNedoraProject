@@ -1,0 +1,30 @@
+{
+  "name": "nedora",
+  "private": true,
+  "version": "0.0.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "db:types": "supabase gen types typescript --local > packages/db/src/types.ts",
+    "db:types:remote": "supabase gen types typescript --linked > packages/db/src/types.ts",
+    "db:reset": "supabase db reset",
+    "dev:landing": "turbo dev --filter @nedora/landing",
+    "dev:cms": "turbo dev --filter @nedora/microcms",
+    "dev:crm": "turbo dev --filter @nedora/microcrm"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.1"
+  },
+  "packageManager": "yarn@4.6.0",
+  "engines": {
+    "node": ">=20"
+  }
+}

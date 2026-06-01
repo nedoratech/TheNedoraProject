@@ -1,0 +1,77 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-nd-black: #0a0a0a;
+  --color-nd-white: #fafafa;
+  --color-nd-grey-50: #f7f7f7;
+  --color-nd-grey-100: #efefef;
+  --color-nd-grey-200: #dedede;
+  --color-nd-grey-400: #9a9a9a;
+  --color-nd-grey-600: #555555;
+
+  /* Accent — deep indigo */
+  --color-nd-accent: #1e3a8a;
+  --color-nd-accent-mid: #3b5bdb;
+  --color-nd-accent-bright: #6473f3;
+  --color-nd-accent-light: #eef2ff;
+  --color-nd-accent-dark: #0d1b3e;
+
+  /* Typography */
+  --font-futura: Futura, "Century Gothic", "Trebuchet MS", ui-sans-serif, sans-serif;
+
+  /* No border radius — architectural feel */
+  --radius: 0;
+
+  /* Letter spacing */
+  --letter-spacing-label: 0.2em;
+  --letter-spacing-wide: 0.12em;
+  --letter-spacing-widest: 0.22em;
+}
+
+/* Futura font faces — files placed in /public/fonts/ */
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/futura-light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/futura-book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/futura-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/futura-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Base resets */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-futura);
+  background-color: var(--color-nd-black);
+  color: var(--color-nd-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

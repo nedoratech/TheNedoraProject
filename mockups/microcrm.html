@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nedora microCRM</title>
+  <style>
+    @font-face{font-family:'Futura';src:url('../fonts/Futura-Book.woff2') format('woff2');font-weight:400;}
+    @font-face{font-family:'Futura';src:url('../fonts/Futura-Medium.woff2') format('woff2');font-weight:500;}
+    @font-face{font-family:'Futura';src:url('../fonts/Futura-Bold.woff2') format('woff2');font-weight:700;}
+
+    :root{
+      --black:#0a0a0a; --white:#fafafa; --grey-50:#f7f7f7; --grey-100:#efefef; --grey-200:#dedede; --grey-400:#9a9a9a; --grey-600:#555;
+      /* brand accent */
+      --accent:#1e3a8a; --accent-mid:#3b5bdb; --accent-bright:#6473f3; --accent-light:#eef2ff;
+      /* functional */
+      --green-bg:#dcfce7; --green-text:#166534; --green-border:#86efac;
+      --blue-bg:#dbeafe;  --blue-text:#1e40af; --blue-border:#93c5fd;
+      --amber-bg:#fef3c7; --amber-text:#92400e; --amber-border:#fcd34d;
+      --red-bg:#fee2e2;   --red-text:#991b1b;  --red-border:#fca5a5;
+      --grey-bg:#f4f4f5;  --grey-text:#52525b; --grey-border:#d4d4d8;
+      --indigo-bg:#e0e7ff; --indigo-text:#3730a3; --indigo-border:#a5b4fc;
+      --font:'Futura','Century Gothic',ui-sans-serif,sans-serif;
+      --sidebar-w:228px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;font-family:var(--font);background:var(--grey-50);color:var(--black);font-size:14px;-webkit-font-smoothing:antialiased;}
+    a{color:inherit;text-decoration:none;}
+
+    .app{display:flex;height:100vh;overflow:hidden;}
+
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar-w);background:var(--accent);display:flex;flex-direction:column;flex-shrink:0;height:100vh;overflow-y:auto;}
+    .sidebar__header{padding:1.5rem 1.25rem 1.1rem;border-bottom:1px solid rgba(255,255,255,.1);}
+    .sidebar__wordmark{font-size:.78rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--white);display:flex;align-items:center;gap:.4rem;}
+    .sidebar__dot{width:6px;height:6px;background:var(--accent-bright);border-radius:50%;}
+    .sidebar__product{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.25rem;}
+    .sidebar__nav{padding:.6rem 0;flex:1;}
+    .sidebar__section-lbl{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.28);padding:.8rem 1.25rem .3rem;}
+    .nav-item{display:flex;align-items:center;gap:.65rem;padding:.55rem 1.25rem;font-size:.76rem;letter-spacing:.03em;color:rgba(255,255,255,.55);cursor:pointer;transition:background .12s,color .12s;position:relative;}
+    .nav-item:hover{background:rgba(255,255,255,.07);color:var(--white);}
+    .nav-item.active{background:rgba(255,255,255,.12);color:var(--white);}
+    .nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-bright);}
+    .nav-icon{width:15px;text-align:center;font-size:.82rem;opacity:.7;}
+    .nav-badge{margin-left:auto;background:var(--accent-bright);color:var(--white);font-size:.58rem;font-weight:700;padding:.15rem .45rem;border-radius:99px;letter-spacing:.05em;}
+    .nav-badge--amber{background:#d97706;}
+    .sidebar__footer{padding:1rem 1.25rem;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar__user{display:flex;align-items:center;gap:.65rem;}
+    .sidebar__avatar{width:28px;height:28px;background:var(--accent-bright);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--white);}
+    .sidebar__user-name{font-size:.74rem;font-weight:700;color:var(--white);}
+    .sidebar__user-role{font-size:.6rem;color:rgba(255,255,255,.4);letter-spacing:.06em;}
+
+    /* MAIN */
+    .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+    .topbar{background:var(--white);border-bottom:1px solid var(--grey-200);padding:.8rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+    .topbar__left{display:flex;align-items:center;gap:1rem;}
+    .topbar__title{font-size:.9rem;font-weight:700;letter-spacing:.04em;}
+    .topbar__breadcrumb{font-size:.72rem;color:var(--grey-400);}
+    .topbar__actions{display:flex;gap:.5rem;align-items:center;}
+
+    .btn-sm{font-family:var(--font);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.42rem .9rem;border:none;cursor:pointer;transition:background .15s,box-shadow .15s;}
+    .btn-sm--primary{background:var(--accent);color:var(--white);}
+    .btn-sm--primary:hover{background:var(--accent-mid);box-shadow:0 2px 10px rgba(30,58,138,.3);}
+    .btn-sm--ghost{background:transparent;color:var(--grey-600);border:1px solid var(--grey-200);}
+    .btn-sm--ghost:hover{background:var(--grey-100);}
+    .btn-sm--danger{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-border);}
+
+    .search-input{font-family:var(--font);font-size:.78rem;padding:.38rem .8rem;border:1px solid var(--grey-200);background:var(--grey-50);outline:none;width:210px;transition:border-color .2s,box-shadow .2s;}
+    .search-input:focus{border-color:var(--accent-mid);box-shadow:0 0 0 2px var(--accent-light);}
+
+    .content{flex:1;overflow-y:auto;padding:1.5rem 1.75rem;}
+
+    /* STATS */
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem;}
+    .stat-card{background:var(--white);border:1px solid var(--grey-200);padding:1.25rem 1.4rem;position:relative;overflow:hidden;}
+    .stat-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+    .stat-card--blue::before{background:var(--accent-mid);}
+    .stat-card--green::before{background:#16a34a;}
+    .stat-card--amber::before{background:#d97706;}
+    .stat-card--indigo::before{background:var(--accent-bright);}
+    .stat-label{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--grey-400);margin-bottom:.5rem;}
+    .stat-val{font-size:2rem;font-weight:700;letter-spacing:-.04em;line-height:1;margin-bottom:.35rem;}
+    .stat-delta{font-size:.68rem;}
+    .stat-delta.up{color:#16a34a;}
+    .stat-delta.down{color:#dc2626;}
+    .stat-delta.neutral{color:var(--grey-400);}
+
+    /* PANEL */
+    .panel{background:var(--white);border:1px solid var(--grey-200);margin-bottom:1.25rem;}
+    .panel__hdr{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.4rem;border-bottom:1px solid var(--grey-100);}
+    .panel__title{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-600);}
+    .panel__actions{display:flex;gap:.5rem;align-items:center;}
+
+    .chips{display:flex;gap:.3rem;}
+    .chip{font-family:var(--font);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.28rem .6rem;border:1px solid var(--grey-200);background:transparent;cursor:pointer;transition:background .12s,border-color .12s;}
+    .chip.active{background:var(--accent);color:var(--white);border-color:var(--accent);}
+    .chip:hover:not(.active){background:var(--accent-light);border-color:var(--accent-mid);color:var(--accent);}
+
+    /* TABLE */
+    table{width:100%;border-collapse:collapse;}
+    thead th{text-align:left;font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--grey-400);font-weight:700;padding:.55rem 1rem;border-bottom:1px solid var(--grey-100);white-space:nowrap;}
+    tbody tr{border-bottom:1px solid var(--grey-100);cursor:pointer;transition:background .1s;}
+    tbody tr:hover{background:var(--accent-light);}
+    tbody tr:last-child{border-bottom:none;}
+    td{padding:.75rem 1rem;font-size:.76rem;vertical-align:middle;}
+    .td-name{font-weight:700;font-size:.78rem;}
+    .td-sub{font-size:.7rem;color:var(--grey-400);}
+    .td-dim{color:var(--grey-400);font-size:.72rem;}
+
+    /* STATUS PILLS */
+    .pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:.22rem .6rem;border:1px solid transparent;}
+    .pill::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;}
+    .pill--new{background:var(--grey-bg);color:var(--grey-text);border-color:var(--grey-border);}
+    .pill--qualified{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border);}
+    .pill--proposal{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border);}
+    .pill--negotiation{background:var(--indigo-bg);color:var(--indigo-text);border-color:var(--indigo-border);}
+    .pill--won{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border);}
+    .pill--lost{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border);}
+    .pill--active{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border);}
+    .pill--draft{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border);}
+    .pill--sent{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border);}
+    .pill--unread{background:var(--indigo-bg);color:var(--indigo-text);border-color:var(--indigo-border);}
+    .pill--subscribed{background:var(--green-bg);color:var(--green-text);border-color:var(--green-border);}
+    .pill--unsub{background:var(--grey-bg);color:var(--grey-text);border-color:var(--grey-border);}
+
+    .prio{display:inline-flex;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.18rem .5rem;border:1px solid transparent;}
+    .prio--high{background:var(--red-bg);color:var(--red-text);border-color:var(--red-border);}
+    .prio--medium{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border);}
+    .prio--low{background:var(--grey-bg);color:var(--grey-text);border-color:var(--grey-border);}
+
+    /* PIPELINE KANBAN */
+    .pipeline{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;padding:1.25rem 1.4rem;}
+    .pipe-col__hdr{display:flex;align-items:center;justify-content:space-between;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin-bottom:.65rem;padding-bottom:.5rem;border-bottom:2px solid;}
+    .pipe-col--new .pipe-col__hdr{color:var(--grey-text);border-color:var(--grey-border);}
+    .pipe-col--qualified .pipe-col__hdr{color:var(--blue-text);border-color:var(--blue-border);}
+    .pipe-col--proposal .pipe-col__hdr{color:var(--amber-text);border-color:var(--amber-border);}
+    .pipe-col--negotiation .pipe-col__hdr{color:var(--indigo-text);border-color:var(--indigo-border);}
+    .pipe-col--won .pipe-col__hdr{color:var(--green-text);border-color:var(--green-border);}
+    .pipe-count{font-size:.62rem;padding:.1rem .4rem;border-radius:99px;background:var(--grey-100);color:var(--grey-600);}
+    .pipe-card{background:var(--white);border:1px solid var(--grey-200);padding:.7rem .8rem;margin-bottom:.45rem;cursor:pointer;transition:border-color .15s,box-shadow .15s;}
+    .pipe-card:hover{border-color:var(--accent-mid);box-shadow:0 2px 8px rgba(59,91,219,.12);}
+    .pipe-card__name{font-size:.74rem;font-weight:700;margin-bottom:.18rem;}
+    .pipe-card__company{font-size:.67rem;color:var(--grey-400);margin-bottom:.35rem;}
+    .pipe-card__meta{font-size:.64rem;color:var(--grey-400);}
+    .pipe-card__val{font-size:.64rem;font-weight:700;color:var(--accent);}
+
+    /* TIMELINE */
+    .timeline{padding:1.25rem 1.4rem;}
+    .tl-item{display:flex;gap:.85rem;padding-bottom:1.1rem;position:relative;}
+    .tl-item::before{content:'';position:absolute;left:7px;top:18px;bottom:0;width:1px;background:var(--grey-200);}
+    .tl-item:last-child::before{display:none;}
+    .tl-dot{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:1px;border:2px solid var(--white);}
+    .tl-dot--accent{background:var(--accent-mid);}
+    .tl-dot--green{background:#16a34a;}
+    .tl-dot--amber{background:#d97706;}
+    .tl-dot--grey{background:var(--grey-200);}
+    .tl-title{font-size:.76rem;font-weight:700;margin-bottom:.18rem;}
+    .tl-meta{font-size:.68rem;color:var(--grey-400);}
+    .tl-note{margin-top:.4rem;font-size:.73rem;color:var(--grey-600);line-height:1.6;padding:.45rem .7rem;background:var(--grey-50);border-left:2px solid var(--accent-mid);}
+
+    /* NEWSLETTER STATS */
+    .nl-stats{display:grid;grid-template-columns:repeat(5,1fr);}
+    .nl-stat{padding:1.1rem 1.4rem;border-right:1px solid var(--grey-100);}
+    .nl-stat:last-child{border-right:none;}
+    .nl-stat__val{font-size:1.65rem;font-weight:700;letter-spacing:-.03em;color:var(--accent);}
+    .nl-stat__lbl{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-400);margin-top:.2rem;}
+
+    /* VIEWS */
+    .view{display:none;}
+    .view.active{display:block;}
+    .view-tabs{display:flex;border-bottom:1px solid var(--grey-200);background:var(--white);padding:0 1.75rem;}
+    .view-tab{font-family:var(--font);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;padding:.7rem 1rem;border:none;background:none;cursor:pointer;color:var(--grey-400);border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s;}
+    .view-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+    .view-tab:hover:not(.active){color:var(--grey-600);}
+
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+  </style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar__header">
+    <div class="sidebar__wordmark"><span class="sidebar__dot"></span>NEDORA</div>
+    <div class="sidebar__product">microCRM</div>
+  </div>
+  <div class="sidebar__nav">
+    <div class="sidebar__section-lbl">Overview</div>
+    <div class="nav-item active" onclick="show('dashboard',this)"><span class="nav-icon">▦</span>Dashboard</div>
+    <div class="sidebar__section-lbl">Pipeline</div>
+    <div class="nav-item" onclick="show('leads',this)"><span class="nav-icon">◎</span>Leads<span class="nav-badge">12</span></div>
+    <div class="nav-item" onclick="show('contacts',this)"><span class="nav-icon">◷</span>Contacts</div>
+    <div class="nav-item" onclick="show('requests',this)"><span class="nav-icon">▷</span>Project requests<span class="nav-badge nav-badge--amber">4</span></div>
+    <div class="sidebar__section-lbl">Comms</div>
+    <div class="nav-item" onclick="show('newsletter',this)"><span class="nav-icon">✉</span>Newsletter</div>
+    <div class="nav-item" onclick="show('activity',this)"><span class="nav-icon">◈</span>Activity</div>
+    <div class="sidebar__section-lbl">Settings</div>
+    <div class="nav-item"><span class="nav-icon">⊙</span>Pipelines</div>
+    <div class="nav-item"><span class="nav-icon">⚙</span>Settings</div>
+  </div>
+  <div class="sidebar__footer">
+    <div class="sidebar__user">
+      <div class="sidebar__avatar">AD</div>
+      <div><div class="sidebar__user-name">Adrian</div><div class="sidebar__user-role">Admin</div></div>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+
+  <!-- DASHBOARD -->
+  <div id="view-dashboard" class="view active">
+    <div class="topbar">
+      <div class="topbar__left"><div class="topbar__title">Dashboard</div><div class="topbar__breadcrumb">June 2026</div></div>
+      <div class="topbar__actions"><button class="btn-sm btn-sm--ghost">Export</button><button class="btn-sm btn-sm--primary">+ New lead</button></div>
+    </div>
+    <div class="content">
+      <div class="stat-grid">
+        <div class="stat-card stat-card--blue"><div class="stat-label">New leads (30d)</div><div class="stat-val" style="color:var(--accent-mid)">12</div><div class="stat-delta up">↑ 4 vs last month</div></div>
+        <div class="stat-card stat-card--amber"><div class="stat-label">Open proposals</div><div class="stat-val" style="color:#d97706">5</div><div class="stat-delta neutral">2 awaiting response</div></div>
+        <div class="stat-card stat-card--green"><div class="stat-label">Newsletter subs</div><div class="stat-val" style="color:#16a34a">1,284</div><div class="stat-delta up">↑ 38 this month</div></div>
+        <div class="stat-card stat-card--indigo"><div class="stat-label">Response rate</div><div class="stat-val" style="color:var(--accent-bright)">94%</div><div class="stat-delta neutral">Avg 1.4d to respond</div></div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel__hdr"><div class="panel__title">Pipeline snapshot</div><button class="btn-sm btn-sm--ghost" onclick="show('leads',null)">View all →</button></div>
+          <div class="pipeline">
+            <div class="pipe-col pipe-col--new">
+              <div class="pipe-col__hdr">New<span class="pipe-count">4</span></div>
+              <div class="pipe-card"><div class="pipe-card__name">Andrei Popescu</div><div class="pipe-card__company">Omega Logistics</div><div class="pipe-card__meta">New application · <span class="pipe-card__val">Fixed-scope</span></div></div>
+              <div class="pipe-card"><div class="pipe-card__name">Simona Dumitrescu</div><div class="pipe-card__company">RomFinance</div><div class="pipe-card__meta">Integration · <span class="pipe-card__val">Time-based</span></div></div>
+            </div>
+            <div class="pipe-col pipe-col--qualified">
+              <div class="pipe-col__hdr">Qualified<span class="pipe-count">3</span></div>
+              <div class="pipe-card"><div class="pipe-card__name">Thomas Klein</div><div class="pipe-card__company">Hartmann AG</div><div class="pipe-card__val">Fixed-scope</div></div>
+              <div class="pipe-card"><div class="pipe-card__name">Elena Marin</div><div class="pipe-card__company">Medica SRL</div><div class="pipe-card__val">Time-based</div></div>
+            </div>
+            <div class="pipe-col pipe-col--proposal">
+              <div class="pipe-col__hdr">Proposal<span class="pipe-count">2</span></div>
+              <div class="pipe-card"><div class="pipe-card__name">Bogdan Cristea</div><div class="pipe-card__company">TechRetail SA</div><div class="pipe-card__val">€42k</div></div>
+            </div>
+            <div class="pipe-col pipe-col--negotiation">
+              <div class="pipe-col__hdr">Negotiation<span class="pipe-count">2</span></div>
+              <div class="pipe-card"><div class="pipe-card__name">Jan Novák</div><div class="pipe-card__company">CZ Insurtech</div><div class="pipe-card__val">€78k</div></div>
+            </div>
+            <div class="pipe-col pipe-col--won">
+              <div class="pipe-col__hdr">Won<span class="pipe-count">1</span></div>
+              <div class="pipe-card" style="border-color:var(--green-border);"><div class="pipe-card__name">Irina Stoica</div><div class="pipe-card__company">AgriPlat SRL</div><div class="pipe-card__val" style="color:#16a34a">€6k/mo</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel__hdr"><div class="panel__title">Recent activity</div><button class="btn-sm btn-sm--ghost" onclick="show('activity',null)">All →</button></div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot tl-dot--accent"></div><div><div class="tl-title">New request — Andrei Popescu</div><div class="tl-meta">Omega Logistics · 2h ago</div><div class="tl-note">Customs clearance automation. Fixed-scope. Ready Q3.</div></div></div>
+            <div class="tl-item"><div class="tl-dot tl-dot--amber"></div><div><div class="tl-title">Proposal sent — Jan Novák</div><div class="tl-meta">CZ Insurtech · €78k · 1d ago</div></div></div>
+            <div class="tl-item"><div class="tl-dot tl-dot--green"></div><div><div class="tl-title">Contract signed — Irina Stoica</div><div class="tl-meta">AgriPlat SRL · Time-based · 2d ago</div></div></div>
+            <div class="tl-item"><div class="tl-dot tl-dot--grey"></div><div><div class="tl-title">Newsletter sent — June Edition</div><div class="tl-meta">1,246 recipients · 42.1% open rate · 3d ago</div></div></div>
+            <div class="tl-item"><div class="tl-dot tl-dot--grey"></div><div><div class="tl-title">Discovery call — Thomas Klein</div><div class="tl-meta">Hartmann AG · 45 min · 4d ago</div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEADS -->
+  <div id="view-leads" class="view">
+    <div class="topbar">
+      <div class="topbar__left"><div class="topbar__title">Leads</div></div>
+      <div class="topbar__actions"><input type="text" class="search-input" placeholder="Search leads…" /><button class="btn-sm btn-sm--ghost">Export</button><button class="btn-sm btn-sm--primary">+ Add lead</button></div>
+    </div>
+    <div class="view-tabs"><button class="view-tab active">All leads</button><button class="view-tab">Pipeline view</button></div>
+    <div class="content">
+      <div class="panel">
+        <div class="panel__hdr"><div class="panel__title">12 leads</div><div class="panel__actions"><div class="chips"><button class="chip active">All</button><button class="chip">New</button><button class="chip">Qualified</button><button class="chip">Proposal</button><button class="chip">Won</button><button class="chip">Lost</button></div></div></div>
+        <table>
+          <thead><tr><th>Contact</th><th>Company</th><th>Project type</th><th>Model</th><th>Status</th><th>Priority</th><th>Source</th><th>Last activity</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="td-name">Andrei Popescu</div><div class="td-sub">andrei@omega.ro</div></td><td class="td-dim">Omega Logistics</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td><span class="pill pill--new">New</span></td><td><span class="prio prio--high">High</span></td><td class="td-dim">Form</td><td class="td-dim">2h ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Simona Dumitrescu</div><div class="td-sub">s.d@romfinance.ro</div></td><td class="td-dim">RomFinance</td><td class="td-dim">Integration</td><td class="td-dim">Time-based</td><td><span class="pill pill--new">New</span></td><td><span class="prio prio--high">High</span></td><td class="td-dim">Form</td><td class="td-dim">1d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Thomas Klein</div><div class="td-sub">t.klein@hartmann.de</div></td><td class="td-dim">Hartmann AG</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td><span class="pill pill--qualified">Qualified</span></td><td><span class="prio prio--high">High</span></td><td class="td-dim">LinkedIn</td><td class="td-dim">4d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Elena Marin</div><div class="td-sub">elena@medica.ro</div></td><td class="td-dim">Medica SRL</td><td class="td-dim">Support & evolution</td><td class="td-dim">Time-based</td><td><span class="pill pill--qualified">Qualified</span></td><td><span class="prio prio--medium">Medium</span></td><td class="td-dim">Referral</td><td class="td-dim">5d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Bogdan Cristea</div><div class="td-sub">b.cristea@techretail.ro</div></td><td class="td-dim">TechRetail SA</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td><span class="pill pill--proposal">Proposal</span></td><td><span class="prio prio--medium">Medium</span></td><td class="td-dim">Form</td><td class="td-dim">6d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Jan Novák</div><div class="td-sub">jan.novak@czinsurtech.cz</div></td><td class="td-dim">CZ Insurtech</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td><span class="pill pill--negotiation">Negotiation</span></td><td><span class="prio prio--high">High</span></td><td class="td-dim">Conference</td><td class="td-dim">1d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Irina Stoica</div><div class="td-sub">irina@agriplat.ro</div></td><td class="td-dim">AgriPlat SRL</td><td class="td-dim">New application</td><td class="td-dim">Time-based</td><td><span class="pill pill--won">Won</span></td><td><span class="prio prio--low">Low</span></td><td class="td-dim">Referral</td><td class="td-dim">2d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTS -->
+  <div id="view-contacts" class="view">
+    <div class="topbar">
+      <div class="topbar__left"><div class="topbar__title">Contacts</div></div>
+      <div class="topbar__actions"><input type="text" class="search-input" placeholder="Search contacts…" /><button class="btn-sm btn-sm--ghost">Import CSV</button><button class="btn-sm btn-sm--primary">+ Add contact</button></div>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <div class="panel__hdr"><div class="panel__title">All contacts</div><div class="chips"><button class="chip active">All</button><button class="chip">Leads</button><button class="chip">Clients</button><button class="chip">Partners</button></div></div>
+        <table>
+          <thead><tr><th>Name</th><th>Company</th><th>Role</th><th>Email</th><th>Tags</th><th>Newsletter</th><th>Last contact</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="td-name">Andrei Popescu</div></td><td class="td-dim">Omega Logistics</td><td class="td-dim">CTO</td><td class="td-dim">andrei@omega.ro</td><td><span class="pill pill--new" style="font-size:.58rem;">Lead</span></td><td><span class="pill pill--subscribed">Subscribed</span></td><td class="td-dim">2h ago</td><td><button class="btn-sm btn-sm--ghost">View</button></td></tr>
+            <tr><td><div class="td-name">Irina Stoica</div></td><td class="td-dim">AgriPlat SRL</td><td class="td-dim">CEO</td><td class="td-dim">irina@agriplat.ro</td><td><span class="pill pill--won" style="font-size:.58rem;">Client</span></td><td><span class="pill pill--subscribed">Subscribed</span></td><td class="td-dim">2d ago</td><td><button class="btn-sm btn-sm--ghost">View</button></td></tr>
+            <tr><td><div class="td-name">Thomas Klein</div></td><td class="td-dim">Hartmann AG</td><td class="td-dim">Head of IT</td><td class="td-dim">t.klein@hartmann.de</td><td><span class="pill pill--qualified" style="font-size:.58rem;">Lead</span></td><td><span class="pill pill--unsub">Not subscribed</span></td><td class="td-dim">4d ago</td><td><button class="btn-sm btn-sm--ghost">View</button></td></tr>
+            <tr><td><div class="td-name">Elena Marin</div></td><td class="td-dim">Medica SRL</td><td class="td-dim">Product Director</td><td class="td-dim">elena@medica.ro</td><td><span class="pill pill--qualified" style="font-size:.58rem;">Lead</span></td><td><span class="pill pill--subscribed">Subscribed</span></td><td class="td-dim">5d ago</td><td><button class="btn-sm btn-sm--ghost">View</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REQUESTS -->
+  <div id="view-requests" class="view">
+    <div class="topbar">
+      <div class="topbar__left"><div class="topbar__title">Project Requests</div><div class="topbar__breadcrumb">4 unread</div></div>
+      <div class="topbar__actions"><input type="text" class="search-input" placeholder="Search requests…" /></div>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <div class="panel__hdr"><div class="panel__title">Inbox</div></div>
+        <table>
+          <thead><tr><th>Contact</th><th>Company</th><th>Project type</th><th>Engagement</th><th>Timeline</th><th>Status</th><th>Received</th><th></th></tr></thead>
+          <tbody>
+            <tr style="background:var(--accent-light)"><td><div class="td-name">Andrei Popescu</div><div class="td-sub">andrei@omega.ro</div></td><td class="td-dim">Omega Logistics</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td class="td-dim">Ready now</td><td><span class="pill pill--unread">Unread</span></td><td class="td-dim">2h ago</td><td><button class="btn-sm btn-sm--primary">Review</button></td></tr>
+            <tr style="background:var(--accent-light)"><td><div class="td-name">Simona Dumitrescu</div><div class="td-sub">s.d@romfinance.ro</div></td><td class="td-dim">RomFinance</td><td class="td-dim">Integration</td><td class="td-dim">Time-based</td><td class="td-dim">1–3 months</td><td><span class="pill pill--unread">Unread</span></td><td class="td-dim">1d ago</td><td><button class="btn-sm btn-sm--primary">Review</button></td></tr>
+            <tr><td><div class="td-name">Bogdan Cristea</div><div class="td-sub">b.cristea@techretail.ro</div></td><td class="td-dim">TechRetail SA</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td class="td-dim">3–6 months</td><td><span class="pill pill--proposal">Proposal sent</span></td><td class="td-dim">6d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+            <tr><td><div class="td-name">Jan Novák</div><div class="td-sub">jan.novak@czinsurtech.cz</div></td><td class="td-dim">CZ Insurtech</td><td class="td-dim">New application</td><td class="td-dim">Fixed-scope</td><td class="td-dim">Ready now</td><td><span class="pill pill--negotiation">Negotiation</span></td><td class="td-dim">12d ago</td><td><button class="btn-sm btn-sm--ghost">Open</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER -->
+  <div id="view-newsletter" class="view">
+    <div class="topbar">
+      <div class="topbar__left"><div class="topbar__title">Newsletter</div></div>
+      <div class="topbar__actions"><button class="btn-sm btn-sm--ghost">Manage segments</button><button class="btn-sm btn-sm--primary">+ New campaign</button></div>
+    </div>
+    <div class="content">
+      <div class="panel" style="margin-bottom:1.25rem;">
+        <div class="nl-stats">
+          <div class="nl-stat"><div class="nl-stat__val">1,284</div><div class="nl-stat__lbl">Subscribers</div></div>
+          <div class="nl-stat"><div class="nl-stat__val" style="color:#16a34a">42.1%</div><div class="nl-stat__lbl">Avg open rate</div></div>
+          <div class="nl-stat"><div class="nl-stat__val" style="color:var(--accent-mid)">8.4%</div><div class="nl-stat__lbl">Avg click rate</div></div>
+          <div class="nl-stat"><div class="nl-stat__val" style="color:#d97706">0.3%</div><div class="nl-stat__lbl">Unsubscribe rate</div></div>
+          <div class="nl-stat"><div class="nl-stat__val" style="color:var(--accent)">38</div><div class="nl-stat__lbl">New this month</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel__hdr"><div class="panel__title">Campaigns</div><div class="chips"><button class="chip active">All</button><button class="chip">Sent</button><button class="chip">Draft</button><button class="chip">Scheduled</button></div></div>
+        <table>
+          <thead><tr><th>Campaign</th><th>Status</th><th>Sent to</th><th>Open rate</th><th>Click rate</th><th>Unsubs</th><th>Date</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><div class="td-name">June 2026 — Enterprise Insights</div><div class="td-sub">Segment: All subscribers</div></td><td><span class="pill pill--sent">Sent</span></td><td class="td-dim">1,246</td><td class="td-dim" style="color:#16a34a;font-weight:600;">42.1%</td><td class="td-dim">9.2%</td><td class="td-dim">4</td><td class="td-dim">29 May</td><td><button class="btn-sm btn-sm--ghost">Stats</button></td></tr>
+            <tr><td><div class="td-name">May 2026 — Fixed-scope vs. Time-based</div><div class="td-sub">Segment: All subscribers</div></td><td><span class="pill pill--sent">Sent</span></td><td class="td-dim">1,208</td><td class="td-dim">38.7%</td><td class="td-dim">7.8%</td><td class="td-dim">6</td><td class="td-dim">30 Apr</td><td><button class="btn-sm btn-sm--ghost">Stats</button></td></tr>
+            <tr><td><div class="td-name">July 2026 — NedAI Preview</div><div class="td-sub">Segment: All subscribers</div></td><td><span class="pill pill--draft">Draft</span></td><td class="td-dim">—</td><td class="td-dim">—</td><td class="td-dim">—</td><td class="td-dim">—</td><td class="td-dim">Scheduled Jul 28</td><td><button class="btn-sm btn-sm--primary">Edit</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTIVITY -->
+  <div id="view-activity" class="view">
+    <div class="topbar">
+      <div class="topbar__left"><div class="topbar__title">Activity Feed</div></div>
+      <div class="topbar__actions"><div class="chips"><button class="chip active">All</button><button class="chip">Leads</button><button class="chip">Emails</button><button class="chip">Calls</button></div></div>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <div class="timeline" style="padding:1.5rem 1.4rem;">
+          <div class="tl-item"><div class="tl-dot tl-dot--accent"></div><div><div class="tl-title">New project request — Andrei Popescu (Omega Logistics)</div><div class="tl-meta">Website form · New application · Fixed-scope · 2h ago</div><div class="tl-note">Customs clearance automation platform. Fixed-scope preferred. Ready to start Q3.</div></div></div>
+          <div class="tl-item"><div class="tl-dot tl-dot--amber"></div><div><div class="tl-title">Proposal sent — Jan Novák (CZ Insurtech)</div><div class="tl-meta">Email · Fixed-scope · €78,000 · 1d ago</div><div class="tl-note">Claims processing automation. 14-week delivery. Awaiting stakeholder sign-off.</div></div></div>
+          <div class="tl-item"><div class="tl-dot tl-dot--green"></div><div><div class="tl-title">Contract signed — Irina Stoica (AgriPlat SRL)</div><div class="tl-meta">Time-based engagement · €6,000/month · 2d ago</div></div></div>
+          <div class="tl-item"><div class="tl-dot tl-dot--grey"></div><div><div class="tl-title">Newsletter sent — June 2026 · Enterprise Insights</div><div class="tl-meta">1,246 recipients · 42.1% open rate · 3d ago</div></div></div>
+          <div class="tl-item"><div class="tl-dot tl-dot--grey"></div><div><div class="tl-title">Discovery call — Thomas Klein (Hartmann AG)</div><div class="tl-meta">Video call · 45 min · 4d ago</div><div class="tl-note">Production tracking requirements. Will send fixed-scope proposal. Follow up Monday.</div></div></div>
+          <div class="tl-item"><div class="tl-dot tl-dot--grey"></div><div><div class="tl-title">Lead qualified — Elena Marin (Medica SRL)</div><div class="tl-meta">Status changed: New → Qualified · 5d ago</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+function show(name, el) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+}
+</script>
+</body>
+</html>

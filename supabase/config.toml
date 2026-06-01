@@ -1,0 +1,63 @@
+# Nedora — Supabase config (local dev + optional [remotes] for branching).
+# Migrations: Supabase GitHub integration (automatic). Types: yarn db:types (local) — docs/SUPABASE.md.
+
+project_id = "nedora"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+shadow_port = 54320
+major_version = 15
+
+[db.migrations]
+enabled = true
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]
+
+[studio]
+enabled = true
+port = 54323
+
+[inbucket]
+enabled = true
+port = 54324
+
+[storage]
+enabled = true
+file_size_limit = "50MiB"
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:3000"
+additional_redirect_urls = [
+  "http://127.0.0.1:3000/**",
+  "http://localhost:3000/**",
+  "http://localhost:3001/**",
+  "http://localhost:3002/**",
+]
+jwt_expiry = 3600
+enable_signup = true
+
+# Optional: persistent Supabase branches (Dashboard → Branching, or CLI).
+# Uncomment and set project_id after creating staging/production projects.
+#
+# [remotes.staging]
+# project_id = "your-staging-project-ref"
+#
+# [remotes.staging.db.seed]
+# enabled = true
+# sql_paths = ["./seed.sql"]
+#
+# [remotes.production]
+# project_id = "your-production-project-ref"
+#
+# [remotes.production.db.seed]
+# enabled = false

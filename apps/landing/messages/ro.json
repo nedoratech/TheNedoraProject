@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "Nedora — Dezvoltare Software Enterprise",
+    "description": "Nedora construiește software enterprise personalizat pentru organizații ambițioase."
+  },
+  "nav": {
+    "services": "Servicii",
+    "about": "Despre",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "Dezvoltare Software Enterprise",
+    "heading": "Construim Software Care Crește Odată Cu Afacerea Ta",
+    "subheading": "Nedora colaborează cu organizații enterprise pentru a proiecta și livra sisteme software complexe — la timp, în buget și construite pentru a dura.",
+    "cta_primary": "Începe un Proiect",
+    "cta_secondary": "Proiectele Noastre"
+  },
+  "contact": {
+    "heading": "Începe un Proiect",
+    "subheading": "Spune-ne despre proiectul tău și te vom contacta în 24 de ore.",
+    "submit": "Trimite Cererea",
+    "success": "Cerere primită. Te vom contacta în curând."
+  }
+}

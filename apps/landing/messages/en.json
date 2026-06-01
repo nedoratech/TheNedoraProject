@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "Nedora — Enterprise Software Development",
+    "description": "Nedora builds custom enterprise software for ambitious organisations."
+  },
+  "nav": {
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "Enterprise Software Development",
+    "heading": "We Build Software That Scales With Your Business",
+    "subheading": "Nedora partners with enterprise organisations to design and deliver complex software systems — on time, on budget, and built to last.",
+    "cta_primary": "Start a Project",
+    "cta_secondary": "Our Work"
+  },
+  "contact": {
+    "heading": "Start a Project",
+    "subheading": "Tell us about your project and we'll get back to you within 24 hours.",
+    "submit": "Send Request",
+    "success": "Request received. We'll be in touch shortly."
+  }
+}
