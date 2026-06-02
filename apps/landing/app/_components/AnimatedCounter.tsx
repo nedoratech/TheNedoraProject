@@ -17,17 +17,16 @@ export default function AnimatedCounter({ target, suffix = '', className = '' }:
     if (!el) return
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          const duration = 1400
-          const step = target / (duration / 16)
-          let current = 0
-          const timer = setInterval(() => {
-            current = Math.min(current + step, target)
-            setValue(Math.round(current))
-            if (current >= target) clearInterval(timer)
-          }, 16)
-          observer.unobserve(el)
-        }
+        if (!entry?.isIntersecting) return
+        const duration = 1400
+        const step = target / (duration / 16)
+        let current = 0
+        const timer = setInterval(() => {
+          current = Math.min(current + step, target)
+          setValue(Math.round(current))
+          if (current >= target) clearInterval(timer)
+        }, 16)
+        observer.unobserve(el)
       },
       { threshold: 0.5 },
     )

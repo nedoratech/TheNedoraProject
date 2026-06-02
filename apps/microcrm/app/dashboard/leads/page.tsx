@@ -1,8 +1,16 @@
 import { createServerClient } from '@nedora/db/client'
+import { decryptContactFromJoin } from '@nedora/db/pii'
+import type { Database, LeadStatus } from '@nedora/db/types'
 import LeadStatusBadge from '../../_components/LeadStatusBadge'
 import Link from 'next/link'
 
 const STAGES = ['new', 'qualified', 'proposal', 'negotiation', 'won', 'lost'] as const
+
+type LeadRow = Database['public']['Tables']['crm_leads']['Row']
+type ContactRow = Database['public']['Tables']['crm_contacts']['Row']
+type LeadWithContact = LeadRow & {
+  crm_contacts: ContactRow | ContactRow[] | null
+}
 
 async function getLeads(status?: string) {
   const supabase = await createServerClient()
@@ -10,15 +18,15 @@ async function getLeads(status?: string) {
     .from('crm_leads')
     .select(`
       id, status, created_at, updated_at,
-      crm_contacts ( first_name, last_name, email, company )
+      crm_contacts ( * )
     `)
     .order('updated_at', { ascending: false })
 
   if (status && STAGES.includes(status as typeof STAGES[number])) {
-    query = query.eq('status', status)
+    query = query.eq('status', status as LeadStatus)
   }
   const { data } = await query
-  return data ?? []
+  return (data ?? []) as unknown as LeadWithContact[]
 }
 
 interface Props {
@@ -38,7 +46,6 @@ export default async function LeadsPage({ searchParams }: Props) {
         </div>
       </div>
 
-      {/* Stage filter */}
       <div className="flex gap-1 mb-6 flex-wrap">
         <Link
           href="/dashboard/leads"
@@ -57,7 +64,6 @@ export default async function LeadsPage({ searchParams }: Props) {
         ))}
       </div>
 
-      {/* Leads table */}
       <div className="border border-white/[0.08]">
         <table className="w-full text-left">
           <thead>
@@ -75,7 +81,7 @@ export default async function LeadsPage({ searchParams }: Props) {
                 </td>
               </tr>
             ) : leads.map((lead) => {
-              const contact = Array.isArray(lead.crm_contacts) ? lead.crm_contacts[0] : lead.crm_contacts
+              const contact = decryptContactFromJoin(lead.crm_contacts)
               return (
                 <tr key={lead.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                   <td className="px-5 py-3.5">

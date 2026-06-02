@@ -1,22 +1,18 @@
 /**
  * @nedora/db/cms
  * Server-side helpers for reading microCMS content from Supabase.
- * All functions use the anon key — CMS content is publicly readable via RLS.
- * Always call from Server Components or Server Actions, never from client components.
  */
 
-import { createServiceClient } from './client'
+import { createServiceClient } from './server'
 import type { Database } from './types'
-
-type ContentBlock = Database['public']['Tables']['cms_content_blocks']['Row']
 
 // ── Single block ─────────────────────────────────────────────────────────────
 
 export async function getCmsBlock(
   pageSlug: string,
-  key: string,
+  blockKey: string,
   locale: string,
-  fallback = 'en'
+  fallback = 'en',
 ): Promise<string> {
   const db = createServiceClient()
 
@@ -24,12 +20,12 @@ export async function getCmsBlock(
     .from('cms_content_blocks')
     .select('value')
     .eq('page_slug', pageSlug)
-    .eq('key', key)
+    .eq('block_key', blockKey)
     .eq('locale', locale)
     .maybeSingle()
 
   if (!data?.value && locale !== fallback) {
-    return getCmsBlock(pageSlug, key, fallback)
+    return getCmsBlock(pageSlug, blockKey, fallback)
   }
 
   return data?.value ?? ''
@@ -40,7 +36,7 @@ export async function getCmsBlock(
 export async function getPageBlocks(
   pageSlug: string,
   locale: string,
-  fallback = 'en'
+  fallback = 'en',
 ): Promise<Record<string, string>> {
   const db = createServiceClient()
 
@@ -48,25 +44,26 @@ export async function getPageBlocks(
 
   const { data } = await db
     .from('cms_content_blocks')
-    .select('key, locale, value')
+    .select('block_key, locale, value')
     .eq('page_slug', pageSlug)
     .in('locale', locales)
 
   if (!data) return {}
 
-  // Build map — locale-specific value wins over fallback
   const map: Record<string, string> = {}
 
-  // First pass: populate fallback
   data
     .filter((r) => r.locale === fallback)
-    .forEach((r) => { map[r.key] = r.value ?? '' })
+    .forEach((r) => {
+      map[r.block_key] = r.value ?? ''
+    })
 
-  // Second pass: overwrite with locale-specific value
   if (locale !== fallback) {
     data
       .filter((r) => r.locale === locale && r.value)
-      .forEach((r) => { map[r.key] = r.value! })
+      .forEach((r) => {
+        map[r.block_key] = r.value!
+      })
   }
 
   return map
@@ -74,13 +71,13 @@ export async function getPageBlocks(
 
 // ── Feature flags ────────────────────────────────────────────────────────────
 
-export async function getFeatureFlag(key: string): Promise<boolean> {
+export async function getFeatureFlag(flagKey: string): Promise<boolean> {
   const db = createServiceClient()
 
   const { data } = await db
     .from('cms_feature_flags')
     .select('enabled')
-    .eq('key', key)
+    .eq('flag_key', flagKey)
     .maybeSingle()
 
   return data?.enabled ?? false
@@ -89,13 +86,11 @@ export async function getFeatureFlag(key: string): Promise<boolean> {
 export async function getAllFeatureFlags(): Promise<Record<string, boolean>> {
   const db = createServiceClient()
 
-  const { data } = await db
-    .from('cms_feature_flags')
-    .select('key, enabled')
+  const { data } = await db.from('cms_feature_flags').select('flag_key, enabled')
 
   if (!data) return {}
 
-  return Object.fromEntries(data.map((r) => [r.key, r.enabled]))
+  return Object.fromEntries(data.map((r) => [r.flag_key, r.enabled]))
 }
 
 // ── Navigation ───────────────────────────────────────────────────────────────
@@ -109,7 +104,7 @@ export async function getNavigation(location: string, locale: string) {
     .eq('location', location)
     .eq('locale', locale)
     .eq('visible', true)
-    .order('order', { ascending: true })
+    .order('sort_order', { ascending: true })
 
   return data ?? []
 }
@@ -121,13 +116,13 @@ export async function getActiveLocales(): Promise<string[]> {
 
   const { data } = await db
     .from('cms_feature_flags')
-    .select('key, enabled')
-    .like('key', 'locale.%.enabled')
+    .select('flag_key, enabled')
+    .like('flag_key', 'locale.%.enabled')
     .eq('enabled', true)
 
   if (!data) return ['en']
 
   return data
-    .map((r) => r.key.replace('locale.', '').replace('.enabled', ''))
+    .map((r) => r.flag_key.replace('locale.', '').replace('.enabled', ''))
     .filter(Boolean)
 }

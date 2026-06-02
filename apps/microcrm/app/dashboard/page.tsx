@@ -1,5 +1,8 @@
 import { createServerClient } from '@nedora/db/client'
+import type { Database } from '@nedora/db/types'
 import Link from 'next/link'
+
+type LeadStatusRow = Pick<Database['public']['Tables']['crm_leads']['Row'], 'id' | 'status'>
 
 const PIPELINE_STAGES = ['new', 'qualified', 'proposal', 'negotiation', 'won', 'lost'] as const
 type Stage = typeof PIPELINE_STAGES[number]
@@ -22,13 +25,14 @@ async function getStats() {
       supabase.from('crm_contacts').select('id', { count: 'exact', head: true }),
       supabase.from('crm_newsletter_subscribers').select('id', { count: 'exact', head: true }).eq('status', 'active'),
     ])
+    const leadRows = (leads.data ?? []) as LeadStatusRow[]
     const leadsByStage = PIPELINE_STAGES.reduce((acc, stage) => {
-      acc[stage] = (leads.data ?? []).filter((l) => l.status === stage).length
+      acc[stage] = leadRows.filter((l) => l.status === stage).length
       return acc
     }, {} as Record<Stage, number>)
 
     return {
-      totalLeads: leads.data?.length ?? 0,
+      totalLeads: leadRows.length,
       leadsByStage,
       totalRequests: requests.count ?? 0,
       totalContacts: contacts.count ?? 0,

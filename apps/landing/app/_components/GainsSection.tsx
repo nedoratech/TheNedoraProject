@@ -1,51 +1,49 @@
 import ScrollReveal from './ScrollReveal'
 
-const gains = [
-  {
-    title: 'Operations you can rely on',
-    body: 'Critical workflows run on one dependable system instead of a patchwork of spreadsheets and manual workarounds. Your teams stop reconciling data and start serving customers.',
-  },
-  {
-    title: 'A connected view of the business',
-    body: 'Finance, operations, and sales draw from the same source of truth. Leaders act on current numbers — not stale exports emailed out of three different tools at the end of the week.',
-  },
-  {
-    title: 'Room to grow without rework',
-    body: 'Your platform evolves with regulation, volume, and new ideas — through planned releases with a team that already knows your context.',
-  },
-]
+export interface GainItem {
+  title: string
+  body: string
+}
 
-export default function GainsSection() {
+export interface GainsContent {
+  label: string
+  titleBefore: string
+  titleAccent: string
+  titleAfter: string
+  description: string
+  cta: string
+  items: GainItem[]
+}
+
+export default function GainsSection({ label, titleBefore, titleAccent, titleAfter, description, cta, items }: GainsContent) {
   return (
     <section className="py-0 bg-[#0d1b3e] text-nd-white" id="why">
-      <div className="max-w-[1160px] mx-auto px-8">
-        <div className="grid grid-cols-[5fr_7fr] items-stretch">
-          {/* Left */}
-          <ScrollReveal className="py-24 pr-16 border-r border-white/[0.08]">
+      <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[5fr_7fr] items-stretch">
+          <ScrollReveal className="py-18 sm:py-24 lg:py-24 lg:pr-16 lg:border-r lg:border-white/[0.08]">
             <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-[rgba(99,115,243,0.6)] mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-[rgba(99,115,243,0.6)]">
-              What your business gains
+              {label}
             </div>
             <h2 className="text-[clamp(2rem,4vw,3.2rem)] font-bold tracking-[-0.04em] leading-[1.05] mb-8">
-              Software that reduces <em className="not-italic text-nd-accent-bright">friction,</em> risk, and guesswork.
+              {titleBefore}
+              <em className="not-italic text-nd-accent-bright">{titleAccent}</em>
+              {titleAfter}
             </h2>
-            <p className="text-[1rem] text-white/55 leading-[1.75] mb-12 max-w-[360px]">
-              We shape every engagement around delivering clarity — not another tool to manage.
-            </p>
+            <p className="text-[1rem] text-white/55 leading-[1.75] mb-12 max-w-[360px]">{description}</p>
             <a
               href="#contact"
               className="inline-flex items-center gap-2 text-[0.72rem] tracking-[0.14em] uppercase font-bold text-nd-accent-bright border-b border-[rgba(99,115,243,0.3)] pb-1 hover:border-nd-accent-bright transition-colors duration-200"
             >
-              Start a conversation ↗
+              {cta}
             </a>
           </ScrollReveal>
 
-          {/* Right */}
-          <div className="py-24 pl-16 flex flex-col gap-0">
-            {gains.map((gain, i) => (
+          <div className="py-18 sm:py-24 lg:py-24 lg:pl-16 flex flex-col gap-0">
+            {items.map((gain, i) => (
               <ScrollReveal
-                key={i}
+                key={gain.title}
                 delay={i as 0 | 1 | 2}
-                className="py-8 border-b border-white/[0.07] last:border-none grid grid-cols-[auto_1fr] gap-6 items-start hover:pl-3 transition-all duration-200"
+                className="py-8 border-b border-white/[0.07] last:border-none grid grid-cols-[auto_1fr] gap-5 sm:gap-6 items-start lg:hover:pl-3 transition-all duration-200"
               >
                 <div className="w-9 h-9 border border-[rgba(99,115,243,0.3)] flex items-center justify-center text-nd-accent-bright text-[0.85rem] shrink-0 mt-0.5">
                   ⬡

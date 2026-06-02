@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { createBrowserClient } from '@nedora/db/client'
+import { createBrowserClient } from '@nedora/db/browser'
 import { useRouter } from 'next/navigation'
 
 const nav = [

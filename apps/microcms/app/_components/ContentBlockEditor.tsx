@@ -1,13 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { createBrowserClient } from '@nedora/db/client'
+import { createBrowserClient } from '@nedora/db/browser'
 
 interface Block {
   id: string
-  key: string
+  block_key: string
   locale: string
-  value: string
+  value: string | null
   type: string
 }
 
@@ -19,7 +19,7 @@ interface Props {
 export default function ContentBlockEditor({ pageSlug, blocks }: Props) {
   const [editing, setEditing] = useState<string | null>(null)
   const [values, setValues] = useState<Record<string, string>>(
-    Object.fromEntries(blocks.map((b) => [`${b.key}:${b.locale}`, b.value]))
+    Object.fromEntries(blocks.map((b) => [`${b.block_key}:${b.locale}`, b.value ?? '']))
   )
   const [saving, setSaving] = useState<string | null>(null)
   const [saved, setSaved] = useState<string | null>(null)
@@ -28,7 +28,7 @@ export default function ContentBlockEditor({ pageSlug, blocks }: Props) {
   const visibleBlocks = blocks.filter((b) => b.locale === locale)
 
   async function handleSave(block: Block) {
-    const key = `${block.key}:${block.locale}`
+    const key = `${block.block_key}:${block.locale}`
     setSaving(key)
 
     const supabase = createBrowserClient()
@@ -70,7 +70,7 @@ export default function ContentBlockEditor({ pageSlug, blocks }: Props) {
           </div>
         ) : (
           visibleBlocks.map((block) => {
-            const key = `${block.key}:${block.locale}`
+            const key = `${block.block_key}:${block.locale}`
             const isEditing = editing === key
             const isSaving = saving === key
             const isSaved = saved === key
@@ -78,7 +78,7 @@ export default function ContentBlockEditor({ pageSlug, blocks }: Props) {
             return (
               <div key={block.id} className="border border-white/[0.08] bg-white/[0.02]">
                 <div className="flex items-center justify-between px-4 py-2.5 border-b border-white/[0.06]">
-                  <span className="text-[0.72rem] font-mono text-nd-accent-bright">{block.key}</span>
+                  <span className="text-[0.72rem] font-mono text-nd-accent-bright">{block.block_key}</span>
                   <span className="text-[0.6rem] tracking-[0.12em] uppercase text-nd-grey-600 border border-white/10 px-1.5 py-0.5">{block.type}</span>
                 </div>
                 <div className="p-4">

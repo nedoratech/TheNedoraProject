@@ -6,19 +6,235 @@
   "nav": {
     "services": "Services",
     "about": "About",
-    "contact": "Contact"
+    "contact": "Contact",
+    "cta": "Contact"
   },
   "hero": {
     "eyebrow": "Enterprise Software Development",
-    "heading": "We Build Software That Scales With Your Business",
+    "headline_before": "We Build Software That ",
+    "headline_accent": "Scales",
+    "headline_after": " With Your Business",
     "subheading": "Nedora partners with enterprise organisations to design and deliver complex software systems — on time, on budget, and built to last.",
     "cta_primary": "Start a Project",
-    "cta_secondary": "Our Work"
+    "cta_secondary": "Our Work",
+    "scroll": "Scroll",
+    "stats": [
+      { "target": 10, "suffix": "+", "label": "Years in enterprise software" },
+      { "target": 40, "suffix": "+", "label": "Projects delivered" },
+      { "target": 90, "suffix": "%", "label": "Client retention rate" }
+    ]
+  },
+  "bento": {
+    "label": "Our commitments",
+    "title": "Six commitments every engagement is built on.",
+    "description": "These aren't values on a wall. They're the standards we hold ourselves to on every project.",
+    "quote": "\"We stand behind every one of these. Not as aspirations — as standards.\"",
+    "quote_attribution": "Nedora · 2026",
+    "cta": "Start a conversation ↗",
+    "cells": [
+      {
+        "num": "01",
+        "title": "Your reality shapes every decision",
+        "body": "We map your workflows before we open an IDE. Software that doesn't fit how your teams actually work quickly becomes expensive shelfware."
+      },
+      {
+        "num": "02",
+        "title": "Built for production — not demos",
+        "body": "Security, maintainability, and documentation ship with the product."
+      },
+      {
+        "num": "03",
+        "title": "Scope & progress you can plan around",
+        "bigNum": true
+      },
+      {
+        "num": "04",
+        "title": "Deliberate speed — never reckless",
+        "body": "We move with urgency, but not at the cost of architecture decisions your next five years depend on. Technical debt is a business problem."
+      },
+      {
+        "num": "05",
+        "title": "A partnership that outlasts go-live",
+        "body": "The same team that built the system is still here when you need to evolve it."
+      },
+      {
+        "num": "06",
+        "title": "Software your team can own",
+        "body": "No lock-in, no black boxes. Your engineers inherit clean, documented code they can understand, maintain, and extend."
+      }
+    ]
+  },
+  "gains": {
+    "label": "What your business gains",
+    "title_before": "Software that reduces ",
+    "title_accent": "friction,",
+    "title_after": " risk, and guesswork.",
+    "description": "We shape every engagement around delivering clarity — not another tool to manage.",
+    "cta": "Start a conversation ↗",
+    "items": [
+      {
+        "title": "Operations you can rely on",
+        "body": "Critical workflows run on one dependable system instead of a patchwork of spreadsheets and manual workarounds. Your teams stop reconciling data and start serving customers."
+      },
+      {
+        "title": "A connected view of the business",
+        "body": "Finance, operations, and sales draw from the same source of truth. Leaders act on current numbers — not stale exports emailed out of three different tools at the end of the week."
+      },
+      {
+        "title": "Room to grow without rework",
+        "body": "Your platform evolves with regulation, volume, and new ideas — through planned releases with a team that already knows your context."
+      }
+    ]
+  },
+  "process": {
+    "label": "Process",
+    "title": "Four phases from first conversation through launch.",
+    "description": "Clear milestones and shared documentation at every step. No verbal estimates, no surprise invoices.",
+    "steps": [
+      {
+        "phase": "Discover",
+        "title": "Align before we build",
+        "body": "We spend time understanding your workflows, constraints, and definition of success before a line of code is written.",
+        "items": ["Stakeholder interviews and workflow mapping", "Systems inventory, risks, and dependencies"]
+      },
+      {
+        "phase": "Design",
+        "title": "A plan you can approve",
+        "body": "Architecture decisions and integration design — documented in a written proposal your stakeholders can review and sign off on.",
+        "items": ["Architecture, integrations, and delivery model", "Timeline, milestones, and written proposal"]
+      },
+      {
+        "phase": "Build",
+        "title": "Deliver, test, repeat",
+        "body": "Short, predictable cycles. Your team sees and approves working software at every checkpoint — not six months in.",
+        "items": ["Short cycles with acceptance checkpoints", "Tests, documentation, and operable environments"]
+      },
+      {
+        "phase": "Deliver",
+        "title": "Go-live and beyond",
+        "body": "Cutover isn't the finish line. We stay engaged for knowledge transfer, stability monitoring, and the roadmap of what comes next.",
+        "items": ["Cutover support and knowledge transfer", "Runbooks and roadmap for what comes next"]
+      }
+    ]
+  },
+  "engagement": {
+    "label": "Engagement models",
+    "title": "Choose the model that matches your certainty of scope.",
+    "description": "Many clients begin with a time-based discovery to sharpen requirements, then move to fixed-scope delivery for the build.",
+    "fixed_badge": "Fixed-scope",
+    "fixed_title": "Fixed-Scope Delivery",
+    "fixed_body": "Defined outcomes, timeline, and investment — upfront. Best when requirements are clear, or when you want a bounded MVP, a specific integration, or a clean migration.",
+    "fixed_items": ["Clear proposal with acceptance criteria", "Milestone-based delivery and live demos", "Formal change control when scope evolves"],
+    "fixed_cta": "Request a fixed-scope offer",
+    "time_badge": "Time-based",
+    "time_title": "Time-Based Engagement",
+    "time_body": "Dedicated capacity by sprint — ideal for discovery, evolving backlogs, team augmentation, or long-term product evolution. You direct the work; we deliver with full transparency.",
+    "time_items": ["Flexible priorities as you learn", "Transparent reporting on time and progress", "Scale up or down as needs change"],
+    "time_cta": "Discuss time-based work",
+    "note_before": "Not sure which model fits? ",
+    "note_strong": "Start with a discovery call",
+    "note_after": " — we'll help you choose the structure that gives you the most confidence at each stage."
+  },
+  "bigCta": {
+    "label": "Next step",
+    "title_before": "Let's make something ",
+    "title_accent": "great",
+    "title_after": " together.",
+    "description": "If you're exploring what's possible — or already know what you need — we'll help you turn it into a plan your stakeholders can sign off on.",
+    "cta_primary": "Request an offer",
+    "cta_secondary": "See how we work",
+    "proof": [
+      { "val": "Two business days", "label": "Typical response time" },
+      { "val": "Written proposal", "label": "No verbal estimates" },
+      { "val": "No lock-in", "label": "Clean handover always" },
+      { "val": "Same team", "label": "Build through support" }
+    ]
   },
   "contact": {
-    "heading": "Start a Project",
-    "subheading": "Tell us about your project and we'll get back to you within 24 hours.",
-    "submit": "Send Request",
-    "success": "Request received. We'll be in touch shortly."
+    "label": "Contact",
+    "heading": "Request an offer",
+    "description": "Tell us about your project. We typically respond within two business days. For straightforward enquiries, we'll often suggest a 30-minute call before preparing a written proposal.",
+    "location_title": "Location",
+    "location_value": "Bucharest, Romania",
+    "linkedin_title": "LinkedIn",
+    "linkedin_value": "linkedin.com/company/nedora-tech",
+    "response_title": "Response time",
+    "response_value": "Within two business days",
+    "submit": "Send request →",
+    "submitting": "Sending…",
+    "success_title": "Request received.",
+    "success_body": "We'll be in touch within two business days.",
+    "privacy_prefix": "By submitting this form you agree that Nedora may process your data to respond to your enquiry.",
+    "privacy_link": "Privacy Policy.",
+    "error_generic": "Something went wrong. Please try again.",
+    "error_validation": "Please fix the errors below.",
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Work email",
+      "company": "Company",
+      "projectType": "Project type",
+      "engagementModel": "Engagement model",
+      "timeline": "Timeline",
+      "message": "Tell us about your project"
+    },
+    "placeholders": {
+      "firstName": "Maria",
+      "lastName": "Ionescu",
+      "email": "maria@company.com",
+      "company": "Acme Corp",
+      "message": "Describe what you're building, your current stack, and any key constraints…"
+    },
+    "projectTypes": {
+      "new_application": "New application",
+      "integration_modernisation": "Integration / modernisation",
+      "support_evolution": "Support & evolution",
+      "not_sure": "Not sure yet"
+    },
+    "engagementModels": {
+      "fixed_scope": "Fixed-scope",
+      "time_based": "Time-based",
+      "not_sure": "Not sure"
+    },
+    "timelines": {
+      "ready_now": "Ready now",
+      "1_3_months": "1–3 months",
+      "3_6_months": "3–6 months",
+      "exploring": "Exploring"
+    },
+    "validation": {
+      "required": "Required",
+      "email": "Invalid email",
+      "message_min": "Please describe your project (min 10 characters)"
+    }
+  },
+  "footer": {
+    "tagline": "Nedora designs and delivers enterprise-grade applications and integrations for businesses that need software built with intent.",
+    "copyright": "© Nedora · {year}. All rights reserved.",
+    "columns": {
+      "company": {
+        "label": "Company",
+        "links": {
+          "solutions": "Solutions",
+          "why": "Why Nedora",
+          "process": "Process",
+          "engagement": "Engagement"
+        }
+      },
+      "connect": {
+        "label": "Connect",
+        "links": {
+          "offer": "Request an offer",
+          "linkedin": "LinkedIn",
+          "privacy": "Privacy Policy"
+        }
+      },
+      "products": {
+        "label": "Products",
+        "links": {
+          "nedai": "NedAI"
+        }
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { createServerClient } from '@nedora/db/client'
+import { decryptContact } from '@nedora/db/pii'
 
 async function getContacts() {
   const supabase = await createServerClient()
@@ -6,7 +7,7 @@ async function getContacts() {
     .from('crm_contacts')
     .select('*')
     .order('created_at', { ascending: false })
-  return data ?? []
+  return (data ?? []).map(decryptContact)
 }
 
 export default async function ContactsPage() {

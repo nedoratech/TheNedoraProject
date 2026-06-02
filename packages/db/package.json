@@ -4,14 +4,19 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client.ts",
+    "./client": "./src/server.ts",
+    "./browser": "./src/browser.ts",
+    "./server": "./src/server.ts",
     "./cms": "./src/cms.ts",
     "./crm": "./src/crm.ts",
     "./middleware": "./src/middleware.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./types.ts": "./src/types.ts",
+    "./pii": "./src/pii.ts"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.5.2",
-    "@supabase/supabase-js": "^2.47.2"
+    "@nedora/crypto": "*",
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.106.2"
   }
 }

@@ -35,28 +35,28 @@
   src: url("/fonts/futura-light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: Futura;
   src: url("/fonts/futura-book.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: Futura;
   src: url("/fonts/futura-medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: Futura;
   src: url("/fonts/futura-bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 /* Base resets */
@@ -66,10 +66,24 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 18px;
+}
+
+/* Fixed navbar height (used for hero sizing) */
+:root {
+  --nd-nav-h: 64px;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --nd-nav-h: 76px;
+  }
 }
 
 body {
   font-family: var(--font-futura);
+  font-size: 1rem;
+  line-height: 1.6;
   background-color: var(--color-nd-black);
   color: var(--color-nd-white);
   -webkit-font-smoothing: antialiased;

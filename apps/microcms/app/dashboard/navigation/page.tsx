@@ -5,7 +5,7 @@ async function getNavItems() {
   const { data } = await supabase
     .from('cms_navigation')
     .select('*')
-    .order('order_index')
+    .order('sort_order')
   return data ?? []
 }
 

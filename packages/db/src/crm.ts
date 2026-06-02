@@ -1,30 +1,104 @@
 /**
  * @nedora/db/crm
  * Server-side helpers for microCRM operations.
- * All writes use the service_role client — only call from Server Actions or Route Handlers.
+ * PII is encrypted with @nedora/crypto before write; decrypt in UI via @nedora/db/pii.
  */
 
-import { createServiceClient } from './client'
-import type { Database } from './types'
+import {
+  encryptPii,
+  encryptPiiOptional,
+  hashPiiLookup,
+} from '@nedora/crypto/pii'
+import { createServiceClient } from './server'
+import type { Database, LeadStatus } from './types'
 
 type ContactInsert = Database['public']['Tables']['crm_contacts']['Insert']
-type LeadInsert    = Database['public']['Tables']['crm_leads']['Insert']
+type LeadInsert = Database['public']['Tables']['crm_leads']['Insert']
 type RequestInsert = Database['public']['Tables']['crm_project_requests']['Insert']
+
+export type ContactPiiInput = {
+  email: string
+  firstName?: string | null
+  lastName?: string | null
+  company?: string | null
+  phone?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  postalCode?: string | null
+  country?: string | null
+  notes?: string | null
+  source?: string | null
+}
+
+function toContactRow(data: ContactPiiInput): ContactInsert {
+  return {
+    email_hash: hashPiiLookup(data.email),
+    email_ciphertext: encryptPii(data.email.trim()),
+    first_name_ciphertext: encryptPiiOptional(data.firstName),
+    last_name_ciphertext: encryptPiiOptional(data.lastName),
+    company_ciphertext: encryptPiiOptional(data.company),
+    phone_ciphertext: encryptPiiOptional(data.phone),
+    address_line1_ciphertext: encryptPiiOptional(data.addressLine1),
+    address_line2_ciphertext: encryptPiiOptional(data.addressLine2),
+    city_ciphertext: encryptPiiOptional(data.city),
+    postal_code_ciphertext: encryptPiiOptional(data.postalCode),
+    country_ciphertext: encryptPiiOptional(data.country),
+    notes_ciphertext: encryptPiiOptional(data.notes),
+    source: data.source ?? null,
+  }
+}
+
+function toRequestPiiRow(payload: {
+  email: string
+  firstName: string
+  lastName: string
+  company?: string | null
+  message?: string | null
+  addressLine1?: string | null
+  addressLine2?: string | null
+  city?: string | null
+  postalCode?: string | null
+  country?: string | null
+}): Pick<
+  RequestInsert,
+  | 'email_hash'
+  | 'email_ciphertext'
+  | 'first_name_ciphertext'
+  | 'last_name_ciphertext'
+  | 'company_ciphertext'
+  | 'message_ciphertext'
+  | 'address_line1_ciphertext'
+  | 'address_line2_ciphertext'
+  | 'city_ciphertext'
+  | 'postal_code_ciphertext'
+  | 'country_ciphertext'
+> {
+  return {
+    email_hash: hashPiiLookup(payload.email),
+    email_ciphertext: encryptPii(payload.email.trim()),
+    first_name_ciphertext: encryptPii(payload.firstName.trim()),
+    last_name_ciphertext: encryptPii(payload.lastName.trim()),
+    company_ciphertext: encryptPiiOptional(payload.company),
+    message_ciphertext: encryptPiiOptional(payload.message),
+    address_line1_ciphertext: encryptPiiOptional(payload.addressLine1),
+    address_line2_ciphertext: encryptPiiOptional(payload.addressLine2),
+    city_ciphertext: encryptPiiOptional(payload.city),
+    postal_code_ciphertext: encryptPiiOptional(payload.postalCode),
+    country_ciphertext: encryptPiiOptional(payload.country),
+  }
+}
 
 // ── Contacts ─────────────────────────────────────────────────────────────────
 
-/** Upsert a contact by email. Returns the contact id. */
-export async function upsertContact(
-  data: Pick<ContactInsert, 'email' | 'first_name' | 'last_name' | 'company' | 'source'>
-) {
+/** Upsert a contact by email hash. Returns the contact id. */
+export async function upsertContact(data: ContactPiiInput) {
   const db = createServiceClient()
+  const row = toContactRow(data)
 
   const { data: contact, error } = await db
     .from('crm_contacts')
-    .upsert(
-      { ...data, updated_at: new Date().toISOString() },
-      { onConflict: 'email', ignoreDuplicates: false }
-    )
+    .upsert(row, { onConflict: 'email_hash', ignoreDuplicates: false })
     .select('id')
     .single()
 
@@ -44,48 +118,51 @@ export async function createProjectRequest(payload: {
   timeline: string
   message?: string
   locale?: string
+  addressLine1?: string
+  addressLine2?: string
+  city?: string
+  postalCode?: string
+  country?: string
 }) {
   const db = createServiceClient()
 
-  // 1. Upsert contact
   const contact = await upsertContact({
     email: payload.email,
-    first_name: payload.firstName,
-    last_name: payload.lastName,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
     company: payload.company,
+    addressLine1: payload.addressLine1,
+    addressLine2: payload.addressLine2,
+    city: payload.city,
+    postalCode: payload.postalCode,
+    country: payload.country,
     source: 'website_form',
   })
 
-  // 2. Create project request
+  const pii = toRequestPiiRow(payload)
+
   const { data: request, error: reqErr } = await db
     .from('crm_project_requests')
     .insert({
-      contact_id:       contact.id,
-      first_name:       payload.firstName,
-      last_name:        payload.lastName,
-      email:            payload.email,
-      company:          payload.company,
-      project_type:     payload.projectType as RequestInsert['project_type'],
+      contact_id: contact.id,
+      ...pii,
+      project_type: payload.projectType as RequestInsert['project_type'],
       engagement_model: payload.engagementModel as RequestInsert['engagement_model'],
-      timeline:         payload.timeline as RequestInsert['timeline'],
-      message:          payload.message,
-      locale:           payload.locale ?? 'en',
+      timeline: payload.timeline as RequestInsert['timeline'],
+      locale: payload.locale ?? 'en',
     })
     .select('id')
     .single()
 
   if (reqErr) throw reqErr
 
-  // 3. Create lead (status = new)
-  const { error: leadErr } = await db
-    .from('crm_leads')
-    .insert({
-      contact_id:       contact.id,
-      status:           'new',
-      project_type:     payload.projectType as LeadInsert['project_type'],
-      engagement_model: payload.engagementModel as LeadInsert['engagement_model'],
-      timeline:         payload.timeline as LeadInsert['timeline'],
-    })
+  const { error: leadErr } = await db.from('crm_leads').insert({
+    contact_id: contact.id,
+    status: 'new',
+    project_type: payload.projectType as LeadInsert['project_type'],
+    engagement_model: payload.engagementModel as LeadInsert['engagement_model'],
+    timeline: payload.timeline as LeadInsert['timeline'],
+  })
 
   if (leadErr) throw leadErr
 
@@ -97,46 +174,46 @@ export async function createProjectRequest(payload: {
 export async function subscribeToNewsletter(data: {
   email: string
   firstName?: string
+  lastName?: string
   locale?: string
   source?: string
 }) {
   const db = createServiceClient()
 
-  const { error } = await db
-    .from('crm_newsletter_subscribers')
-    .upsert(
-      {
-        email:            data.email,
-        first_name:       data.firstName,
-        locale:           data.locale ?? 'en',
-        source:           data.source ?? 'website_form',
-        status:           'active',
-        consent_given_at: new Date().toISOString(),
-      },
-      { onConflict: 'email', ignoreDuplicates: false }
-    )
+  const { error } = await db.from('crm_newsletter_subscribers').upsert(
+    {
+      email_hash: hashPiiLookup(data.email),
+      email_ciphertext: encryptPii(data.email.trim()),
+      first_name_ciphertext: encryptPiiOptional(data.firstName),
+      last_name_ciphertext: encryptPiiOptional(data.lastName),
+      locale: data.locale ?? 'en',
+      source: data.source ?? 'website_form',
+      status: 'active',
+      consent_given_at: new Date().toISOString(),
+    },
+    { onConflict: 'email_hash', ignoreDuplicates: false },
+  )
 
   if (error) throw error
 }
 
 // ── Leads ─────────────────────────────────────────────────────────────────────
 
-export async function getLeads(options?: {
-  status?: string
-  limit?: number
-}) {
+export async function getLeads(options?: { status?: string; limit?: number }) {
   const db = createServiceClient()
 
   let query = db
     .from('crm_leads')
-    .select(`
+    .select(
+      `
       *,
-      crm_contacts ( id, email, first_name, last_name, company )
-    `)
+      crm_contacts ( * )
+    `,
+    )
     .order('created_at', { ascending: false })
 
   if (options?.status) {
-    query = query.eq('status', options.status as LeadInsert['status'])
+    query = query.eq('status', options.status as LeadStatus)
   }
   if (options?.limit) {
     query = query.limit(options.limit)
@@ -147,15 +224,12 @@ export async function getLeads(options?: {
   return data
 }
 
-export async function updateLeadStatus(
-  leadId: string,
-  status: Database['public']['Enums']['lead_status']
-) {
+export async function updateLeadStatus(leadId: string, status: LeadStatus) {
   const db = createServiceClient()
 
   const { error } = await db
     .from('crm_leads')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status })
     .eq('id', leadId)
 
   if (error) throw error

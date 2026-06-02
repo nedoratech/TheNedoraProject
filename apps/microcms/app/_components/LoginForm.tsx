@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { createBrowserClient } from '@nedora/db/client'
+import { createBrowserClient } from '@nedora/db/browser'
 import { useRouter } from 'next/navigation'
 
 export default function LoginForm() {

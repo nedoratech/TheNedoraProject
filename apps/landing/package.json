@@ -5,18 +5,19 @@
   "scripts": {
     "dev": "next dev --port 3000",
     "build": "next build",
+    "start": "next start --port 3000",
     "typecheck": "tsc --noEmit",
     "lint": "next lint"
   },
   "dependencies": {
-    "@nedora/db": "*",
+    "@hookform/resolvers": "^3.9.1",
     "next": "^15.1.0",
     "next-intl": "^3.26.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
-    "zod": "^3.24.1",
-    "@hookform/resolvers": "^3.9.1"
+    "resend": "^4.0.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@nedora/config": "*",

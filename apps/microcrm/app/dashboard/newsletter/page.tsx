@@ -1,4 +1,5 @@
 import { createServerClient } from '@nedora/db/client'
+import { decryptNewsletterSubscriber } from '@nedora/db/pii'
 
 async function getSubscribers() {
   const supabase = await createServerClient()
@@ -6,7 +7,7 @@ async function getSubscribers() {
     .from('crm_newsletter_subscribers')
     .select('*')
     .order('created_at', { ascending: false })
-  return data ?? []
+  return (data ?? []).map(decryptNewsletterSubscriber)
 }
 
 export default async function NewsletterPage() {
@@ -22,7 +23,6 @@ export default async function NewsletterPage() {
         <p className="text-[0.85rem] text-nd-grey-400 mt-1">Subscribers who have given explicit GDPR consent.</p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         {[
           { label: 'Active subscribers', value: active.length, color: 'text-green-400' },
@@ -36,7 +36,6 @@ export default async function NewsletterPage() {
         ))}
       </div>
 
-      {/* Subscribers table */}
       <div className="border border-white/[0.08]">
         <table className="w-full text-left">
           <thead>

@@ -6,19 +6,235 @@
   "nav": {
     "services": "Servicii",
     "about": "Despre",
-    "contact": "Contact"
+    "contact": "Contact",
+    "cta": "Contact"
   },
   "hero": {
     "eyebrow": "Dezvoltare Software Enterprise",
-    "heading": "Construim Software Care Crește Odată Cu Afacerea Ta",
+    "headline_before": "Construim Software Care ",
+    "headline_accent": "Crește",
+    "headline_after": " Odată Cu Afacerea Ta",
     "subheading": "Nedora colaborează cu organizații enterprise pentru a proiecta și livra sisteme software complexe — la timp, în buget și construite pentru a dura.",
     "cta_primary": "Începe un Proiect",
-    "cta_secondary": "Proiectele Noastre"
+    "cta_secondary": "Proiectele Noastre",
+    "scroll": "Derulează",
+    "stats": [
+      { "target": 10, "suffix": "+", "label": "Ani în software enterprise" },
+      { "target": 40, "suffix": "+", "label": "Proiecte livrate" },
+      { "target": 90, "suffix": "%", "label": "Rată de retenție a clienților" }
+    ]
+  },
+  "bento": {
+    "label": "Angajamentele noastre",
+    "title": "Șase angajamente pe care se bazează fiecare proiect.",
+    "description": "Nu sunt valori pe un perete. Sunt standardele la care ne ținem în fiecare proiect.",
+    "quote": "\"Ne asumăm fiecare dintre acestea. Nu ca aspirații — ci ca standarde.\"",
+    "quote_attribution": "Nedora · 2026",
+    "cta": "Începe o conversație ↗",
+    "cells": [
+      {
+        "num": "01",
+        "title": "Realitatea ta modelează fiecare decizie",
+        "body": "Cartografiem fluxurile de lucru înainte să deschidem un IDE. Software-ul care nu se potrivește modului în care echipele lucrează devine rapid un cost inutil."
+      },
+      {
+        "num": "02",
+        "title": "Construit pentru producție — nu pentru demo",
+        "body": "Securitatea, mentenabilitatea și documentația se livrează odată cu produsul."
+      },
+      {
+        "num": "03",
+        "title": "Scop și progres pe care le poți planifica",
+        "bigNum": true
+      },
+      {
+        "num": "04",
+        "title": "Viteză deliberată — niciodată iresponsabilă",
+        "body": "Ne mișcăm cu urgență, dar nu în detrimentul deciziilor de arhitectură de care depind următorii cinci ani. Datoria tehnică este o problemă de business."
+      },
+      {
+        "num": "05",
+        "title": "Un parteneriat care depășește go-live-ul",
+        "body": "Aceeași echipă care a construit sistemul rămâne alături când ai nevoie să îl evoluezi."
+      },
+      {
+        "num": "06",
+        "title": "Software pe care echipa ta îl poate deține",
+        "body": "Fără dependență, fără cutii negre. Inginerii tăi moștenesc cod curat, documentat, pe care îl pot înțelege, menține și extinde."
+      }
+    ]
+  },
+  "gains": {
+    "label": "Ce câștigă afacerea ta",
+    "title_before": "Software care reduce ",
+    "title_accent": "fricțiunea,",
+    "title_after": " riscul și incertitudinea.",
+    "description": "Modelăm fiecare proiect în jurul clarității — nu a încă unui instrument de gestionat.",
+    "cta": "Începe o conversație ↗",
+    "items": [
+      {
+        "title": "Operațiuni pe care te poți baza",
+        "body": "Fluxurile critice rulează pe un singur sistem de încredere, nu pe foi de calcul și soluții manuale. Echipele tale servesc clienții, nu reconciliază date."
+      },
+      {
+        "title": "O imagine conectată a afacerii",
+        "body": "Finanțe, operațiuni și vânzări folosesc aceeași sursă de adevăr. Liderii acționează pe cifre actuale — nu pe exporturi învechite din trei instrumente diferite."
+      },
+      {
+        "title": "Spațiu de creștere fără refaceri",
+        "body": "Platforma evoluează odată cu reglementările, volumul și ideile noi — prin release-uri planificate cu o echipă care îți cunoaște deja contextul."
+      }
+    ]
+  },
+  "process": {
+    "label": "Proces",
+    "title": "Patru faze de la prima conversație până la lansare.",
+    "description": "Repere clare și documentație partajată la fiecare pas. Fără estimări verbale, fără facturi surpriză.",
+    "steps": [
+      {
+        "phase": "Descoperire",
+        "title": "Aliniere înainte de construcție",
+        "body": "Înțelegem fluxurile, constrângerile și definiția succesului înainte de prima linie de cod.",
+        "items": ["Interviuri cu stakeholderi și cartografiere fluxuri", "Inventar sisteme, riscuri și dependențe"]
+      },
+      {
+        "phase": "Design",
+        "title": "Un plan pe care îl poți aproba",
+        "body": "Decizii de arhitectură și design de integrare — documentate într-o propunere scrisă pe care stakeholderii o pot revizui și aproba.",
+        "items": ["Arhitectură, integrări și model de livrare", "Timeline, repere și propunere scrisă"]
+      },
+      {
+        "phase": "Construcție",
+        "title": "Livrare, testare, repetare",
+        "body": "Cicluri scurte și predictibile. Echipa ta vede și aprobă software funcțional la fiecare checkpoint — nu după șase luni.",
+        "items": ["Cicluri scurte cu puncte de acceptanță", "Teste, documentație și medii operaționale"]
+      },
+      {
+        "phase": "Livrare",
+        "title": "Go-live și dincolo",
+        "body": "Cutover-ul nu e linia de sosire. Rămânem implicați pentru transfer de cunoștințe, monitorizare și roadmap-ul următorilor pași.",
+        "items": ["Suport la cutover și transfer de cunoștințe", "Runbook-uri și roadmap pentru ce urmează"]
+      }
+    ]
+  },
+  "engagement": {
+    "label": "Modele de colaborare",
+    "title": "Alege modelul care se potrivește certitudinii scope-ului.",
+    "description": "Mulți clienți încep cu o descoperire time-based pentru a clarifica cerințele, apoi trec la livrare fixed-scope pentru construcție.",
+    "fixed_badge": "Fixed-scope",
+    "fixed_title": "Livrare Fixed-Scope",
+    "fixed_body": "Rezultate, timeline și investiție definite din start. Ideal când cerințele sunt clare sau vrei un MVP delimitat, o integrare specifică sau o migrare curată.",
+    "fixed_items": ["Propunere clară cu criterii de acceptanță", "Livrare pe repere și demo-uri live", "Control formal al schimbărilor de scope"],
+    "fixed_cta": "Solicită o ofertă fixed-scope",
+    "time_badge": "Time-based",
+    "time_title": "Colaborare Time-Based",
+    "time_body": "Capacitate dedicată pe sprint — ideal pentru descoperire, backlog-uri în evoluție, augmentare de echipă sau evoluție pe termen lung. Tu direcționezi; noi livrăm cu transparență totală.",
+    "time_items": ["Priorități flexibile pe măsură ce înveți", "Raportare transparentă a timpului și progresului", "Scale up sau down după nevoi"],
+    "time_cta": "Discută colaborare time-based",
+    "note_before": "Nu ești sigur ce model se potrivește? ",
+    "note_strong": "Începe cu un call de descoperire",
+    "note_after": " — te ajutăm să alegi structura care îți oferă cea mai multă încredere la fiecare etapă."
+  },
+  "bigCta": {
+    "label": "Următorul pas",
+    "title_before": "Hai să construim ceva ",
+    "title_accent": "remarcabil",
+    "title_after": " împreună.",
+    "description": "Fie că explorezi ce e posibil — fie că știi deja ce ai nevoie — te ajutăm să transformi ideea într-un plan pe care stakeholderii îl pot aproba.",
+    "cta_primary": "Solicită o ofertă",
+    "cta_secondary": "Vezi cum lucrăm",
+    "proof": [
+      { "val": "Două zile lucrătoare", "label": "Timp tipic de răspuns" },
+      { "val": "Propunere scrisă", "label": "Fără estimări verbale" },
+      { "val": "Fără lock-in", "label": "Predare curată, mereu" },
+      { "val": "Aceeași echipă", "label": "De la build la suport" }
+    ]
   },
   "contact": {
-    "heading": "Începe un Proiect",
-    "subheading": "Spune-ne despre proiectul tău și te vom contacta în 24 de ore.",
-    "submit": "Trimite Cererea",
-    "success": "Cerere primită. Te vom contacta în curând."
+    "label": "Contact",
+    "heading": "Solicită o ofertă",
+    "description": "Spune-ne despre proiectul tău. De obicei răspundem în două zile lucrătoare. Pentru solicitări simple, propunem adesea un call de 30 de minute înainte de o propunere scrisă.",
+    "location_title": "Locație",
+    "location_value": "București, România",
+    "linkedin_title": "LinkedIn",
+    "linkedin_value": "linkedin.com/company/nedora-tech",
+    "response_title": "Timp de răspuns",
+    "response_value": "În două zile lucrătoare",
+    "submit": "Trimite cererea →",
+    "submitting": "Se trimite…",
+    "success_title": "Cerere primită.",
+    "success_body": "Te contactăm în două zile lucrătoare.",
+    "privacy_prefix": "Prin trimiterea formularului ești de acord ca Nedora să prelucreze datele pentru a răspunde solicitării tale.",
+    "privacy_link": "Politica de confidențialitate.",
+    "error_generic": "Ceva nu a funcționat. Încearcă din nou.",
+    "error_validation": "Corectează erorile de mai jos.",
+    "fields": {
+      "firstName": "Prenume",
+      "lastName": "Nume",
+      "email": "Email de serviciu",
+      "company": "Companie",
+      "projectType": "Tip proiect",
+      "engagementModel": "Model de colaborare",
+      "timeline": "Timeline",
+      "message": "Spune-ne despre proiect"
+    },
+    "placeholders": {
+      "firstName": "Maria",
+      "lastName": "Ionescu",
+      "email": "maria@companie.ro",
+      "company": "Acme SRL",
+      "message": "Descrie ce construiești, stack-ul actual și constrângerile principale…"
+    },
+    "projectTypes": {
+      "new_application": "Aplicație nouă",
+      "integration_modernisation": "Integrare / modernizare",
+      "support_evolution": "Suport & evoluție",
+      "not_sure": "Încă nu sunt sigur"
+    },
+    "engagementModels": {
+      "fixed_scope": "Fixed-scope",
+      "time_based": "Time-based",
+      "not_sure": "Nu sunt sigur"
+    },
+    "timelines": {
+      "ready_now": "Pregătit acum",
+      "1_3_months": "1–3 luni",
+      "3_6_months": "3–6 luni",
+      "exploring": "Explorare"
+    },
+    "validation": {
+      "required": "Obligatoriu",
+      "email": "Email invalid",
+      "message_min": "Descrie proiectul (minim 10 caractere)"
+    }
+  },
+  "footer": {
+    "tagline": "Nedora proiectează și livrează aplicații și integrări enterprise pentru afaceri care au nevoie de software construit cu intenție.",
+    "copyright": "© Nedora · {year}. Toate drepturile rezervate.",
+    "columns": {
+      "company": {
+        "label": "Companie",
+        "links": {
+          "solutions": "Soluții",
+          "why": "De ce Nedora",
+          "process": "Proces",
+          "engagement": "Colaborare"
+        }
+      },
+      "connect": {
+        "label": "Contact",
+        "links": {
+          "offer": "Solicită o ofertă",
+          "linkedin": "LinkedIn",
+          "privacy": "Politica de confidențialitate"
+        }
+      },
+      "products": {
+        "label": "Produse",
+        "links": {
+          "nedai": "NedAI"
+        }
+      }
+    }
   }
 }

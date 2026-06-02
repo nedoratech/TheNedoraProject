@@ -9,6 +9,9 @@ node_modules
 dist
 out
 
+# TypeScript build info
+**/tsconfig.tsbuildinfo
+
 # Env files
 .env
 .env.local

@@ -6,7 +6,7 @@ async function getFlags() {
   const { data } = await supabase
     .from('cms_feature_flags')
     .select('*')
-    .order('key')
+    .order('flag_key')
   return data ?? []
 }
 
@@ -30,12 +30,12 @@ export default async function FlagsPage() {
           flags.map((flag) => (
             <div key={flag.id} className="flex items-center justify-between px-6 py-4 hover:bg-white/[0.02] transition-colors">
               <div className="flex-1">
-                <div className="text-[0.82rem] font-mono text-nd-white">{flag.key}</div>
+                <div className="text-[0.82rem] font-mono text-nd-white">{flag.flag_key}</div>
                 {flag.description && (
                   <div className="text-[0.75rem] text-nd-grey-600 mt-0.5">{flag.description}</div>
                 )}
               </div>
-              <FlagToggle id={flag.id} flagKey={flag.key} enabled={flag.enabled} />
+              <FlagToggle id={flag.id} flagKey={flag.flag_key} enabled={flag.enabled} />
             </div>
           ))
         )}

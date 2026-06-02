@@ -4,7 +4,7 @@
 -- ─────────────────────────────────────────────────────────────────────────────
 
 -- Feature flags ---------------------------------------------------------------
-insert into public.cms_feature_flags (key, enabled, description) values
+insert into public.cms_feature_flags (flag_key, enabled, description) values
   ('locale.en.enabled',          true,  'English language (default)'),
   ('locale.ro.enabled',          true,  'Romanian language'),
   ('section.trust_bar.visible',  true,  'Industry sectors strip below hero'),
@@ -14,7 +14,7 @@ insert into public.cms_feature_flags (key, enabled, description) values
   ('contact.phone_field',        false, 'Phone number field on contact form'),
   ('nedai.early_access',         false, 'NedAI early access waitlist'),
   ('nedai.pricing_visible',      false, 'NedAI pricing section')
-on conflict (key) do update set enabled = excluded.enabled;
+on conflict (flag_key) do update set enabled = excluded.enabled;
 
 -- Pages -----------------------------------------------------------------------
 insert into public.cms_pages (slug, locale, title, published) values
@@ -24,7 +24,7 @@ insert into public.cms_pages (slug, locale, title, published) values
 on conflict (slug, locale) do nothing;
 
 -- Landing page content blocks (EN) -------------------------------------------
-insert into public.cms_content_blocks (page_slug, key, locale, value) values
+insert into public.cms_content_blocks (page_slug, block_key, locale, value) values
   -- Hero
   ('landing','hero.eyebrow',       'en', 'Enterprise Software · Bucharest, Romania'),
   ('landing','hero.heading',       'en', 'Enterprise software, built for the way your business actually works.'),
@@ -60,10 +60,10 @@ insert into public.cms_content_blocks (page_slug, key, locale, value) values
   -- Footer
   ('landing','footer.tagline',   'en', 'Nedora designs and delivers enterprise-grade applications and integrations for businesses that need software built with intent.'),
   ('landing','footer.copyright', 'en', '© Nedora · 2026. All rights reserved.')
-on conflict (page_slug, key, locale) do update set value = excluded.value;
+on conflict (page_slug, block_key, locale) do update set value = excluded.value;
 
 -- Landing page content blocks (RO) -------------------------------------------
-insert into public.cms_content_blocks (page_slug, key, locale, value) values
+insert into public.cms_content_blocks (page_slug, block_key, locale, value) values
   ('landing','hero.eyebrow',       'ro', 'Software Enterprise · București, România'),
   ('landing','hero.heading',       'ro', 'Software enterprise construit pentru felul în care afacerea ta funcționează cu adevărat.'),
   ('landing','hero.subheading',    'ro', 'Nedora proiectează și livrează aplicații și integrări critice pentru organizații care nu-și pot permite improvizații.'),
@@ -73,10 +73,10 @@ insert into public.cms_content_blocks (page_slug, key, locale, value) values
   ('landing','stats.projects_label',  'ro', 'Proiecte livrate'),
   ('landing','stats.retention_label', 'ro', 'Rată de retenție clienți'),
   ('landing','footer.copyright',   'ro', '© Nedora · 2026. Toate drepturile rezervate.')
-on conflict (page_slug, key, locale) do update set value = excluded.value;
+on conflict (page_slug, block_key, locale) do update set value = excluded.value;
 
 -- Navigation ------------------------------------------------------------------
-insert into public.cms_navigation (location, label, href, locale, "order") values
+insert into public.cms_navigation (location, label, href, locale, sort_order) values
   ('main', 'Solutions',   '#solutions',  'en', 1),
   ('main', 'Why Nedora',  '#why',        'en', 2),
   ('main', 'Process',     '#process',    'en', 3),

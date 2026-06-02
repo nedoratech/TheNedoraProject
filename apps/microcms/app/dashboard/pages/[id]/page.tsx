@@ -16,7 +16,7 @@ async function getPage(id: string) {
     .from('cms_content_blocks')
     .select('*')
     .eq('page_slug', page.slug)
-    .order('key')
+    .order('block_key')
 
   return { page, blocks: blocks ?? [] }
 }

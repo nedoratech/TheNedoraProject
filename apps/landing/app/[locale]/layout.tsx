@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
+import ResourcePreloads from '../_components/ResourcePreloads'
 import '../globals.css'
 
 interface Props {
@@ -35,8 +36,11 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <html lang={locale} suppressHydrationWarning>
+      <head>
+        <ResourcePreloads />
+      </head>
       <body>
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
       </body>

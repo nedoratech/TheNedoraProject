@@ -49,6 +49,10 @@ Docs: [GitHub integration](https://supabase.com/docs/guides/deployment/branching
 
 ---
 
+## PII encryption
+
+CRM personal fields are encrypted in app code with a shared `PII_ENCRYPTION_KEY`. See **[PII_ENCRYPTION.md](./PII_ENCRYPTION.md)**.
+
 ## Types (local only)
 
 Supabase does not update `packages/db/src/types.ts` in your repo. After schema changes (local or after a merge), regenerate types **on your machine** and commit:
