@@ -72,6 +72,9 @@ html {
 /* Fixed navbar height (used for hero sizing) */
 :root {
   --nd-nav-h: 64px;
+  --nd-hand-underline: #ff9500;
+  --nd-hand-underline-shine: #ffb340;
+  --nd-hand-underline-glow: rgba(255, 130, 0, 0.75);
 }
 
 @media (min-width: 640px) {

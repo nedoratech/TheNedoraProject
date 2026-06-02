@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import Nav from '../_components/Nav'
-import Hero, { type HeroContent, type HeroStat } from '../_components/Hero'
+import Hero, { type HeroContent, type HeroHeadlinePart, type HeroStat } from '../_components/Hero'
 import BentoSection, { type BentoCell, type BentoContent } from '../_components/BentoSection'
 import GainsSection, { type GainsContent } from '../_components/GainsSection'
 import ProcessSection, { type ProcessContent } from '../_components/ProcessSection'
@@ -31,9 +31,7 @@ export default async function HomePage({ params }: Props) {
 
   const hero: HeroContent = {
     eyebrow:        tHero('eyebrow'),
-    headlineBefore: tHero('headline_before'),
-    headlineAccent: tHero('headline_accent'),
-    headlineAfter:  tHero('headline_after'),
+    headlineParts:  tHero.raw('headline_parts') as HeroHeadlinePart[],
     subheading:     tHero('subheading'),
     ctaPrimary:     tHero('cta_primary'),
     ctaSecondary:   tHero('cta_secondary'),

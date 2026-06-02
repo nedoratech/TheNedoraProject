@@ -20,7 +20,7 @@ export default function BigCta({
   label, titleBefore, titleAccent, titleAfter, description, ctaPrimary, ctaSecondary, proof,
 }: BigCtaContent) {
   return (
-    <div className="relative bg-nd-black overflow-hidden py-32">
+    <div className="relative bg-nd-black overflow-hidden py-20 sm:py-24 lg:py-32">
       <div
         className="absolute rounded-full pointer-events-none"
         style={{
@@ -59,7 +59,7 @@ export default function BigCta({
             </a>
           </div>
 
-          <div className="flex gap-8 sm:gap-10 justify-center mt-12 sm:mt-14 pt-10 sm:pt-12 border-t border-white/[0.07] flex-wrap">
+          <div className="flex gap-8 sm:gap-10 justify-center mt-10 sm:mt-12 lg:mt-14 pt-8 sm:pt-10 lg:pt-12 border-t border-white/[0.07] flex-wrap">
             {proof.map((item) => (
               <div key={item.label} className="text-center">
                 <div className="text-[0.85rem] font-bold text-nd-white">{item.val}</div>

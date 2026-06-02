@@ -28,19 +28,19 @@ const cellLayout = [
 
 export default function BentoSection({ label, title, description, quote, quoteAttribution, cta, cells }: BentoContent) {
   return (
-    <section className="py-32 bg-nd-grey-50 border-t border-nd-grey-100" id="commitments">
+    <section className="py-20 sm:py-24 lg:py-32 bg-nd-grey-50 border-t border-nd-grey-100" id="commitments">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
         <ScrollReveal>
           <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright">
             {label}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-end mb-0">
-            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08]">{title}</h2>
+            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08] text-nd-black">{title}</h2>
             <p className="text-[0.95rem] text-nd-grey-600 leading-[1.75]">{description}</p>
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-0.5 mt-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-0.5 mt-10 sm:mt-14 lg:mt-16">
           {cells.map((cell, i) => {
             const layout = cellLayout[i] ?? cellLayout[0]
             const delay = (i % 3) as 0 | 1 | 2
@@ -68,7 +68,7 @@ export default function BentoSection({ label, title, description, quote, quoteAt
                       {cell.num}
                     </div>
                   )}
-                  <div className="text-[1.05rem] font-bold tracking-[-0.01em] leading-[1.3] mb-3">{cell.title}</div>
+                  <div className={`text-[1.05rem] font-bold tracking-[-0.01em] leading-[1.3] mb-3 ${isLight ? 'text-nd-white' : 'text-nd-black'}`}>{cell.title}</div>
                   {cell.body && (
                     <p className={`text-[0.86rem] leading-[1.75] ${isLight ? 'opacity-60' : 'text-nd-grey-600'}`}>{cell.body}</p>
                   )}

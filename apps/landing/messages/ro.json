@@ -11,9 +11,13 @@
   },
   "hero": {
     "eyebrow": "Dezvoltare Software Enterprise",
-    "headline_before": "Construim Software Care ",
-    "headline_accent": "Crește",
-    "headline_after": " Odată Cu Afacerea Ta",
+    "headline_parts": [
+      { "text": "Construim software " },
+      { "text": "enterprise", "underline": true },
+      { "text": " care " },
+      { "text": "crește", "underline": true },
+      { "text": " odată cu afacerea ta" }
+    ],
     "subheading": "Nedora colaborează cu organizații enterprise pentru a proiecta și livra sisteme software complexe — la timp, în buget și construite pentru a dura.",
     "cta_primary": "Începe un Proiect",
     "cta_secondary": "Proiectele Noastre",
@@ -99,7 +103,7 @@
       },
       {
         "phase": "Design",
-        "title": "Un plan pe care îl poți aproba",
+        "title": "Plan de aprobat",
         "body": "Decizii de arhitectură și design de integrare — documentate într-o propunere scrisă pe care stakeholderii o pot revizui și aproba.",
         "items": ["Arhitectură, integrări și model de livrare", "Timeline, repere și propunere scrisă"]
       },

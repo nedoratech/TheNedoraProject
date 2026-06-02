@@ -1,47 +1,40 @@
 import { pickCms } from './cmsPick'
+import type { HeroHeadlinePart } from '../app/_components/Hero'
 
 type HeroTranslator = {
-  (key: 'headline_before' | 'headline_accent' | 'headline_after'): string
+  raw: (key: 'headline_parts') => HeroHeadlinePart[]
 }
 
 export interface ResolvedHeroHeadline {
-  headlineBefore: string
-  headlineAccent: string
-  headlineAfter: string
+  headlineParts: HeroHeadlinePart[]
 }
 
 /**
- * CMS seed uses `hero.heading` (single line). Static i18n uses split headline parts.
- * Split CMS keys (`hero.headline_*`) override when present.
+ * CMS may override static i18n headline parts later.
+ * Legacy `hero.heading` is returned as a single non-underlined part.
  */
 export function resolveHeroHeadline(
   cms: Record<string, string>,
   t: HeroTranslator,
 ): ResolvedHeroHeadline {
-  const staticBefore = t('headline_before')
-  const staticAccent = t('headline_accent')
-  const staticAfter = t('headline_after')
+  const staticParts = t.raw('headline_parts')
 
-  const splitBefore = pickCms(cms, 'hero.headline_before', '')
-  const splitAccent = pickCms(cms, 'hero.headline_accent', '')
-  const splitAfter = pickCms(cms, 'hero.headline_after', '')
-
-  if (splitBefore || splitAccent || splitAfter) {
-    return {
-      headlineBefore: splitBefore || staticBefore,
-      headlineAccent: splitAccent || staticAccent,
-      headlineAfter: splitAfter || staticAfter,
+  const cmsPartsRaw = pickCms(cms, 'hero.headline_parts', '')
+  if (cmsPartsRaw) {
+    try {
+      const parsed = JSON.parse(cmsPartsRaw) as HeroHeadlinePart[]
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return { headlineParts: parsed }
+      }
+    } catch {
+      // fall through
     }
   }
 
   const legacy = pickCms(cms, 'hero.heading', '')
   if (legacy) {
-    return { headlineBefore: legacy, headlineAccent: '', headlineAfter: '' }
+    return { headlineParts: [{ text: legacy }] }
   }
 
-  return {
-    headlineBefore: staticBefore,
-    headlineAccent: staticAccent,
-    headlineAfter: staticAfter,
-  }
+  return { headlineParts: staticParts }
 }

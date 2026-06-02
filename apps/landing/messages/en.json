@@ -11,9 +11,13 @@
   },
   "hero": {
     "eyebrow": "Enterprise Software Development",
-    "headline_before": "We Build Software That ",
-    "headline_accent": "Scales",
-    "headline_after": " With Your Business",
+    "headline_parts": [
+      { "text": "We build " },
+      { "text": "enterprise", "underline": true },
+      { "text": " software that " },
+      { "text": "scales", "underline": true },
+      { "text": " with your business" }
+    ],
     "subheading": "Nedora partners with enterprise organisations to design and deliver complex software systems — on time, on budget, and built to last.",
     "cta_primary": "Start a Project",
     "cta_secondary": "Our Work",
@@ -99,7 +103,7 @@
       },
       {
         "phase": "Design",
-        "title": "A plan you can approve",
+        "title": "Sign-off plan",
         "body": "Architecture decisions and integration design — documented in a written proposal your stakeholders can review and sign off on.",
         "items": ["Architecture, integrations, and delivery model", "Timeline, milestones, and written proposal"]
       },

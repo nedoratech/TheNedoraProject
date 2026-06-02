@@ -28,19 +28,19 @@ export default function EngagementSection(props: EngagementContent) {
   } = props
 
   return (
-    <section className="py-32 bg-nd-grey-50 border-t border-nd-grey-100" id="engagement">
+    <section className="py-20 sm:py-24 lg:py-32 bg-nd-grey-50 border-t border-nd-grey-100" id="engagement">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
         <ScrollReveal>
           <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright">
             {label}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-end mb-4">
-            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08]">{title}</h2>
+            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08] text-nd-black">{title}</h2>
             <p className="text-[0.95rem] text-nd-grey-600 leading-[1.75]">{description}</p>
           </div>
         </ScrollReveal>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-12 sm:mt-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10 sm:mt-12 lg:mt-16">
           <ScrollReveal>
             <div className="relative overflow-hidden border border-nd-grey-200 bg-nd-white p-7 sm:p-11 transition-all duration-200 hover:border-nd-accent-mid hover:shadow-[0_8px_40px_rgba(59,91,219,0.12)] group">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,var(--color-nd-accent-light),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -48,7 +48,7 @@ export default function EngagementSection(props: EngagementContent) {
                 <span className="inline-flex text-[0.6rem] tracking-[0.18em] uppercase font-bold border-[1.5px] border-nd-accent-mid text-nd-accent px-2 py-0.5 mb-6">
                   {fixedBadge}
                 </span>
-                <h3 className="text-[1.5rem] font-bold tracking-[-0.025em] mb-4">{fixedTitle}</h3>
+                <h3 className="text-[1.5rem] font-bold tracking-[-0.025em] mb-4 text-nd-black">{fixedTitle}</h3>
                 <p className="text-[0.88rem] text-nd-grey-600 leading-[1.75] mb-7">{fixedBody}</p>
                 <ul className="flex flex-col gap-2.5 mb-9">
                   {fixedItems.map((item) => (
@@ -71,7 +71,7 @@ export default function EngagementSection(props: EngagementContent) {
                 <span className="inline-flex text-[0.6rem] tracking-[0.18em] uppercase font-bold border-[1.5px] border-nd-accent-mid text-nd-accent px-2 py-0.5 mb-6">
                   {timeBadge}
                 </span>
-                <h3 className="text-[1.5rem] font-bold tracking-[-0.025em] mb-4">{timeTitle}</h3>
+                <h3 className="text-[1.5rem] font-bold tracking-[-0.025em] mb-4 text-nd-black">{timeTitle}</h3>
                 <p className="text-[0.88rem] text-nd-grey-600 leading-[1.75] mb-7">{timeBody}</p>
                 <ul className="flex flex-col gap-2.5 mb-9">
                   {timeItems.map((item) => (
