@@ -11,7 +11,7 @@ export interface ResolvedHeroHeadline {
 
 /**
  * CMS may override static i18n headline parts later.
- * Legacy `hero.heading` is returned as a single non-underlined part.
+ * Legacy `hero.heading` is returned as a single headline part.
  */
 export function resolveHeroHeadline(
   cms: Record<string, string>,

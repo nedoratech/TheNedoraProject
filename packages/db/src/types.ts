@@ -13,7 +13,18 @@ export type Json =
 type PiiCiphertext = string | null
 
 export type LeadStatus = 'new' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost'
-export type ProjectType = 'new_application' | 'integration' | 'support_evolution' | 'not_sure'
+export type ProjectType =
+  | 'new_application'
+  | 'integration_modernisation'
+  | 'support_evolution'
+  | 'not_sure'
+export type CrmRequestStatus =
+  | 'new'
+  | 'in_review'
+  | 'responded'
+  | 'converted'
+  | 'archived'
+  | 'spam'
 export type EngagementModel = 'fixed_scope' | 'time_based' | 'not_sure'
 export type TimelineOption = 'ready_now' | '1_3_months' | '3_6_months' | 'exploring'
 export type InteractionType =
@@ -284,6 +295,11 @@ export type Database = {
           locale: string
           ip_address: string | null
           read: boolean
+          status: CrmRequestStatus
+          source: string
+          updated_at: string
+          assigned_to: string | null
+          read_at: string | null
           created_at: string
         }
         Insert: {
@@ -306,6 +322,11 @@ export type Database = {
           locale?: string
           ip_address?: string | null
           read?: boolean
+          status?: CrmRequestStatus
+          source?: string
+          updated_at?: string
+          assigned_to?: string | null
+          read_at?: string | null
         }
         Update: {
           contact_id?: string | null
@@ -317,6 +338,11 @@ export type Database = {
           company_ciphertext?: PiiCiphertext
           message_ciphertext?: PiiCiphertext
           read?: boolean
+          status?: CrmRequestStatus
+          source?: string
+          updated_at?: string
+          assigned_to?: string | null
+          read_at?: string | null
         }
         Relationships: [
           {
@@ -471,6 +497,7 @@ export type Database = {
       engagement_model: EngagementModel
       timeline_option: TimelineOption
       interaction_type: InteractionType
+      crm_request_status: CrmRequestStatus
     }
     CompositeTypes: {
       [_ in never]: never

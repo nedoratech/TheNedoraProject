@@ -141,32 +141,38 @@ export async function createProjectRequest(payload: {
 
   const pii = toRequestPiiRow(payload)
 
+  const { data: lead, error: leadErr } = await db
+    .from('crm_leads')
+    .insert({
+      contact_id: contact.id,
+      status: 'new',
+      project_type: payload.projectType as LeadInsert['project_type'],
+      engagement_model: payload.engagementModel as LeadInsert['engagement_model'],
+      timeline: payload.timeline as LeadInsert['timeline'],
+    })
+    .select('id')
+    .single()
+
+  if (leadErr) throw leadErr
+
   const { data: request, error: reqErr } = await db
     .from('crm_project_requests')
     .insert({
       contact_id: contact.id,
+      lead_id: lead.id,
       ...pii,
       project_type: payload.projectType as RequestInsert['project_type'],
       engagement_model: payload.engagementModel as RequestInsert['engagement_model'],
       timeline: payload.timeline as RequestInsert['timeline'],
       locale: payload.locale ?? 'en',
+      source: 'landing_contact_form',
     })
     .select('id')
     .single()
 
   if (reqErr) throw reqErr
 
-  const { error: leadErr } = await db.from('crm_leads').insert({
-    contact_id: contact.id,
-    status: 'new',
-    project_type: payload.projectType as LeadInsert['project_type'],
-    engagement_model: payload.engagementModel as LeadInsert['engagement_model'],
-    timeline: payload.timeline as LeadInsert['timeline'],
-  })
-
-  if (leadErr) throw leadErr
-
-  return { contactId: contact.id, requestId: request.id }
+  return { contactId: contact.id, leadId: lead.id, requestId: request.id }
 }
 
 // ── Newsletter ────────────────────────────────────────────────────────────────

@@ -13,9 +13,9 @@
     "eyebrow": "Dezvoltare Software Enterprise",
     "headline_parts": [
       { "text": "Construim software " },
-      { "text": "enterprise", "underline": true },
+      { "text": "enterprise", "highlight": true },
       { "text": " care " },
-      { "text": "crește", "underline": true },
+      { "text": "crește", "highlight": true },
       { "text": " odată cu afacerea ta" }
     ],
     "subheading": "Nedora colaborează cu organizații enterprise pentru a proiecta și livra sisteme software complexe — la timp, în buget și construite pentru a dura.",
@@ -213,7 +213,7 @@
     }
   },
   "footer": {
-    "tagline": "Nedora proiectează și livrează aplicații și integrări enterprise pentru afaceri care au nevoie de software construit cu intenție.",
+    "tagline": "coding your ideas to life",
     "copyright": "© Nedora · {year}. Toate drepturile rezervate.",
     "columns": {
       "company": {

@@ -13,9 +13,9 @@
     "eyebrow": "Enterprise Software Development",
     "headline_parts": [
       { "text": "We build " },
-      { "text": "enterprise", "underline": true },
+      { "text": "enterprise", "highlight": true },
       { "text": " software that " },
-      { "text": "scales", "underline": true },
+      { "text": "scales", "highlight": true },
       { "text": " with your business" }
     ],
     "subheading": "Nedora partners with enterprise organisations to design and deliver complex software systems — on time, on budget, and built to last.",
@@ -213,7 +213,7 @@
     }
   },
   "footer": {
-    "tagline": "Nedora designs and delivers enterprise-grade applications and integrations for businesses that need software built with intent.",
+    "tagline": "coding your ideas to life",
     "copyright": "© Nedora · {year}. All rights reserved.",
     "columns": {
       "company": {

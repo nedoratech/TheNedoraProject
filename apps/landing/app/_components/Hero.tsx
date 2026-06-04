@@ -1,5 +1,4 @@
 import AnimatedCounter from './AnimatedCounter'
-import HandUnderline from './HandUnderline'
 
 export interface HeroStat {
   target: number
@@ -9,7 +8,7 @@ export interface HeroStat {
 
 export interface HeroHeadlinePart {
   text: string
-  underline?: boolean
+  highlight?: boolean
 }
 
 export interface HeroContent {
@@ -70,13 +69,14 @@ export default function Hero({
           </div>
 
           <h1 className="text-[clamp(2.4rem,6vw,6.2rem)] sm:text-[clamp(2.6rem,6.2vw,6.2rem)] font-bold leading-[0.98] tracking-[-0.04em] text-nd-white max-w-[900px] mb-7 sm:mb-8 normal-case">
-            {headlineParts.map((part, i) =>
-              part.underline ? (
-                <HandUnderline key={i}>{part.text}</HandUnderline>
-              ) : (
-                <span key={i}>{part.text}</span>
-              ),
-            )}
+            {headlineParts.map((part, i) => (
+              <span
+                key={i}
+                className={part.highlight ? 'text-nd-hero-highlight' : undefined}
+              >
+                {part.text}
+              </span>
+            ))}
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-7 sm:gap-8 md:gap-12 max-w-[900px] mb-8 sm:mb-10 items-end">
