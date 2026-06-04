@@ -53,6 +53,22 @@ export type DecryptedNewsletterSubscriber = {
   created_at: string
 }
 
+/** Resolve an existing auth subject from profiles (fast, indexed email). */
+async function findSubjectIdByProfileEmail(
+  db: SupabaseClient<Database>,
+  email: string,
+): Promise<string | null> {
+  const { data, error } = await db
+    .from('profiles')
+    .select('id')
+    .ilike('email', email)
+    .limit(1)
+    .maybeSingle()
+
+  if (error) throw error
+  return data?.id ?? null
+}
+
 async function findAuthUserIdByEmail(
   db: SupabaseClient<Database>,
   email: string,
@@ -72,6 +88,16 @@ async function findAuthUserIdByEmail(
   }
 
   return null
+}
+
+async function findExistingSubjectIdByEmail(
+  db: SupabaseClient<Database>,
+  email: string,
+): Promise<string | null> {
+  return (
+    (await findSubjectIdByProfileEmail(db, email)) ??
+    (await findAuthUserIdByEmail(db, email))
+  )
 }
 
 function dekFromRow(dekB64: string): Buffer {
@@ -245,7 +271,7 @@ export async function provisionContactSubject(
   const fullName =
     [input.firstName, input.lastName].filter(Boolean).join(' ').trim() || undefined
 
-  let subjectId = await findAuthUserIdByEmail(db, email)
+  let subjectId = await findExistingSubjectIdByEmail(db, email)
 
   if (!subjectId) {
     const { data: created, error: createErr } = await db.auth.admin.createUser({
@@ -258,7 +284,7 @@ export async function provisionContactSubject(
     })
 
     if (createErr) {
-      const existingId = await findAuthUserIdByEmail(db, email)
+      const existingId = await findExistingSubjectIdByEmail(db, email)
       if (!existingId) throw createErr
       subjectId = existingId
     } else {

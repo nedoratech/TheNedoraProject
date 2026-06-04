@@ -51,6 +51,17 @@ No shared encryption env var — keys live in `nedora_encryption_store`.
 
 After deploy: `yarn db:types` and commit `packages/db/src/types.ts`.
 
+## Deleting a contact subject
+
+Deleting the `auth.users` row for a contact cascades:
+
+- `profiles`, `nedora_encryption_store`
+- `crm_contacts` (via `subject_id`), then `crm_leads`, `crm_interactions`, and `crm_project_requests` linked to that contact
+- `crm_newsletter_subscribers` (via `subject_id`)
+- `crm_project_requests` rows tied directly via `subject_id`
+
+Staff references (`assigned_to`, `created_by`) use `ON DELETE SET NULL` so removing a CRM user does not delete leads or requests.
+
 ## Security notes
 
 - DEKs in Postgres are protected by RLS + service-role-only access.
