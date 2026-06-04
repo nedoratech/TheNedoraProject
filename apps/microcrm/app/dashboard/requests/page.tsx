@@ -1,5 +1,5 @@
 import { createServerClient } from '@nedora/db/client'
-import { decryptContactFromJoin, decryptPiiOptional } from '@nedora/db/pii'
+import { decryptContactFromJoin, decryptRequestFields } from '@nedora/db/encryption'
 import type { Database } from '@nedora/db/types'
 
 type RequestRow = Database['public']['Tables']['crm_project_requests']['Row']
@@ -13,7 +13,7 @@ async function getRequests() {
   const { data } = await supabase
     .from('crm_project_requests')
     .select(`
-      id, project_type, engagement_model, timeline,
+      id, subject_id, project_type, engagement_model, timeline,
       first_name_ciphertext, last_name_ciphertext, email_ciphertext, company_ciphertext, message_ciphertext,
       created_at,
       crm_contacts ( * )
@@ -41,7 +41,14 @@ const timelineLabels: Record<string, string> = {
 }
 
 export default async function RequestsPage() {
-  const requests = await getRequests()
+  const requestsRaw = await getRequests()
+  const requests = await Promise.all(
+    requestsRaw.map(async (req) => {
+      const contact = await decryptContactFromJoin(req.crm_contacts)
+      const fields = await decryptRequestFields(req, contact?.subject_id)
+      return { req, fields }
+    }),
+  )
 
   return (
     <div className="p-8 max-w-5xl">
@@ -56,13 +63,12 @@ export default async function RequestsPage() {
           <div className="border border-white/[0.06] py-16 text-center text-[0.82rem] text-nd-grey-600">
             No requests yet. Submissions from the landing page contact form will appear here.
           </div>
-        ) : requests.map((req) => {
-          const contact = decryptContactFromJoin(req.crm_contacts)
-          const firstName = decryptPiiOptional(req.first_name_ciphertext) ?? contact?.first_name ?? ''
-          const lastName = decryptPiiOptional(req.last_name_ciphertext) ?? contact?.last_name ?? ''
-          const email = decryptPiiOptional(req.email_ciphertext) ?? contact?.email ?? ''
-          const company = decryptPiiOptional(req.company_ciphertext) ?? contact?.company
-          const message = decryptPiiOptional(req.message_ciphertext)
+        ) : requests.map(({ req, fields }) => {
+          const firstName = fields.firstName ?? ''
+          const lastName = fields.lastName ?? ''
+          const email = fields.email ?? ''
+          const company = fields.company
+          const message = fields.message
 
           return (
             <div key={req.id} className="border border-white/[0.08] bg-white/[0.02] p-6 hover:border-nd-accent-mid/40 transition-colors">

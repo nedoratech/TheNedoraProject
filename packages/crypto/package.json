@@ -4,6 +4,6 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./pii": "./src/pii.ts"
+    "./cipher": "./src/cipher.ts"
   }
 }

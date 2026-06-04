@@ -10,7 +10,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-type PiiCiphertext = string | null
+type EncryptedField = string | null
 
 export type LeadStatus = 'new' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost'
 export type ProjectType =
@@ -165,60 +165,83 @@ export type Database = {
         }
         Relationships: []
       }
-      crm_contacts: {
+      nedora_encryption_store: {
         Row: {
-          id: string
-          email_hash: string | null
-          email_ciphertext: string
-          first_name_ciphertext: PiiCiphertext
-          last_name_ciphertext: PiiCiphertext
-          company_ciphertext: PiiCiphertext
-          role: string | null
-          phone_ciphertext: PiiCiphertext
-          address_line1_ciphertext: PiiCiphertext
-          address_line2_ciphertext: PiiCiphertext
-          city_ciphertext: PiiCiphertext
-          postal_code_ciphertext: PiiCiphertext
-          country_ciphertext: PiiCiphertext
-          source: string | null
-          tags: string[]
-          notes_ciphertext: PiiCiphertext
+          subject_id: string
+          dek_b64: string
           created_at: string
           updated_at: string
         }
         Insert: {
-          email_hash: string
-          email_ciphertext: string
-          first_name_ciphertext?: PiiCiphertext
-          last_name_ciphertext?: PiiCiphertext
-          company_ciphertext?: PiiCiphertext
-          role?: string | null
-          phone_ciphertext?: PiiCiphertext
-          address_line1_ciphertext?: PiiCiphertext
-          address_line2_ciphertext?: PiiCiphertext
-          city_ciphertext?: PiiCiphertext
-          postal_code_ciphertext?: PiiCiphertext
-          country_ciphertext?: PiiCiphertext
-          source?: string | null
-          tags?: string[]
-          notes_ciphertext?: PiiCiphertext
+          subject_id: string
+          dek_b64: string
+          created_at?: string
+          updated_at?: string
         }
         Update: {
-          email_hash?: string
-          email_ciphertext?: string
-          first_name_ciphertext?: PiiCiphertext
-          last_name_ciphertext?: PiiCiphertext
-          company_ciphertext?: PiiCiphertext
+          subject_id?: string
+          dek_b64?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      crm_contacts: {
+        Row: {
+          id: string
+          subject_id: string | null
+          email_hash: string | null
+          email_ciphertext: string
+          first_name_ciphertext: EncryptedField
+          last_name_ciphertext: EncryptedField
+          company_ciphertext: EncryptedField
+          role: string | null
+          phone_ciphertext: EncryptedField
+          address_line1_ciphertext: EncryptedField
+          address_line2_ciphertext: EncryptedField
+          city_ciphertext: EncryptedField
+          postal_code_ciphertext: EncryptedField
+          country_ciphertext: EncryptedField
+          source: string | null
+          tags: string[]
+          notes_ciphertext: EncryptedField
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          subject_id?: string | null
+          email_hash: string
+          email_ciphertext: string
+          first_name_ciphertext?: EncryptedField
+          last_name_ciphertext?: EncryptedField
+          company_ciphertext?: EncryptedField
           role?: string | null
-          phone_ciphertext?: PiiCiphertext
-          address_line1_ciphertext?: PiiCiphertext
-          address_line2_ciphertext?: PiiCiphertext
-          city_ciphertext?: PiiCiphertext
-          postal_code_ciphertext?: PiiCiphertext
-          country_ciphertext?: PiiCiphertext
+          phone_ciphertext?: EncryptedField
+          address_line1_ciphertext?: EncryptedField
+          address_line2_ciphertext?: EncryptedField
+          city_ciphertext?: EncryptedField
+          postal_code_ciphertext?: EncryptedField
+          country_ciphertext?: EncryptedField
           source?: string | null
           tags?: string[]
-          notes_ciphertext?: PiiCiphertext
+          notes_ciphertext?: EncryptedField
+        }
+        Update: {
+          subject_id?: string | null
+          email_hash?: string
+          email_ciphertext?: string
+          first_name_ciphertext?: EncryptedField
+          last_name_ciphertext?: EncryptedField
+          company_ciphertext?: EncryptedField
+          role?: string | null
+          phone_ciphertext?: EncryptedField
+          address_line1_ciphertext?: EncryptedField
+          address_line2_ciphertext?: EncryptedField
+          city_ciphertext?: EncryptedField
+          postal_code_ciphertext?: EncryptedField
+          country_ciphertext?: EncryptedField
+          source?: string | null
+          tags?: string[]
+          notes_ciphertext?: EncryptedField
         }
         Relationships: []
       }
@@ -278,20 +301,21 @@ export type Database = {
           id: string
           contact_id: string | null
           lead_id: string | null
+          subject_id: string | null
           email_hash: string | null
           first_name_ciphertext: string
           last_name_ciphertext: string
           email_ciphertext: string
-          company_ciphertext: PiiCiphertext
-          address_line1_ciphertext: PiiCiphertext
-          address_line2_ciphertext: PiiCiphertext
-          city_ciphertext: PiiCiphertext
-          postal_code_ciphertext: PiiCiphertext
-          country_ciphertext: PiiCiphertext
+          company_ciphertext: EncryptedField
+          address_line1_ciphertext: EncryptedField
+          address_line2_ciphertext: EncryptedField
+          city_ciphertext: EncryptedField
+          postal_code_ciphertext: EncryptedField
+          country_ciphertext: EncryptedField
           project_type: ProjectType | null
           engagement_model: EngagementModel | null
           timeline: TimelineOption | null
-          message_ciphertext: PiiCiphertext
+          message_ciphertext: EncryptedField
           locale: string
           ip_address: string | null
           read: boolean
@@ -305,20 +329,21 @@ export type Database = {
         Insert: {
           contact_id?: string | null
           lead_id?: string | null
+          subject_id?: string | null
           email_hash?: string | null
           first_name_ciphertext: string
           last_name_ciphertext: string
           email_ciphertext: string
-          company_ciphertext?: PiiCiphertext
-          address_line1_ciphertext?: PiiCiphertext
-          address_line2_ciphertext?: PiiCiphertext
-          city_ciphertext?: PiiCiphertext
-          postal_code_ciphertext?: PiiCiphertext
-          country_ciphertext?: PiiCiphertext
+          company_ciphertext?: EncryptedField
+          address_line1_ciphertext?: EncryptedField
+          address_line2_ciphertext?: EncryptedField
+          city_ciphertext?: EncryptedField
+          postal_code_ciphertext?: EncryptedField
+          country_ciphertext?: EncryptedField
           project_type?: ProjectType | null
           engagement_model?: EngagementModel | null
           timeline?: TimelineOption | null
-          message_ciphertext?: PiiCiphertext
+          message_ciphertext?: EncryptedField
           locale?: string
           ip_address?: string | null
           read?: boolean
@@ -331,12 +356,13 @@ export type Database = {
         Update: {
           contact_id?: string | null
           lead_id?: string | null
+          subject_id?: string | null
           email_hash?: string | null
           first_name_ciphertext?: string
           last_name_ciphertext?: string
           email_ciphertext?: string
-          company_ciphertext?: PiiCiphertext
-          message_ciphertext?: PiiCiphertext
+          company_ciphertext?: EncryptedField
+          message_ciphertext?: EncryptedField
           read?: boolean
           status?: CrmRequestStatus
           source?: string
@@ -388,10 +414,11 @@ export type Database = {
       crm_newsletter_subscribers: {
         Row: {
           id: string
+          subject_id: string | null
           email_hash: string | null
           email_ciphertext: string
-          first_name_ciphertext: PiiCiphertext
-          last_name_ciphertext: PiiCiphertext
+          first_name_ciphertext: EncryptedField
+          last_name_ciphertext: EncryptedField
           locale: string
           status: string
           consent_given_at: string | null
@@ -401,10 +428,11 @@ export type Database = {
           created_at: string
         }
         Insert: {
+          subject_id?: string | null
           email_hash: string
           email_ciphertext: string
-          first_name_ciphertext?: PiiCiphertext
-          last_name_ciphertext?: PiiCiphertext
+          first_name_ciphertext?: EncryptedField
+          last_name_ciphertext?: EncryptedField
           locale?: string
           status?: string
           consent_given_at?: string | null
@@ -412,10 +440,11 @@ export type Database = {
           tags?: string[]
         }
         Update: {
+          subject_id?: string | null
           email_hash?: string
           email_ciphertext?: string
-          first_name_ciphertext?: PiiCiphertext
-          last_name_ciphertext?: PiiCiphertext
+          first_name_ciphertext?: EncryptedField
+          last_name_ciphertext?: EncryptedField
           status?: string
           consent_given_at?: string | null
           unsubscribed_at?: string | null

@@ -1,14 +1,17 @@
 /**
  * @nedora/db/crm
  * Server-side helpers for microCRM operations.
- * PII is encrypted with @nedora/crypto before write; decrypt in UI via @nedora/db/pii.
+ * Sensitive fields use per-subject keys in nedora_encryption_store (@nedora/db/encryption).
  */
 
 import {
-  encryptPii,
-  encryptPiiOptional,
-  hashPiiLookup,
-} from '@nedora/crypto/pii'
+  encryptContactFields,
+  encryptForSubject,
+  encryptOptionalForSubject,
+  encryptRequestFields,
+  hashEmailForSubject,
+  provisionContactSubject,
+} from './encryption'
 import { createServiceClient } from './server'
 import type { Database, LeadStatus } from './types'
 
@@ -31,79 +34,30 @@ export type ContactPiiInput = {
   source?: string | null
 }
 
-function toContactRow(data: ContactPiiInput): ContactInsert {
-  return {
-    email_hash: hashPiiLookup(data.email),
-    email_ciphertext: encryptPii(data.email.trim()),
-    first_name_ciphertext: encryptPiiOptional(data.firstName),
-    last_name_ciphertext: encryptPiiOptional(data.lastName),
-    company_ciphertext: encryptPiiOptional(data.company),
-    phone_ciphertext: encryptPiiOptional(data.phone),
-    address_line1_ciphertext: encryptPiiOptional(data.addressLine1),
-    address_line2_ciphertext: encryptPiiOptional(data.addressLine2),
-    city_ciphertext: encryptPiiOptional(data.city),
-    postal_code_ciphertext: encryptPiiOptional(data.postalCode),
-    country_ciphertext: encryptPiiOptional(data.country),
-    notes_ciphertext: encryptPiiOptional(data.notes),
-    source: data.source ?? null,
-  }
-}
-
-function toRequestPiiRow(payload: {
-  email: string
-  firstName: string
-  lastName: string
-  company?: string | null
-  message?: string | null
-  addressLine1?: string | null
-  addressLine2?: string | null
-  city?: string | null
-  postalCode?: string | null
-  country?: string | null
-}): Pick<
-  RequestInsert,
-  | 'email_hash'
-  | 'email_ciphertext'
-  | 'first_name_ciphertext'
-  | 'last_name_ciphertext'
-  | 'company_ciphertext'
-  | 'message_ciphertext'
-  | 'address_line1_ciphertext'
-  | 'address_line2_ciphertext'
-  | 'city_ciphertext'
-  | 'postal_code_ciphertext'
-  | 'country_ciphertext'
-> {
-  return {
-    email_hash: hashPiiLookup(payload.email),
-    email_ciphertext: encryptPii(payload.email.trim()),
-    first_name_ciphertext: encryptPii(payload.firstName.trim()),
-    last_name_ciphertext: encryptPii(payload.lastName.trim()),
-    company_ciphertext: encryptPiiOptional(payload.company),
-    message_ciphertext: encryptPiiOptional(payload.message),
-    address_line1_ciphertext: encryptPiiOptional(payload.addressLine1),
-    address_line2_ciphertext: encryptPiiOptional(payload.addressLine2),
-    city_ciphertext: encryptPiiOptional(payload.city),
-    postal_code_ciphertext: encryptPiiOptional(payload.postalCode),
-    country_ciphertext: encryptPiiOptional(payload.country),
-  }
-}
-
 // ── Contacts ─────────────────────────────────────────────────────────────────
 
-/** Upsert a contact by email hash. Returns the contact id. */
+/** Upsert a contact by subject (auth user). Returns the contact id. */
 export async function upsertContact(data: ContactPiiInput) {
   const db = createServiceClient()
-  const row = toContactRow(data)
+  const { subjectId } = await provisionContactSubject({
+    email: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
+  })
+  const encrypted = await encryptContactFields(subjectId, data)
+  const row: ContactInsert = {
+    ...encrypted,
+    source: data.source ?? null,
+  }
 
   const { data: contact, error } = await db
     .from('crm_contacts')
-    .upsert(row, { onConflict: 'email_hash', ignoreDuplicates: false })
+    .upsert(row, { onConflict: 'subject_id', ignoreDuplicates: false })
     .select('id')
     .single()
 
   if (error) throw error
-  return contact
+  return { ...contact, subjectId }
 }
 
 // ── Project requests (from landing page form) ─────────────────────────────────
@@ -139,7 +93,7 @@ export async function createProjectRequest(payload: {
     source: 'website_form',
   })
 
-  const pii = toRequestPiiRow(payload)
+  const encryptedRequest = await encryptRequestFields(contact.subjectId, payload)
 
   const { data: lead, error: leadErr } = await db
     .from('crm_leads')
@@ -160,7 +114,7 @@ export async function createProjectRequest(payload: {
     .insert({
       contact_id: contact.id,
       lead_id: lead.id,
-      ...pii,
+      ...encryptedRequest,
       project_type: payload.projectType as RequestInsert['project_type'],
       engagement_model: payload.engagementModel as RequestInsert['engagement_model'],
       timeline: payload.timeline as RequestInsert['timeline'],
@@ -172,7 +126,12 @@ export async function createProjectRequest(payload: {
 
   if (reqErr) throw reqErr
 
-  return { contactId: contact.id, leadId: lead.id, requestId: request.id }
+  return {
+    contactId: contact.id,
+    subjectId: contact.subjectId,
+    leadId: lead.id,
+    requestId: request.id,
+  }
 }
 
 // ── Newsletter ────────────────────────────────────────────────────────────────
@@ -185,19 +144,32 @@ export async function subscribeToNewsletter(data: {
   source?: string
 }) {
   const db = createServiceClient()
+  const { subjectId } = await provisionContactSubject({
+    email: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName,
+  })
+
+  const [emailHash, emailCiphertext, firstName, lastName] = await Promise.all([
+    hashEmailForSubject(subjectId, data.email),
+    encryptForSubject(subjectId, data.email.trim()),
+    encryptOptionalForSubject(subjectId, data.firstName),
+    encryptOptionalForSubject(subjectId, data.lastName),
+  ])
 
   const { error } = await db.from('crm_newsletter_subscribers').upsert(
     {
-      email_hash: hashPiiLookup(data.email),
-      email_ciphertext: encryptPii(data.email.trim()),
-      first_name_ciphertext: encryptPiiOptional(data.firstName),
-      last_name_ciphertext: encryptPiiOptional(data.lastName),
+      subject_id: subjectId,
+      email_hash: emailHash,
+      email_ciphertext: emailCiphertext,
+      first_name_ciphertext: firstName,
+      last_name_ciphertext: lastName,
       locale: data.locale ?? 'en',
       source: data.source ?? 'website_form',
       status: 'active',
       consent_given_at: new Date().toISOString(),
     },
-    { onConflict: 'email_hash', ignoreDuplicates: false },
+    { onConflict: 'subject_id', ignoreDuplicates: false },
   )
 
   if (error) throw error

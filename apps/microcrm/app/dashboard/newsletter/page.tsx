@@ -1,5 +1,5 @@
 import { createServerClient } from '@nedora/db/client'
-import { decryptNewsletterSubscriber } from '@nedora/db/pii'
+import { decryptNewsletterSubscriber } from '@nedora/db/encryption'
 
 async function getSubscribers() {
   const supabase = await createServerClient()
@@ -7,7 +7,7 @@ async function getSubscribers() {
     .from('crm_newsletter_subscribers')
     .select('*')
     .order('created_at', { ascending: false })
-  return (data ?? []).map(decryptNewsletterSubscriber)
+  return Promise.all((data ?? []).map(decryptNewsletterSubscriber))
 }
 
 export default async function NewsletterPage() {

@@ -49,9 +49,9 @@ Docs: [GitHub integration](https://supabase.com/docs/guides/deployment/branching
 
 ---
 
-## PII encryption
+## Field encryption
 
-CRM personal fields are encrypted in app code with a shared `PII_ENCRYPTION_KEY`. See **[PII_ENCRYPTION.md](./PII_ENCRYPTION.md)**.
+CRM contact fields are encrypted per subject using keys in `nedora_encryption_store`. See **[ENCRYPTION_STORE.md](./ENCRYPTION_STORE.md)**.
 
 ## Types (local only)
 

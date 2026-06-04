@@ -1,5 +1,5 @@
 import { createServerClient } from '@nedora/db/client'
-import { decryptContactFromJoin } from '@nedora/db/pii'
+import { decryptContactFromJoin } from '@nedora/db/encryption'
 import type { Database, LeadStatus } from '@nedora/db/types'
 import LeadStatusBadge from '../../_components/LeadStatusBadge'
 import Link from 'next/link'
@@ -35,7 +35,13 @@ interface Props {
 
 export default async function LeadsPage({ searchParams }: Props) {
   const { status } = await searchParams
-  const leads = await getLeads(status)
+  const leadsRaw = await getLeads(status)
+  const leads = await Promise.all(
+    leadsRaw.map(async (lead) => ({
+      lead,
+      contact: await decryptContactFromJoin(lead.crm_contacts),
+    })),
+  )
 
   return (
     <div className="p-8 max-w-5xl">
@@ -80,9 +86,7 @@ export default async function LeadsPage({ searchParams }: Props) {
                   No leads{status ? ` in "${status}"` : ''}. Project requests automatically create leads.
                 </td>
               </tr>
-            ) : leads.map((lead) => {
-              const contact = decryptContactFromJoin(lead.crm_contacts)
-              return (
+            ) : leads.map(({ lead, contact }) => (
                 <tr key={lead.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="text-[0.85rem] text-nd-white">{contact?.first_name} {contact?.last_name}</div>
@@ -96,8 +100,7 @@ export default async function LeadsPage({ searchParams }: Props) {
                     {new Date(lead.updated_at).toLocaleDateString()}
                   </td>
                 </tr>
-              )
-            })}
+              ))}
           </tbody>
         </table>
       </div>

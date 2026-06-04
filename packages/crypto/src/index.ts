@@ -1,8 +1,8 @@
 export {
-  decryptPii,
-  decryptPiiOptional,
-  encryptPii,
-  encryptPiiOptional,
-  getEncryptionKey,
-  hashPiiLookup,
-} from './pii'
+  decryptWithKey,
+  decryptWithKeyOptional,
+  encryptWithKey,
+  encryptWithKeyOptional,
+  generateDek,
+  hashLookupWithKey,
+} from './cipher'

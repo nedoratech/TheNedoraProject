@@ -11,12 +11,12 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
+    "@nedora/db": "*",
     "next": "^16.2.7",
     "next-intl": "^4.13.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.54.2",
-    "resend": "^4.0.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {
