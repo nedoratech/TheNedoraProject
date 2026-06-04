@@ -28,14 +28,26 @@ const initialState: SubmitProjectRequestState = { status: 'idle' }
 
 type FieldStatus = 'default' | 'invalid' | 'valid'
 
+function FormSpinner({ label }: { label: string }) {
+  return (
+    <span
+      className="inline-block h-5 w-5 shrink-0 animate-spin rounded-full border-2 border-nd-white/30 border-t-nd-white"
+      role="status"
+      aria-label={label}
+    />
+  )
+}
+
 function SubmitButton({ pending }: { pending: boolean }) {
   const t = useTranslations('contact')
   return (
     <button
       type="submit"
       disabled={pending}
-      className="w-full text-[0.82rem] tracking-[0.14em] uppercase font-bold py-4 bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] transition-all duration-200 disabled:opacity-50"
+      aria-busy={pending}
+      className="w-full flex items-center justify-center gap-2.5 text-[0.82rem] tracking-[0.14em] uppercase font-bold py-4 bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none"
     >
+      {pending && <FormSpinner label={t('submitting')} />}
       {pending ? t('submitting') : t('submit')}
     </button>
   )
@@ -133,8 +145,9 @@ function getFieldStatus(
 export default function ContactForm() {
   const locale = useLocale()
   const t = useTranslations('contact')
-  const [state, formAction] = useActionState(submitProjectRequest, initialState)
-  const [isPending, startTransition] = useTransition()
+  const [state, formAction, isActionPending] = useActionState(submitProjectRequest, initialState)
+  const [isTransitionPending, startTransition] = useTransition()
+  const isPending = isActionPending || isTransitionPending
 
   const [values, setValues] = useState<ContactFormValues>(defaultContactFormValues)
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<ContactFormField, string>>>({})
@@ -263,6 +276,9 @@ export default function ContactForm() {
     )
   }
 
+  const inputDisabledClass =
+    'disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none'
+
   const renderInput = (
     field: Extract<ContactFormField, 'firstName' | 'lastName' | 'email' | 'company'>,
     type: 'text' | 'email',
@@ -283,7 +299,8 @@ export default function ContactForm() {
             type={type}
             value={values[field]}
             placeholder={placeholder}
-            className={fieldStatusClass(status)}
+            disabled={isPending}
+            className={`${fieldStatusClass(status)} ${inputDisabledClass}`}
             onChange={(e) => setValue(field, e.target.value)}
             onBlur={() => markTouched(field)}
             aria-invalid={status === 'invalid'}
@@ -304,7 +321,21 @@ export default function ContactForm() {
   const messageStatus = getFieldStatus('message', fieldErrors, touched, submitAttempted)
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
+    <form
+      onSubmit={handleSubmit}
+      className="relative flex flex-col gap-6"
+      noValidate
+      aria-busy={isPending}
+    >
+      {isPending && (
+        <div
+          className="absolute inset-0 z-10 flex items-center justify-center bg-nd-white/75 backdrop-blur-[1px]"
+          aria-hidden
+        >
+          <span className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-nd-grey-200 border-t-nd-accent-mid" />
+        </div>
+      )}
+
       <input type="hidden" name="locale" value={locale} />
 
       {bannerMessage && (
@@ -333,7 +364,8 @@ export default function ContactForm() {
                   name="projectType"
                   value={value}
                   checked={values.projectType === value}
-                  className="accent-nd-accent-mid"
+                  disabled={isPending}
+                  className="accent-nd-accent-mid disabled:cursor-not-allowed"
                   onChange={() => setValue('projectType', value)}
                 />
                 {t(`projectTypes.${value}`)}
@@ -356,7 +388,8 @@ export default function ContactForm() {
                     name="engagementModel"
                     value={value}
                     checked={values.engagementModel === value}
-                    className="accent-nd-accent-mid"
+                    disabled={isPending}
+                    className="accent-nd-accent-mid disabled:cursor-not-allowed"
                     onChange={() => setValue('engagementModel', value)}
                   />
                   {t(`engagementModels.${value}`)}
@@ -377,7 +410,8 @@ export default function ContactForm() {
                     name="timeline"
                     value={value}
                     checked={values.timeline === value}
-                    className="accent-nd-accent-mid"
+                    disabled={isPending}
+                    className="accent-nd-accent-mid disabled:cursor-not-allowed"
                     onChange={() => setValue('timeline', value)}
                   />
                   {t(`timelines.${value}`)}
@@ -401,7 +435,8 @@ export default function ContactForm() {
             rows={5}
             value={values.message}
             placeholder={t('placeholders.message')}
-            className={fieldStatusClass(messageStatus, true)}
+            disabled={isPending}
+            className={`${fieldStatusClass(messageStatus, true)} ${inputDisabledClass}`}
             onChange={(e) => setValue('message', e.target.value)}
             onBlur={() => markTouched('message')}
             aria-invalid={messageStatus === 'invalid'}
