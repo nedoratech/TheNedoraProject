@@ -14,9 +14,13 @@ interface NavItem {
 interface Props {
   items: NavItem[]
   locales: string[]
+  /** Contact CTA target — use `/#contact` on inner pages. */
+  contactHref?: string
+  /** Opaque black bar (no scroll fade) — for light content pages such as privacy. */
+  solid?: boolean
 }
 
-export default function Nav({ items, locales }: Props) {
+export default function Nav({ items, locales, contactHref = '#contact', solid = false }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [hash, setHash] = useState('')
@@ -26,10 +30,11 @@ export default function Nav({ items, locales }: Props) {
   const t = useTranslations('nav')
 
   useEffect(() => {
+    if (solid) return
     const handler = () => setScrolled(window.scrollY > 80)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
-  }, [])
+  }, [solid])
 
   useEffect(() => {
     const update = () => setHash(window.location.hash || '')
@@ -65,11 +70,22 @@ export default function Nav({ items, locales }: Props) {
     router.replace(localeHref, { locale: l })
   }
 
+  const barStyle = solid
+    ? { background: 'var(--color-nd-black)' }
+    : {
+        background: scrolled ? 'rgba(10,10,10,.95)' : 'rgba(10,10,10,.7)',
+        backdropFilter: 'blur(20px) saturate(1.8)',
+      }
+
+  const mobileMenuStyle = solid
+    ? { background: 'var(--color-nd-black)' }
+    : { background: 'rgba(10,10,10,.97)', backdropFilter: 'blur(20px) saturate(1.8)' }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100]">
       <div
-        className="flex items-center justify-between px-5 sm:px-8 h-[var(--nd-nav-h)] border-b border-white/[0.06] transition-all duration-300"
-        style={{ background: scrolled ? 'rgba(10,10,10,.95)' : 'rgba(10,10,10,.7)', backdropFilter: 'blur(20px) saturate(1.8)' }}
+        className={`flex items-center justify-between px-5 sm:px-8 h-[var(--nd-nav-h)] border-b border-white/[0.06] ${solid ? '' : 'transition-all duration-300'}`}
+        style={barStyle}
       >
         <NedoraLogo variant="light" priority />
 
@@ -103,7 +119,7 @@ export default function Nav({ items, locales }: Props) {
             </div>
           )}
           <a
-            href="#contact"
+            href={contactHref}
             className="hidden sm:inline-flex text-[0.68rem] tracking-[0.14em] uppercase font-bold px-[1.4rem] py-[0.6rem] bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_24px_rgba(99,115,243,0.45)] transition-all duration-200"
           >
             {t('cta')}
@@ -122,7 +138,7 @@ export default function Nav({ items, locales }: Props) {
       </div>
 
       {menuOpen && (
-        <div className="sm:hidden border-b border-white/[0.06]" style={{ background: 'rgba(10,10,10,.97)', backdropFilter: 'blur(20px) saturate(1.8)' }}>
+        <div className="sm:hidden border-b border-white/[0.06]" style={mobileMenuStyle}>
           <div className="px-5 py-5 flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               {items.map((item) => (
@@ -157,7 +173,7 @@ export default function Nav({ items, locales }: Props) {
                 </div>
 
                 <a
-                  href="#contact"
+                  href={contactHref}
                   onClick={() => setMenuOpen(false)}
                   className="text-[0.68rem] tracking-[0.14em] uppercase font-bold px-5 py-3 bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright transition-colors duration-200"
                 >

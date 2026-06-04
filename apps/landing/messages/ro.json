@@ -168,8 +168,9 @@
     "submitting": "Se trimite…",
     "success_title": "Cerere primită.",
     "success_body": "Vom analiza cererea ta și te vom contacta cât mai curând posibil.",
-    "privacy_prefix": "Prin trimiterea formularului ești de acord ca Nedora să prelucreze datele pentru a răspunde solicitării tale.",
-    "privacy_link": "Politica de confidențialitate.",
+    "privacy_accept_before": "Am citit și accept",
+    "privacy_link": "Politica de confidențialitate",
+    "privacy_accept_after": "și sunt de acord ca Nedora să prelucreze datele mele pentru a răspunde solicitării.",
     "error_generic": "Ceva nu a funcționat. Încearcă din nou.",
     "error_validation": "Corectează erorile de mai jos.",
     "fields": {
@@ -213,7 +214,115 @@
       "email_invalid": "Introdu o adresă de email validă",
       "company_required": "Compania este obligatorie",
       "message_required": "Spune-ne despre proiect",
-      "message_min": "Adaugă cel puțin 10 caractere"
+      "message_min": "Adaugă cel puțin 10 caractere",
+      "privacy_required": "Trebuie să accepți Politica de confidențialitate pentru a trimite formularul"
+    }
+  },
+  "privacy": {
+    "meta": {
+      "title": "Politica de confidențialitate — Nedora",
+      "description": "Cum colectează, folosește și protejează Nedora datele personale când vizitezi site-ul sau ne contactezi pentru un proiect."
+    },
+    "label": "Legal",
+    "title": "Politica de confidențialitate",
+    "updated": "Ultima actualizare: 4 iunie 2026",
+    "back": "Înapoi la pagina principală",
+    "intro": "Această politică explică modul în care Nedora („noi”) prelucrează datele personale când folosești nedora.co, inclusiv când trimiți o cerere de proiect. Suntem o companie de software enterprise din București, România, și prelucrăm datele în conformitate cu Regulamentul general privind protecția datelor (GDPR) și legislația română aplicabilă.",
+    "sections": [
+      {
+        "id": "controller",
+        "title": "1. Cine este responsabil pentru datele tale",
+        "paragraphs": [
+          "Operatorul de date este Nedora, cu sediul în București, România. Pentru întrebări legate de confidențialitate sau pentru exercitarea drepturilor tale, contactează-ne folosind datele de la finalul acestei politici."
+        ]
+      },
+      {
+        "id": "collect",
+        "title": "2. Ce date colectăm",
+        "paragraphs": [
+          "Colectăm doar informațiile necesare pentru a opera site-ul și a răspunde solicitărilor."
+        ],
+        "list": [
+          "Formular de contact: prenume, nume, email de serviciu, companie, tip proiect, model de colaborare, termen și mesajul tău.",
+          "Date tehnice: adresă IP, tip browser, informații despre dispozitiv și jurnale similare generate la vizitarea site-ului (prin furnizorul de hosting).",
+          "Date de comunicare: conținutul emailurilor sau mesajelor pe care ni le trimiți și răspunsurile noastre."
+        ]
+      },
+      {
+        "id": "purposes",
+        "title": "3. De ce folosim datele tale",
+        "paragraphs": [
+          "Prelucrăm datele personale în scopurile și pe temeiurile legale prevăzute de GDPR:"
+        ],
+        "list": [
+          "Pentru a răspunde cererii tale de proiect și a continua discuția despre o posibilă colaborare (interes legitim și măsuri precontractuale la solicitarea ta).",
+          "Pentru a opera, securiza și îmbunătăți site-ul (interes legitim).",
+          "Pentru a respecta obligații legale, inclusiv păstrarea evidențelor unde legea o impune (obligație legală).",
+          "Pentru newsletter sau comunicări de marketing doar cu consimțământul tău explicit (consimțământ). Nu te abonăm la marketing doar pentru că ai trimis formularul de contact."
+        ]
+      },
+      {
+        "id": "retention",
+        "title": "4. Cât timp păstrăm datele",
+        "paragraphs": [
+          "Cererile de proiect sunt păstrate atât timp cât este necesar pentru a răspunde solicitării și pentru o eventuală relație comercială, apoi arhivate sau șterse conform politicii interne de retenție.",
+          "Jurnalele tehnice sunt păstrate o perioadă limitată, potrivită pentru securitate și depanare, de regulă nu mai mult de 90 de zile, cu excepția cazurilor în care o perioadă mai lungă este necesară pentru investigarea unui incident."
+        ]
+      },
+      {
+        "id": "processors",
+        "title": "5. Cu cine partajăm datele",
+        "paragraphs": [
+          "Nu vindem datele tale personale. Folosim furnizori de încredere care prelucrează date în numele nostru, pe baza unor acorduri adecvate:"
+        ],
+        "list": [
+          "Supabase (bază de date și infrastructură de autentificare) — stochează datele de contact și cererile de proiect pentru CRM-ul nostru intern.",
+          "Vercel (hosting site) — poate prelucra jurnale tehnice și de cereri.",
+          "Resend sau furnizori similari de email — pentru notificări operaționale către echipa noastră, unde sunt configurate."
+        ]
+      },
+      {
+        "id": "transfers",
+        "title": "6. Transferuri internaționale",
+        "paragraphs": [
+          "Unii furnizori pot prelucra date în afara Spațiului Economic European. În astfel de cazuri, ne bazăm pe garanții adecvate, cum ar fi Clauzele Contractuale Standard sau mecanisme echivalente recunoscute în GDPR."
+        ]
+      },
+      {
+        "id": "rights",
+        "title": "7. Drepturile tale",
+        "paragraphs": [
+          "În funcție de locație, poți avea dreptul de acces, rectificare, ștergere, restricționare sau opoziție la prelucrare, precum și la portabilitatea datelor, acolo unde se aplică. Când prelucrarea se bazează pe consimțământ, îl poți retrage oricând, fără a afecta legalitatea prelucrării anterioare.",
+          "Ai și dreptul de a depune o plângere la Autoritatea Națională de Supraveghere a Prelucrării Datelor cu Caracter Personal (ANSPDCP) sau la autoritatea de supraveghere din țara ta."
+        ]
+      },
+      {
+        "id": "security",
+        "title": "8. Securitate",
+        "paragraphs": [
+          "Aplicăm măsuri tehnice și organizatorice adecvate naturii datelor pe care le deținem, inclusiv controale de acces, criptare în tranzit și acces intern restricționat la datele CRM.",
+          "Aplicăm o strategie de criptare implicită: datele personale sunt protejate ori de câte ori sunt stocate sau gestionate în sistemele noastre. În instrumentele interne, informațiile personale sunt ascunse implicit și sunt afișate doar membrilor autorizați ai echipei, când este necesar în scopuri comerciale legitime."
+        ]
+      },
+      {
+        "id": "cookies",
+        "title": "9. Cookie-uri",
+        "paragraphs": [
+          "Site-ul nostru de prezentare folosește cookie-uri și tehnologii similare esențiale pentru funcționare, securitate și preferințe de limbă. Nu folosim cookie-uri de publicitate sau tracking de la terți pe acest site. Dacă acest lucru se schimbă, vom actualiza politica."
+        ]
+      },
+      {
+        "id": "changes",
+        "title": "10. Modificări ale politicii",
+        "paragraphs": [
+          "Putem actualiza această politică periodic. Data „ultima actualizare” de sus reflectă versiunea curentă. Modificările importante vor fi publicate pe această pagină."
+        ]
+      }
+    ],
+    "contact": {
+      "title": "Întrebări despre confidențialitate",
+      "body": "Pentru întrebări despre această politică sau pentru exercitarea drepturilor tale, scrie-ne la:",
+      "email": "privacy@nedora.co"
     }
   },
   "footer": {

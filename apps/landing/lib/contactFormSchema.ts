@@ -24,6 +24,7 @@ export type ContactFormValues = {
   engagementModel: EngagementModel
   timeline: Timeline
   message: string
+  privacyAccepted: boolean
 }
 
 export const defaultContactFormValues: ContactFormValues = {
@@ -35,6 +36,7 @@ export const defaultContactFormValues: ContactFormValues = {
   engagementModel: 'fixed_scope',
   timeline: 'ready_now',
   message: '',
+  privacyAccepted: false,
 }
 
 export type ContactFormValidationMessages = {
@@ -45,6 +47,7 @@ export type ContactFormValidationMessages = {
   companyRequired: string
   messageRequired: string
   messageMin: string
+  privacyRequired: string
 }
 
 const validationMessageKeys = {
@@ -55,6 +58,7 @@ const validationMessageKeys = {
   companyRequired: 'validation.company_required',
   messageRequired: 'validation.message_required',
   messageMin: 'validation.message_min',
+  privacyRequired: 'validation.privacy_required',
 } as const satisfies Record<keyof ContactFormValidationMessages, string>
 
 /** Build translated validation copy from next-intl `contact` namespace. */
@@ -69,6 +73,7 @@ export function getContactFormValidationMessages(
     companyRequired: t(validationMessageKeys.companyRequired),
     messageRequired: t(validationMessageKeys.messageRequired),
     messageMin: t(validationMessageKeys.messageMin),
+    privacyRequired: t(validationMessageKeys.privacyRequired),
   }
 }
 
@@ -88,6 +93,7 @@ export function buildContactFormSchema(messages: ContactFormValidationMessages) 
       .string()
       .min(1, messages.messageRequired)
       .min(10, messages.messageMin),
+    privacyAccepted: z.literal(true, { errorMap: () => ({ message: messages.privacyRequired }) }),
   })
 }
 
@@ -103,6 +109,7 @@ export function getContactFormValuesFromFormData(formData: FormData): ContactFor
     engagementModel: (formData.get('engagementModel') as EngagementModel) ?? defaultContactFormValues.engagementModel,
     timeline: (formData.get('timeline') as Timeline) ?? defaultContactFormValues.timeline,
     message: String(formData.get('message') ?? ''),
+    privacyAccepted: formData.get('privacyAccepted') === 'true',
   }
 }
 

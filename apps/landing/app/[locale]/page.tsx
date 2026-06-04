@@ -7,7 +7,8 @@ import ProcessSection, { type ProcessContent } from '../_components/ProcessSecti
 import EngagementSection, { type EngagementContent } from '../_components/EngagementSection'
 import BigCta, { type BigCtaContent } from '../_components/BigCta'
 import ContactSection, { type ContactInfoContent } from '../_components/ContactSection'
-import Footer, { type FooterContent } from '../_components/Footer'
+import Footer from '../_components/Footer'
+import { buildFooterContent, buildHomeNavItems } from '@/lib/landingShell'
 
 // Static phase — content comes entirely from messages/en.json and messages/ro.json.
 // CMS overlay will be wired back in once microCMS is set up.
@@ -40,11 +41,7 @@ export default async function HomePage({ params }: Props) {
     stats:          tHero.raw('stats') as HeroStat[],
   }
 
-  const nav = [
-    { label: tNav('services'), href: '#commitments' },
-    { label: tNav('about'), href: '#why' },
-    { label: tNav('contact'), href: '#contact' },
-  ]
+  const nav = buildHomeNavItems((key) => tNav(key))
 
   const bento: BentoContent = {
     label: tBento('label'),
@@ -115,33 +112,7 @@ export default async function HomePage({ params }: Props) {
     responseValue: tContact('response_value'),
   }
 
-  const footer: FooterContent = {
-    tagline: tFooter('tagline'),
-    copyright: tFooter('copyright', { year: new Date().getFullYear() }),
-    columns: [
-      {
-        label: tFooter('columns.company.label'),
-        links: [
-          { text: tFooter('columns.company.links.solutions'), href: '#commitments' },
-          { text: tFooter('columns.company.links.why'), href: '#why' },
-          { text: tFooter('columns.company.links.process'), href: '#process' },
-          { text: tFooter('columns.company.links.engagement'), href: '#engagement' },
-        ],
-      },
-      {
-        label: tFooter('columns.connect.label'),
-        links: [
-          { text: tFooter('columns.connect.links.offer'), href: '#contact' },
-          { text: tFooter('columns.connect.links.linkedin'), href: 'https://linkedin.com/company/nedora-tech', external: true },
-          { text: tFooter('columns.connect.links.privacy'), href: '/privacy' },
-        ],
-      },
-      {
-        label: tFooter('columns.products.label'),
-        links: [{ text: tFooter('columns.products.links.nedai'), href: '#' }],
-      },
-    ],
-  }
+  const footer = buildFooterContent((key, values) => tFooter(key, values), locale)
 
   return (
     <>

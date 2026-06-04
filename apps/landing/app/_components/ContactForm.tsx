@@ -11,6 +11,7 @@ import {
   type ReactNode,
 } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import {
   buildContactFormSchema,
   defaultContactFormValues,
@@ -232,6 +233,7 @@ export default function ContactForm() {
     fd.set('engagementModel', data.engagementModel)
     fd.set('timeline', data.timeline)
     fd.set('message', data.message)
+    fd.set('privacyAccepted', data.privacyAccepted ? 'true' : 'false')
     return fd
   }
 
@@ -319,6 +321,7 @@ export default function ContactForm() {
   }
 
   const messageStatus = getFieldStatus('message', fieldErrors, touched, submitAttempted)
+  const privacyStatus = getFieldStatus('privacyAccepted', fieldErrors, touched, submitAttempted)
 
   return (
     <form
@@ -452,12 +455,45 @@ export default function ContactForm() {
         )}
       </div>
 
-      <p className="text-[0.72rem] text-nd-grey-400 leading-[1.6]">
-        {t('privacy_prefix')}{' '}
-        <a href="/privacy" className="underline hover:text-nd-grey-600 transition-colors">
-          {t('privacy_link')}
-        </a>
-      </p>
+      <div>
+        <div
+          className={`flex items-start gap-3 ${isPending ? 'opacity-60 pointer-events-none' : ''} ${privacyStatus === 'invalid' ? 'rounded-sm ring-1 ring-red-500/40 p-2 -m-2' : ''}`}
+        >
+          <input
+            id="privacyAccepted"
+            name="privacyAccepted"
+            type="checkbox"
+            checked={values.privacyAccepted}
+            disabled={isPending}
+            onChange={(e) => {
+              setValue('privacyAccepted', e.target.checked)
+              setTouched((prev) => ({ ...prev, privacyAccepted: true }))
+            }}
+            onBlur={() => markTouched('privacyAccepted')}
+            aria-invalid={privacyStatus === 'invalid'}
+            aria-required
+            className="mt-0.5 h-4 w-4 shrink-0 accent-nd-accent-mid disabled:cursor-not-allowed"
+          />
+          <div className="text-[0.72rem] text-nd-grey-600 leading-[1.6]">
+            <label htmlFor="privacyAccepted" className="cursor-pointer">
+              {t('privacy_accept_before')}{' '}
+            </label>
+            <Link
+              href="/privacy"
+              className="underline font-medium text-nd-grey-600 hover:text-nd-black transition-colors duration-200"
+            >
+              {t('privacy_link')}
+            </Link>
+            <label htmlFor="privacyAccepted" className="cursor-pointer">
+              {' '}
+              {t('privacy_accept_after')}
+            </label>
+          </div>
+        </div>
+        {fieldErrors.privacyAccepted && (
+          <p className="text-[0.72rem] text-red-600 mt-2">{fieldErrors.privacyAccepted}</p>
+        )}
+      </div>
 
       <SubmitButton pending={isPending} />
     </form>
