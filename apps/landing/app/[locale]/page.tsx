@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import Nav from '../_components/Nav'
 import Hero, { type HeroContent, type HeroHeadlinePart, type HeroStat } from '../_components/Hero'
 import BentoSection, { type BentoCell, type BentoContent } from '../_components/BentoSection'
@@ -19,6 +19,7 @@ interface Props {
 
 export default async function HomePage({ params }: Props) {
   const { locale } = await params
+  setRequestLocale(locale)
   const tHero = await getTranslations({ locale, namespace: 'hero' })
   const tNav = await getTranslations({ locale, namespace: 'nav' })
   const tBento = await getTranslations({ locale, namespace: 'bento' })

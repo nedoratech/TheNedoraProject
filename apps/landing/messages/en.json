@@ -167,7 +167,7 @@
     "submit": "Send request →",
     "submitting": "Sending…",
     "success_title": "Request received.",
-    "success_body": "We'll be in touch within two business days.",
+    "success_body": "We'll review your submission and get back to you as soon as we can.",
     "privacy_prefix": "By submitting this form you agree that Nedora may process your data to respond to your enquiry.",
     "privacy_link": "Privacy Policy.",
     "error_generic": "Something went wrong. Please try again.",
@@ -207,9 +207,13 @@
       "exploring": "Exploring"
     },
     "validation": {
-      "required": "Required",
-      "email": "Invalid email",
-      "message_min": "Please describe your project (min 10 characters)"
+      "first_name_required": "First name is required",
+      "last_name_required": "Last name is required",
+      "email_required": "Work email is required",
+      "email_invalid": "Enter a valid email address",
+      "company_required": "Company is required",
+      "message_required": "Please tell us about your project",
+      "message_min": "Please add at least 10 characters"
     }
   },
   "footer": {

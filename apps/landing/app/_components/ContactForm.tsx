@@ -1,14 +1,34 @@
 'use client'
 
-import { useActionState } from 'react'
-import { useFormStatus } from 'react-dom'
+import {
+  useActionState,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+  type FormEvent,
+  type ReactNode,
+} from 'react'
 import { useLocale, useTranslations } from 'next-intl'
+import {
+  buildContactFormSchema,
+  defaultContactFormValues,
+  flattenContactFormErrors,
+  getContactFormValidationMessages,
+  ENGAGEMENT_MODELS,
+  PROJECT_TYPES,
+  TIMELINES,
+  type ContactFormField,
+  type ContactFormValues,
+} from '@/lib/contactFormSchema'
 import { submitProjectRequest, type SubmitProjectRequestState } from '../_actions/submitProjectRequest'
 
 const initialState: SubmitProjectRequestState = { status: 'idle' }
 
-function SubmitButton() {
-  const { pending } = useFormStatus()
+type FieldStatus = 'default' | 'invalid' | 'valid'
+
+function SubmitButton({ pending }: { pending: boolean }) {
   const t = useTranslations('contact')
   return (
     <button
@@ -21,114 +41,390 @@ function SubmitButton() {
   )
 }
 
+function StatusIcon({
+  status,
+  className = 'top-1/2 -translate-y-1/2',
+}: {
+  status: 'invalid' | 'valid'
+  className?: string
+}) {
+  const circle =
+    status === 'invalid'
+      ? 'bg-red-500/15 text-red-600'
+      : 'bg-lime-500/15 text-lime-600'
+
+  return (
+    <span
+      className={`pointer-events-none absolute right-3 flex h-5 w-5 items-center justify-center rounded-full ${circle} ${className}`}
+      aria-hidden
+    >
+      {status === 'invalid' ? (
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" className="shrink-0">
+          <path d="M5 2.25v3.25" stroke="currentColor" strokeWidth="1.35" strokeLinecap="round" />
+          <circle cx="5" cy="7.35" r="0.65" fill="currentColor" />
+        </svg>
+      ) : (
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="shrink-0">
+          <path
+            d="M2 5.5L4.5 8l4.5-5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
+    </span>
+  )
+}
+
+function fieldStatusClass(status: FieldStatus, multiline = false): string {
+  const base =
+    'w-full border px-4 text-[0.9rem] font-[var(--font-futura)] text-nd-black placeholder:text-nd-grey-400 transition-colors duration-200 focus:outline-none'
+  const pad = multiline ? 'py-3 pr-11 resize-none' : 'py-3 pr-11'
+
+  if (status === 'invalid') {
+    return `${base} ${pad} border-red-500 bg-red-500/10 focus:border-red-500`
+  }
+  if (status === 'valid') {
+    return `${base} ${pad} border-lime-500 bg-lime-500/10 focus:border-lime-500`
+  }
+  return `${base} ${pad} border-nd-grey-200 bg-nd-white focus:border-nd-accent-mid`
+}
+
 const labelClass = 'block text-[0.65rem] tracking-[0.16em] uppercase font-bold text-nd-grey-600 mb-2'
-const inputClass = 'w-full border border-nd-grey-200 bg-nd-white px-4 py-3 text-[0.9rem] font-[var(--font-futura)] text-nd-black placeholder:text-nd-grey-400 focus:outline-none focus:border-nd-accent-mid transition-colors duration-200'
-const radioLabelClass = 'flex items-center gap-2 text-[0.8rem] text-nd-grey-600 cursor-pointer hover:text-nd-black transition-colors duration-200'
+
+function FieldLabel({
+  htmlFor,
+  children,
+  required = false,
+}: {
+  htmlFor?: string
+  children: ReactNode
+  required?: boolean
+}) {
+  return (
+    <label className={labelClass} htmlFor={htmlFor}>
+      {children}
+      {required && (
+        <span className="text-red-500 ml-0.5" aria-hidden>
+          *
+        </span>
+      )}
+    </label>
+  )
+}
+
+const radioLabelClass =
+  'flex items-center gap-2 text-[0.8rem] text-nd-grey-600 cursor-pointer hover:text-nd-black transition-colors duration-200'
+
+function getFieldStatus(
+  field: ContactFormField,
+  errors: Partial<Record<ContactFormField, string>>,
+  touched: Partial<Record<ContactFormField, boolean>>,
+  submitAttempted: boolean,
+): FieldStatus {
+  const show = submitAttempted || touched[field]
+  if (!show) return 'default'
+  if (errors[field]) return 'invalid'
+  return 'valid'
+}
 
 export default function ContactForm() {
   const locale = useLocale()
   const t = useTranslations('contact')
   const [state, formAction] = useActionState(submitProjectRequest, initialState)
+  const [isPending, startTransition] = useTransition()
+
+  const [values, setValues] = useState<ContactFormValues>(defaultContactFormValues)
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ContactFormField, string>>>({})
+  const [touched, setTouched] = useState<Partial<Record<ContactFormField, boolean>>>({})
+  const [submitAttempted, setSubmitAttempted] = useState(false)
+  const [bannerMessage, setBannerMessage] = useState<string | null>(null)
+
+  const schema = useMemo(
+    () => buildContactFormSchema(getContactFormValidationMessages(t)),
+    [t, locale],
+  )
+
+  const validateAll = useCallback(
+    (next: ContactFormValues) => {
+      const parsed = schema.safeParse(next)
+      if (!parsed.success) {
+        return { ok: false as const, errors: flattenContactFormErrors(parsed.error) }
+      }
+      return { ok: true as const, data: parsed.data }
+    },
+    [schema],
+  )
+
+  const validateField = useCallback(
+    (field: ContactFormField, next: ContactFormValues) => {
+      const parsed = schema.safeParse(next)
+      setFieldErrors((prev) => {
+        const copy = { ...prev }
+        if (parsed.success) {
+          delete copy[field]
+          return copy
+        }
+        const errors = flattenContactFormErrors(parsed.error)
+        if (errors[field]) copy[field] = errors[field]
+        else delete copy[field]
+        return copy
+      })
+    },
+    [schema],
+  )
+
+  useEffect(() => {
+    if (state.status === 'error') {
+      if (state.values) setValues(state.values)
+      if (state.fieldErrors) {
+        setFieldErrors(state.fieldErrors)
+        setSubmitAttempted(true)
+      }
+      if (state.message) setBannerMessage(state.message)
+    }
+    if (state.status === 'success' || state.status === 'idle') {
+      setBannerMessage(null)
+    }
+  }, [state])
+
+  const setValue = <K extends ContactFormField>(field: K, value: ContactFormValues[K]) => {
+    setValues((prev) => {
+      const next = { ...prev, [field]: value }
+      if (submitAttempted || touched[field]) {
+        validateField(field, next)
+      }
+      return next
+    })
+  }
+
+  const markTouched = (field: ContactFormField) => {
+    setTouched((prev) => ({ ...prev, [field]: true }))
+    setValues((current) => {
+      validateField(field, current)
+      return current
+    })
+  }
+
+  const buildFormData = (data: ContactFormValues) => {
+    const fd = new FormData()
+    fd.set('locale', locale)
+    fd.set('firstName', data.firstName)
+    fd.set('lastName', data.lastName)
+    fd.set('email', data.email)
+    fd.set('company', data.company)
+    fd.set('projectType', data.projectType)
+    fd.set('engagementModel', data.engagementModel)
+    fd.set('timeline', data.timeline)
+    fd.set('message', data.message)
+    return fd
+  }
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setSubmitAttempted(true)
+    setBannerMessage(null)
+
+    const result = validateAll(values)
+    if (!result.ok) {
+      setFieldErrors(result.errors)
+      setBannerMessage(t('error_validation'))
+      return
+    }
+
+    setFieldErrors({})
+    startTransition(() => {
+      formAction(buildFormData(result.data))
+    })
+  }
 
   if (state.status === 'success') {
     return (
-      <div className="border border-nd-accent-mid bg-nd-accent-light px-8 py-12 text-center">
-        <div className="text-nd-accent-bright text-[1.5rem] mb-4">✓</div>
-        <p className="text-[1rem] font-bold text-nd-accent tracking-[-0.01em]">{t('success_title')}</p>
+      <div className="border border-lime-500 bg-lime-500/10 px-8 py-12 text-center">
+        <div
+          className="mx-auto mb-4 flex h-9 w-9 items-center justify-center rounded-full border border-lime-500 bg-lime-500/10 text-lime-600"
+          aria-hidden
+        >
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="none" className="shrink-0">
+            <path
+              d="M4 10.5L8 14.5L16 6"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="butt"
+              strokeLinejoin="miter"
+            />
+          </svg>
+        </div>
+        <p className="text-[1rem] font-bold text-lime-600 tracking-[-0.01em]">{t('success_title')}</p>
         <p className="text-[0.88rem] text-nd-grey-600 mt-2">{t('success_body')}</p>
       </div>
     )
   }
 
-  const fe = state.status === 'error' ? state.fieldErrors ?? {} : {}
+  const renderInput = (
+    field: Extract<ContactFormField, 'firstName' | 'lastName' | 'email' | 'company'>,
+    type: 'text' | 'email',
+    placeholder: string,
+  ) => {
+    const status = getFieldStatus(field, fieldErrors, touched, submitAttempted)
+    const showIcon = status === 'invalid' || status === 'valid'
 
-  const projectTypes = ['new_application', 'integration_modernisation', 'support_evolution', 'not_sure'] as const
-  const engagementModels = ['fixed_scope', 'time_based', 'not_sure'] as const
-  const timelines = ['ready_now', '1_3_months', '3_6_months', 'exploring'] as const
+    return (
+      <div>
+        <FieldLabel htmlFor={field} required>
+          {t(`fields.${field}`)}
+        </FieldLabel>
+        <div className="relative">
+          <input
+            id={field}
+            name={field}
+            type={type}
+            value={values[field]}
+            placeholder={placeholder}
+            className={fieldStatusClass(status)}
+            onChange={(e) => setValue(field, e.target.value)}
+            onBlur={() => markTouched(field)}
+            aria-invalid={status === 'invalid'}
+            aria-required
+            required
+          />
+          {showIcon && (
+            <StatusIcon status={status} />
+          )}
+        </div>
+        {fieldErrors[field] && (
+          <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors[field]}</p>
+        )}
+      </div>
+    )
+  }
+
+  const messageStatus = getFieldStatus('message', fieldErrors, touched, submitAttempted)
 
   return (
-    <form action={formAction} className="flex flex-col gap-6">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-6" noValidate>
       <input type="hidden" name="locale" value={locale} />
 
-      {state.status === 'error' && state.message && (
-        <div className="border border-red-300 bg-red-50 px-4 py-3 text-[0.82rem] text-red-700">{state.message}</div>
+      {bannerMessage && (
+        <div className="border border-red-300 bg-red-50 px-4 py-3 text-[0.82rem] text-red-700">
+          {bannerMessage}
+        </div>
       )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className={labelClass}>{t('fields.firstName')}</label>
-          <input name="firstName" type="text" placeholder={t('placeholders.firstName')} className={inputClass} />
-          {fe.firstName && <p className="text-[0.72rem] text-red-600 mt-1">{fe.firstName[0]}</p>}
-        </div>
-        <div>
-          <label className={labelClass}>{t('fields.lastName')}</label>
-          <input name="lastName" type="text" placeholder={t('placeholders.lastName')} className={inputClass} />
-          {fe.lastName && <p className="text-[0.72rem] text-red-600 mt-1">{fe.lastName[0]}</p>}
-        </div>
+        {renderInput('firstName', 'text', t('placeholders.firstName'))}
+        {renderInput('lastName', 'text', t('placeholders.lastName'))}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className={labelClass}>{t('fields.email')}</label>
-          <input name="email" type="email" placeholder={t('placeholders.email')} className={inputClass} />
-          {fe.email && <p className="text-[0.72rem] text-red-600 mt-1">{fe.email[0]}</p>}
-        </div>
-        <div>
-          <label className={labelClass}>{t('fields.company')}</label>
-          <input name="company" type="text" placeholder={t('placeholders.company')} className={inputClass} />
-          {fe.company && <p className="text-[0.72rem] text-red-600 mt-1">{fe.company[0]}</p>}
-        </div>
+        {renderInput('email', 'email', t('placeholders.email'))}
+        {renderInput('company', 'text', t('placeholders.company'))}
       </div>
 
       <div>
         <label className={labelClass}>{t('fields.projectType')}</label>
         <div className="flex flex-wrap gap-x-6 gap-y-2 mt-1">
-          {projectTypes.map((value) => (
-            <label key={value} className={radioLabelClass}>
-              <input type="radio" name="projectType" value={value} defaultChecked={value === 'new_application'} className="accent-nd-accent-mid" />
-              {t(`projectTypes.${value}`)}
-            </label>
-          ))}
+            {PROJECT_TYPES.map((value) => (
+              <label key={value} className={radioLabelClass}>
+                <input
+                  type="radio"
+                  name="projectType"
+                  value={value}
+                  checked={values.projectType === value}
+                  className="accent-nd-accent-mid"
+                  onChange={() => setValue('projectType', value)}
+                />
+                {t(`projectTypes.${value}`)}
+              </label>
+            ))}
         </div>
+        {fieldErrors.projectType && (
+          <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.projectType}</p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className={labelClass}>{t('fields.engagementModel')}</label>
           <div className="flex flex-col gap-2 mt-1">
-            {engagementModels.map((value) => (
-              <label key={value} className={radioLabelClass}>
-                <input type="radio" name="engagementModel" value={value} defaultChecked={value === 'fixed_scope'} className="accent-nd-accent-mid" />
-                {t(`engagementModels.${value}`)}
-              </label>
-            ))}
+              {ENGAGEMENT_MODELS.map((value) => (
+                <label key={value} className={radioLabelClass}>
+                  <input
+                    type="radio"
+                    name="engagementModel"
+                    value={value}
+                    checked={values.engagementModel === value}
+                    className="accent-nd-accent-mid"
+                    onChange={() => setValue('engagementModel', value)}
+                  />
+                  {t(`engagementModels.${value}`)}
+                </label>
+              ))}
           </div>
+          {fieldErrors.engagementModel && (
+            <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.engagementModel}</p>
+          )}
         </div>
         <div>
           <label className={labelClass}>{t('fields.timeline')}</label>
           <div className="flex flex-col gap-2 mt-1">
-            {timelines.map((value) => (
-              <label key={value} className={radioLabelClass}>
-                <input type="radio" name="timeline" value={value} defaultChecked={value === 'ready_now'} className="accent-nd-accent-mid" />
-                {t(`timelines.${value}`)}
-              </label>
-            ))}
+              {TIMELINES.map((value) => (
+                <label key={value} className={radioLabelClass}>
+                  <input
+                    type="radio"
+                    name="timeline"
+                    value={value}
+                    checked={values.timeline === value}
+                    className="accent-nd-accent-mid"
+                    onChange={() => setValue('timeline', value)}
+                  />
+                  {t(`timelines.${value}`)}
+                </label>
+              ))}
           </div>
+          {fieldErrors.timeline && (
+            <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.timeline}</p>
+          )}
         </div>
       </div>
 
       <div>
-        <label className={labelClass}>{t('fields.message')}</label>
-        <textarea name="message" rows={5} placeholder={t('placeholders.message')} className={`${inputClass} resize-none`} />
-        {fe.message && <p className="text-[0.72rem] text-red-600 mt-1">{fe.message[0]}</p>}
+        <FieldLabel htmlFor="message" required>
+          {t('fields.message')}
+        </FieldLabel>
+        <div className="relative">
+          <textarea
+            id="message"
+            name="message"
+            rows={5}
+            value={values.message}
+            placeholder={t('placeholders.message')}
+            className={fieldStatusClass(messageStatus, true)}
+            onChange={(e) => setValue('message', e.target.value)}
+            onBlur={() => markTouched('message')}
+            aria-invalid={messageStatus === 'invalid'}
+            aria-required
+            required
+          />
+          {(messageStatus === 'invalid' || messageStatus === 'valid') && (
+            <StatusIcon status={messageStatus} className="top-3 translate-y-0" />
+          )}
+        </div>
+        {fieldErrors.message && (
+          <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.message}</p>
+        )}
       </div>
 
       <p className="text-[0.72rem] text-nd-grey-400 leading-[1.6]">
         {t('privacy_prefix')}{' '}
-        <a href="/privacy" className="underline hover:text-nd-grey-600 transition-colors">{t('privacy_link')}</a>
+        <a href="/privacy" className="underline hover:text-nd-grey-600 transition-colors">
+          {t('privacy_link')}
+        </a>
       </p>
 
-      <SubmitButton />
+      <SubmitButton pending={isPending} />
     </form>
   )
 }

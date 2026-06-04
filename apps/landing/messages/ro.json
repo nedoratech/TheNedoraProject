@@ -167,7 +167,7 @@
     "submit": "Trimite cererea →",
     "submitting": "Se trimite…",
     "success_title": "Cerere primită.",
-    "success_body": "Te contactăm în două zile lucrătoare.",
+    "success_body": "Vom analiza cererea ta și te vom contacta cât mai curând posibil.",
     "privacy_prefix": "Prin trimiterea formularului ești de acord ca Nedora să prelucreze datele pentru a răspunde solicitării tale.",
     "privacy_link": "Politica de confidențialitate.",
     "error_generic": "Ceva nu a funcționat. Încearcă din nou.",
@@ -207,9 +207,13 @@
       "exploring": "Explorare"
     },
     "validation": {
-      "required": "Obligatoriu",
-      "email": "Email invalid",
-      "message_min": "Descrie proiectul (minim 10 caractere)"
+      "first_name_required": "Prenumele este obligatoriu",
+      "last_name_required": "Numele este obligatoriu",
+      "email_required": "Emailul de serviciu este obligatoriu",
+      "email_invalid": "Introdu o adresă de email validă",
+      "company_required": "Compania este obligatorie",
+      "message_required": "Spune-ne despre proiect",
+      "message_min": "Adaugă cel puțin 10 caractere"
     }
   },
   "footer": {

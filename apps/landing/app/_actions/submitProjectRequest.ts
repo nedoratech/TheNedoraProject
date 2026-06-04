@@ -1,31 +1,26 @@
 'use server'
 
 import { createProjectRequest } from '@nedora/db/crm'
+import { getSupabaseConfigHint, getSupabaseConnectionHint } from '@nedora/db/supabaseErrors'
+import {
+  buildContactFormSchema,
+  flattenContactFormErrors,
+  getContactFormValidationMessages,
+  getContactFormValuesFromFormData,
+  type ContactFormValues,
+} from '@/lib/contactFormSchema'
 import { getTranslations } from 'next-intl/server'
-import { z } from 'zod'
 import { routing } from '@/i18n/routing'
 
 export type SubmitProjectRequestState =
   | { status: 'idle' }
   | { status: 'success' }
-  | { status: 'error'; message: string; fieldErrors?: Record<string, string[]> }
-
-function buildSchema(messages: {
-  required: string
-  email: string
-  messageMin: string
-}) {
-  return z.object({
-    firstName:       z.string().min(1, messages.required),
-    lastName:        z.string().min(1, messages.required),
-    email:           z.string().email(messages.email),
-    company:         z.string().min(1, messages.required),
-    projectType:     z.enum(['new_application', 'integration_modernisation', 'support_evolution', 'not_sure']),
-    engagementModel: z.enum(['fixed_scope', 'time_based', 'not_sure']),
-    timeline:        z.enum(['ready_now', '1_3_months', '3_6_months', 'exploring']),
-    message:         z.string().min(10, messages.messageMin),
-  })
-}
+  | {
+      status: 'error'
+      message: string
+      fieldErrors?: Partial<Record<keyof ContactFormValues, string>>
+      values?: ContactFormValues
+    }
 
 function isCrmConfigured(): boolean {
   return Boolean(
@@ -44,29 +39,16 @@ export async function submitProjectRequest(
     : routing.defaultLocale
 
   const t = await getTranslations({ locale, namespace: 'contact' })
-  const schema = buildSchema({
-    required: t('validation.required'),
-    email: t('validation.email'),
-    messageMin: t('validation.message_min'),
-  })
+  const schema = buildContactFormSchema(getContactFormValidationMessages(t))
 
-  const raw = {
-    firstName:       formData.get('firstName'),
-    lastName:        formData.get('lastName'),
-    email:           formData.get('email'),
-    company:         formData.get('company'),
-    projectType:     formData.get('projectType'),
-    engagementModel: formData.get('engagementModel'),
-    timeline:        formData.get('timeline'),
-    message:         formData.get('message'),
-  }
-
-  const parsed = schema.safeParse(raw)
+  const values = getContactFormValuesFromFormData(formData)
+  const parsed = schema.safeParse(values)
   if (!parsed.success) {
     return {
       status: 'error',
       message: t('error_validation'),
-      fieldErrors: parsed.error.flatten().fieldErrors as Record<string, string[]>,
+      fieldErrors: flattenContactFormErrors(parsed.error),
+      values,
     }
   }
 
@@ -91,7 +73,13 @@ export async function submitProjectRequest(
     })
     return { status: 'success' }
   } catch (err) {
+    const configHint = getSupabaseConfigHint(err)
+    const connectionHint = getSupabaseConnectionHint(err)
+    const hint = configHint ?? connectionHint
+    if (hint) {
+      console.error(`[submitProjectRequest] ${hint}`)
+    }
     console.error('submitProjectRequest error:', err)
-    return { status: 'error', message: t('error_generic') }
+    return { status: 'error', message: t('error_generic'), values }
   }
 }
