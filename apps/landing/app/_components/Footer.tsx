@@ -1,6 +1,5 @@
 import NedoraLogo from './NedoraLogo'
 import { Link } from '@/i18n/navigation'
-import { useLocale } from 'next-intl'
 
 export interface FooterLink {
   text: string
@@ -19,8 +18,11 @@ export interface FooterContent {
   columns: FooterColumn[]
 }
 
-export default function Footer({ tagline, copyright, columns }: FooterContent) {
-  const locale = useLocale()
+interface FooterProps extends FooterContent {
+  locale: string
+}
+
+export default function Footer({ tagline, copyright, columns, locale }: FooterProps) {
   return (
     <footer className="bg-nd-black text-nd-white border-t border-white/[0.06]">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">

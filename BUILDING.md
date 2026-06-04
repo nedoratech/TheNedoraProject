@@ -99,10 +99,10 @@ Copy your licensed Futura WOFF2 files into each app's `public/fonts/` directory.
 The expected filenames (referenced in `globals.css`) are:
 
 ```
-apps/landing/public/fonts/futura-light.woff2
-apps/landing/public/fonts/futura-book.woff2
-apps/landing/public/fonts/futura-medium.woff2
-apps/landing/public/fonts/futura-bold.woff2
+apps/landing/public/fonts/futura-regular.woff2   # 400 (book)
+apps/landing/public/fonts/futura-bold.woff2      # 700
+apps/landing/public/fonts/futura-medium.woff2    # 500 (optional; 500 uses regular until added)
+apps/landing/public/fonts/futura-light.woff2     # 300 (optional)
 ```
 
 Do the same for `apps/microcms/public/fonts/` and `apps/microcrm/public/fonts/`.

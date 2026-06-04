@@ -4,7 +4,8 @@ import { notFound } from 'next/navigation'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
-import ResourcePreloads from '../_components/ResourcePreloads'
+import { preload } from 'react-dom'
+import { CRITICAL_FONTS, CRITICAL_IMAGES } from '@/lib/criticalAssets'
 import '../globals.css'
 
 interface Props {
@@ -19,6 +20,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: t('title'),
     description: t('description'),
+    icons: {
+      icon: [
+        { url: '/favicon-32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      ],
+    },
   }
 }
 
@@ -36,12 +43,16 @@ export default async function LocaleLayout({ children, params }: Props) {
   setRequestLocale(locale)
   const messages = await getMessages({ locale })
 
+  for (const href of CRITICAL_FONTS) {
+    preload(href, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' })
+  }
+  for (const href of CRITICAL_IMAGES) {
+    preload(href, { as: 'image' })
+  }
+
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        <ResourcePreloads />
-      </head>
-      <body>
+      <body suppressHydrationWarning>
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

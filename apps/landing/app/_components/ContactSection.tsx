@@ -1,3 +1,4 @@
+import { SECTION_PY } from '@/lib/sectionSpacing'
 import ScrollReveal from './ScrollReveal'
 import ContactForm from './ContactForm'
 
@@ -21,9 +22,9 @@ export default function ContactSection(props: ContactInfoContent) {
   ]
 
   return (
-    <section className="py-20 sm:py-24 lg:py-32 bg-nd-white border-t border-nd-grey-100" id="contact">
+    <section className={`${SECTION_PY} bg-nd-white border-t border-nd-grey-100`} id="contact">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-12 lg:gap-24 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-10 lg:gap-16 items-start">
           <ScrollReveal>
             <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-mid mb-6 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-mid">
               {props.label}

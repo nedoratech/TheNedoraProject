@@ -32,25 +32,11 @@
   --letter-spacing-widest: 0.22em;
 }
 
-/* Futura font faces — files placed in /public/fonts/ */
+/* Futura font faces — see public/fonts/README.md for required filenames */
 @font-face {
   font-family: Futura;
-  src: url("/fonts/futura-light.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: Futura;
-  src: url("/fonts/futura-book.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: block;
-}
-@font-face {
-  font-family: Futura;
-  src: url("/fonts/futura-medium.woff2") format("woff2");
-  font-weight: 500;
+  src: url("/fonts/futura-regular.woff2") format("woff2");
+  font-weight: 400 500;
   font-style: normal;
   font-display: block;
 }
@@ -91,4 +77,22 @@ body {
   color: var(--color-nd-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Pointer on all interactive controls (incl. CTA links) */
+button:not(:disabled),
+a[href],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+select,
+label:has(input[type="checkbox"]),
+label:has(input[type="radio"]) {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  cursor: not-allowed;
 }

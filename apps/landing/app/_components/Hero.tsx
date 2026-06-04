@@ -47,7 +47,7 @@ export default function Hero({
 }: HeroContent) {
   return (
     <section
-      className="relative overflow-x-hidden bg-[#0a0a0a] min-h-[100svh] pt-[var(--nd-nav-h)] md:min-h-0"
+      className="relative overflow-hidden bg-[#0a0a0a] pt-[var(--nd-nav-h)] lg:min-h-[100svh]"
     >
       <div
         className="absolute rounded-full pointer-events-none"
@@ -61,8 +61,8 @@ export default function Hero({
         }}
       />
 
-      <div className="relative z-10 w-full max-w-[1160px] mx-auto px-5 sm:px-8 flex flex-col pt-10 sm:pt-12 lg:pt-14 pb-16 max-md:h-[calc(100svh-var(--nd-nav-h))] md:h-auto md:pb-12 lg:pb-16">
-        <div className="max-md:flex-1 max-md:min-h-0">
+      <div className="relative z-10 w-full max-w-[1160px] mx-auto px-5 sm:px-8 flex flex-col pt-10 sm:pt-12 lg:pt-14 pb-12 sm:pb-14 lg:min-h-[calc(100svh-var(--nd-nav-h))] lg:pb-16">
+        <div>
           <div className="inline-flex items-center gap-2 text-[0.68rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-8">
             <span className="w-1 h-1 bg-nd-accent-bright rounded-full" />
             {eyebrow}
@@ -114,15 +114,9 @@ export default function Hero({
           </div>
         </div>
 
-        {/* Tablet/desktop: scroll hint in document flow (no viewport cramming) */}
-        <div className="hidden md:flex flex-col items-center gap-2 mt-10 pointer-events-none">
+        <div className="flex flex-col items-center gap-2 mt-8 sm:mt-10 lg:mt-auto pointer-events-none">
           <ScrollHint label={scrollLabel} />
         </div>
-      </div>
-
-      {/* Mobile only: pinned scroll hint inside viewport hero */}
-      <div className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 pointer-events-none">
-        <ScrollHint label={scrollLabel} />
       </div>
 
       <style>{`

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 interface Props {
   children: ReactNode
@@ -8,29 +8,31 @@ interface Props {
   className?: string
 }
 
-const delayMap: Record<number, string> = {
+const delayClass: Record<number, string> = {
   0: '',
-  1: '[transition-delay:100ms]',
-  2: '[transition-delay:200ms]',
-  3: '[transition-delay:300ms]',
-  4: '[transition-delay:400ms]',
+  1: 'delay-100',
+  2: 'delay-200',
+  3: 'delay-300',
+  4: 'delay-500',
 }
 
 export default function ScrollReveal({ children, delay = 0, className = '' }: Props) {
   const ref = useRef<HTMLDivElement>(null)
+  const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return
-        el.classList.add('opacity-100', 'translate-y-0')
-        el.classList.remove('opacity-0', 'translate-y-8')
+        setRevealed(true)
         observer.unobserve(el)
       },
       { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
     )
+
     observer.observe(el)
     return () => observer.disconnect()
   }, [])
@@ -38,7 +40,9 @@ export default function ScrollReveal({ children, delay = 0, className = '' }: Pr
   return (
     <div
       ref={ref}
-      className={`opacity-0 translate-y-8 transition-all duration-700 ease-out ${delayMap[delay]} ${className}`}
+      className={`transition-all duration-700 ease-out ${delayClass[delay]} ${
+        revealed ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      } ${className}`}
     >
       {children}
     </div>

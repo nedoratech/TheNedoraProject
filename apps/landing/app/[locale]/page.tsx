@@ -155,7 +155,7 @@ export default async function HomePage({ params }: Props) {
         <BigCta {...bigCta} />
         <ContactSection {...contact} />
       </main>
-      <Footer {...footer} />
+      <Footer {...footer} locale={locale} />
     </>
   )
 }
