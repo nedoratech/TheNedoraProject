@@ -37,7 +37,7 @@ export function buildHomeNavItems(t: (key: string) => string) {
   return [
     { label: t('services'), href: '#commitments' },
     { label: t('about'), href: '#why' },
-    { label: t('contact'), href: '#contact' },
+    { label: t('contact'), href: '#contact-message' },
   ]
 }
 
@@ -45,6 +45,6 @@ export function buildShellNavItems(t: (key: string) => string) {
   return [
     { label: t('services'), href: '/#commitments' },
     { label: t('about'), href: '/#why' },
-    { label: t('contact'), href: '/#contact' },
+    { label: t('contact'), href: '/#contact-message' },
   ]
 }

@@ -1,6 +1,12 @@
 import { z } from 'zod'
 
-export const FORM_MODES = ['contact', 'project_request'] as const
+export const FORM_MODES = ['project_request', 'contact'] as const
+
+/** Hash fragments that select a form mode (section anchor remains `#contact`). */
+export const FORM_MODE_HASH = {
+  contact: '#contact-message',
+  project_request: '#contact-offer',
+} as const
 
 export const PROJECT_TYPES = [
   'new_application',
@@ -159,11 +165,20 @@ export function flattenContactFormErrors(
 }
 
 export function formModeFromHash(hash: string): FormMode {
-  if (hash === '#contact' || hash === 'contact') return 'contact'
-  if (hash === '#contact-offer' || hash === 'contact-offer') return 'project_request'
+  if (hash === FORM_MODE_HASH.contact || hash === 'contact-message') return 'contact'
+  if (hash === FORM_MODE_HASH.project_request || hash === 'contact-offer') return 'project_request'
+  // `#contact` is the section anchor only — default form mode is project request.
   return 'project_request'
 }
 
 export function hashForFormMode(mode: FormMode): string {
-  return mode === 'contact' ? '#contact' : '#contact-offer'
+  return FORM_MODE_HASH[mode]
+}
+
+export function shouldScrollToContactSection(hash: string): boolean {
+  return (
+    hash === '#contact' ||
+    hash === FORM_MODE_HASH.contact ||
+    hash === FORM_MODE_HASH.project_request
+  )
 }

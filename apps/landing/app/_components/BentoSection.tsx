@@ -1,4 +1,12 @@
-import { SECTION_BLOCK_MT, SECTION_HEADER_GRID, SECTION_PY } from '@/lib/sectionSpacing'
+import {
+  LEADING_BODY,
+  LEADING_HEADING,
+  SECTION_BLOCK_MT,
+  SECTION_HEADER_GRID,
+  SECTION_PY,
+  TEXT_16_DESKTOP,
+  TEXT_BODY_DESKTOP,
+} from '@/lib/sectionSpacing'
 import ScrollReveal from './ScrollReveal'
 
 export interface BentoCell {
@@ -40,12 +48,12 @@ export default function BentoSection({ label, title, description, quote, quoteAt
     <section className={`${SECTION_PY} bg-nd-grey-50 border-t border-nd-grey-100`} id="commitments">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
         <ScrollReveal>
-          <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright">
+          <div className={`text-[0.65rem] ${TEXT_16_DESKTOP} tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright`}>
             {label}
           </div>
           <div className={`${SECTION_HEADER_GRID} mb-0`}>
-            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08] text-nd-black">{title}</h2>
-            <p className="text-[0.95rem] text-nd-grey-600 leading-[1.75]">{description}</p>
+            <h2 className={`text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] ${LEADING_HEADING} text-nd-black`}>{title}</h2>
+            <p className={`text-[0.95rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY}`}>{description}</p>
           </div>
         </ScrollReveal>
 
@@ -73,9 +81,9 @@ export default function BentoSection({ label, title, description, quote, quoteAt
                       {cell.num}
                     </div>
                   )}
-                  <div className={`text-[1.15rem] font-bold tracking-[-0.01em] leading-[1.35] mb-3 ${isLight ? 'text-nd-white' : 'text-nd-black'}`}>{cell.title}</div>
+                  <div className={`text-[1.15rem] font-bold tracking-[-0.01em] leading-[1.25] mb-3 ${isLight ? 'text-nd-white' : 'text-nd-black'}`}>{cell.title}</div>
                   {cell.body && (
-                    <p className={`text-[0.94rem] leading-[1.7] ${isLight ? 'text-white/70' : 'text-nd-grey-600'}`}>{cell.body}</p>
+                    <p className={`text-[0.94rem] ${TEXT_BODY_DESKTOP} ${LEADING_BODY} ${isLight ? 'text-white/70' : 'text-nd-grey-600'}`}>{cell.body}</p>
                   )}
                 </div>
               </ScrollReveal>
@@ -84,7 +92,7 @@ export default function BentoSection({ label, title, description, quote, quoteAt
 
           <ScrollReveal delay={0} className="col-span-1 sm:col-span-2 lg:col-span-4">
             <div className="flex flex-col justify-end p-7 sm:p-10 h-full border bg-nd-black text-nd-white border-nd-black">
-              <blockquote className="text-[1.1rem] font-bold leading-[1.5] text-white/85">{quote}</blockquote>
+              <blockquote className={`text-[1.1rem] font-bold ${LEADING_BODY} text-white/85`}>{quote}</blockquote>
               <div className="text-[0.72rem] text-white/35 tracking-[0.1em] uppercase mt-4">{quoteAttribution}</div>
             </div>
           </ScrollReveal>

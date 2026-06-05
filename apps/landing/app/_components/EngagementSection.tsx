@@ -1,4 +1,12 @@
-import { SECTION_BLOCK_MT, SECTION_HEADER_GRID, SECTION_PY } from '@/lib/sectionSpacing'
+import {
+  LEADING_BODY,
+  LEADING_HEADING,
+  SECTION_BLOCK_MT,
+  SECTION_HEADER_GRID,
+  SECTION_PY,
+  TEXT_16_DESKTOP,
+  TEXT_BODY_DESKTOP,
+} from '@/lib/sectionSpacing'
 import ScrollReveal from './ScrollReveal'
 
 export interface EngagementContent {
@@ -32,12 +40,12 @@ export default function EngagementSection(props: EngagementContent) {
     <section className={`${SECTION_PY} bg-nd-grey-50 border-t border-nd-grey-100`} id="engagement">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
         <ScrollReveal>
-          <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright">
+          <div className={`text-[0.65rem] ${TEXT_16_DESKTOP} tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright`}>
             {label}
           </div>
           <div className={`${SECTION_HEADER_GRID} mb-4`}>
-            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08] text-nd-black">{title}</h2>
-            <p className="text-[0.95rem] text-nd-grey-600 leading-[1.75]">{description}</p>
+            <h2 className={`text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] ${LEADING_HEADING} text-nd-black`}>{title}</h2>
+            <p className={`text-[0.95rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY}`}>{description}</p>
           </div>
         </ScrollReveal>
 
@@ -50,10 +58,10 @@ export default function EngagementSection(props: EngagementContent) {
                   {fixedBadge}
                 </span>
                 <h3 className="text-[1.5rem] font-bold tracking-[-0.025em] mb-4 text-nd-black">{fixedTitle}</h3>
-                <p className="text-[0.88rem] text-nd-grey-600 leading-[1.75] mb-7">{fixedBody}</p>
+                <p className={`text-[0.88rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY} mb-7`}>{fixedBody}</p>
                 <ul className="flex flex-col gap-2.5 mb-9 flex-1">
                   {fixedItems.map((item) => (
-                    <li key={item} className="text-[0.82rem] text-nd-grey-600 pl-4 relative before:content-['↗'] before:absolute before:left-0 before:text-nd-accent-mid before:text-[0.72rem]">
+                    <li key={item} className={`text-[0.82rem] text-nd-grey-600 ${LEADING_BODY} pl-4 relative before:content-['↗'] before:absolute before:left-0 before:text-nd-accent-mid before:text-[0.72rem]`}>
                       {item}
                     </li>
                   ))}
@@ -73,10 +81,10 @@ export default function EngagementSection(props: EngagementContent) {
                   {timeBadge}
                 </span>
                 <h3 className="text-[1.5rem] font-bold tracking-[-0.025em] mb-4 text-nd-black">{timeTitle}</h3>
-                <p className="text-[0.88rem] text-nd-grey-600 leading-[1.75] mb-7">{timeBody}</p>
+                <p className={`text-[0.88rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY} mb-7`}>{timeBody}</p>
                 <ul className="flex flex-col gap-2.5 mb-9 flex-1">
                   {timeItems.map((item) => (
-                    <li key={item} className="text-[0.82rem] text-nd-grey-600 pl-4 relative before:content-['↗'] before:absolute before:left-0 before:text-nd-accent-mid before:text-[0.72rem]">
+                    <li key={item} className={`text-[0.82rem] text-nd-grey-600 ${LEADING_BODY} pl-4 relative before:content-['↗'] before:absolute before:left-0 before:text-nd-accent-mid before:text-[0.72rem]`}>
                       {item}
                     </li>
                   ))}
@@ -90,7 +98,7 @@ export default function EngagementSection(props: EngagementContent) {
         </div>
 
         <ScrollReveal className="mt-6">
-          <div className="border-l-[3px] border-nd-accent-mid bg-nd-accent-light px-6 sm:px-8 py-6 text-[0.88rem] text-nd-accent leading-[1.7]">
+          <div className={`border-l-[3px] border-nd-accent-mid bg-nd-accent-light px-6 sm:px-8 py-6 text-[0.88rem] ${TEXT_BODY_DESKTOP} text-nd-accent ${LEADING_BODY}`}>
             {noteBefore}
             <strong className="text-nd-accent-dark">{noteStrong}</strong>
             {noteAfter}

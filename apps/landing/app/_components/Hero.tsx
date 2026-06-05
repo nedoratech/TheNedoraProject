@@ -1,3 +1,4 @@
+import { LEADING_BODY } from '@/lib/sectionSpacing'
 import AnimatedCounter from './AnimatedCounter'
 
 export interface HeroStat {
@@ -63,7 +64,7 @@ export default function Hero({
 
       <div className="relative z-10 w-full max-w-[1160px] mx-auto px-5 sm:px-8 flex flex-col pt-10 sm:pt-12 lg:pt-14 pb-12 sm:pb-14 lg:min-h-[calc(100svh-var(--nd-nav-h))] lg:pb-16">
         <div>
-          <div className="inline-flex items-center gap-2 text-[0.68rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-8">
+          <div className="inline-flex items-center gap-2 text-[0.68rem] lg:text-[1rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-8">
             <span className="w-1 h-1 bg-nd-accent-bright rounded-full" />
             {eyebrow}
           </div>
@@ -80,7 +81,7 @@ export default function Hero({
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-7 sm:gap-8 md:gap-12 max-w-[900px] mb-8 sm:mb-10 items-end">
-            <p className="text-[1rem] leading-[1.75] text-white/55">{subheading}</p>
+            <p className={`text-[0.95rem] lg:text-[1rem] ${LEADING_BODY} text-white/55`}>{subheading}</p>
             <div className="flex gap-3 flex-wrap">
               <a
                 href="#contact-offer"

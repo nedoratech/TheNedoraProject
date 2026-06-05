@@ -12,6 +12,7 @@ import {
 } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
+import { LEADING_BODY } from '@/lib/sectionSpacing'
 import {
   buildContactFormSchema,
   defaultContactFormValues,
@@ -289,7 +290,7 @@ export default function ContactForm({ formMode, onFormModeChange }: ContactFormP
     })
   }
 
-  const activeMode = values.formMode
+  const activeMode = formMode
   const isProjectRequest = activeMode === 'project_request'
 
   if (state.status === 'success') {
@@ -555,7 +556,7 @@ export default function ContactForm({ formMode, onFormModeChange }: ContactFormP
             aria-required
             className="mt-0.5 h-4 w-4 shrink-0 accent-nd-accent-mid disabled:cursor-not-allowed"
           />
-          <div className="text-[0.72rem] text-nd-grey-600 leading-[1.6]">
+          <div className={`text-[0.72rem] text-nd-grey-600 ${LEADING_BODY}`}>
             <label htmlFor="privacyAccepted" className="cursor-pointer">
               {t('privacy_accept_before')}{' '}
             </label>

@@ -72,7 +72,7 @@ html {
 body {
   font-family: var(--font-futura);
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.5;
   background-color: var(--color-nd-black);
   color: var(--color-nd-white);
   -webkit-font-smoothing: antialiased;

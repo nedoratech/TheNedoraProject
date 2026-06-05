@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { SECTION_PY } from '@/lib/sectionSpacing'
+import { LEADING_BODY, LEADING_HEADING, SECTION_PY, TEXT_16_DESKTOP, TEXT_BODY_DESKTOP } from '@/lib/sectionSpacing'
 import {
   formModeFromHash,
   hashForFormMode,
+  shouldScrollToContactSection,
   type FormMode,
 } from '@/lib/contactFormSchema'
 import ScrollReveal from './ScrollReveal'
@@ -25,10 +26,10 @@ export default function ContactSection(props: ContactInfoContent) {
   const t = useTranslations('contact')
   const [formMode, setFormMode] = useState<FormMode>('project_request')
 
-  const syncModeFromHash = useCallback((hash: string, scroll = false) => {
+  const syncModeFromHash = useCallback((hash: string) => {
     const nextMode = formModeFromHash(hash)
     setFormMode(nextMode)
-    if (scroll) {
+    if (shouldScrollToContactSection(hash)) {
       document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
     }
   }, [])
@@ -59,13 +60,13 @@ export default function ContactSection(props: ContactInfoContent) {
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.6fr] gap-10 lg:gap-16 items-start">
           <ScrollReveal>
-            <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-mid mb-6 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-mid">
+            <div className={`text-[0.65rem] ${TEXT_16_DESKTOP} tracking-[0.22em] uppercase font-bold text-nd-accent-mid mb-6 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-mid`}>
               {props.label}
             </div>
-            <h2 className="text-[2rem] font-bold tracking-[-0.035em] leading-[1.1] mb-5 text-nd-black">
+            <h2 className={`text-[2rem] font-bold tracking-[-0.035em] ${LEADING_HEADING} mb-5 text-nd-black`}>
               {t(`modes.${formMode}.heading`)}
             </h2>
-            <p className="text-[0.9rem] text-nd-grey-600 leading-[1.75] mb-10">
+            <p className={`text-[0.9rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY} mb-10`}>
               {t(`modes.${formMode}.description`)}
             </p>
             <div className="flex flex-col gap-5">

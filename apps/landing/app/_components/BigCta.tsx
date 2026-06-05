@@ -1,4 +1,4 @@
-import { SECTION_PY } from '@/lib/sectionSpacing'
+import { LEADING_BODY, SECTION_PY, TEXT_16_DESKTOP, TEXT_BODY_DESKTOP } from '@/lib/sectionSpacing'
 import ScrollReveal from './ScrollReveal'
 
 export interface BigCtaProof {
@@ -41,7 +41,7 @@ export default function BigCta({
 
       <div className="relative z-10 max-w-[1160px] mx-auto px-5 sm:px-8">
         <ScrollReveal className="text-center">
-          <div className="inline-flex items-center gap-2 text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-8">
+          <div className={`inline-flex items-center gap-2 text-[0.65rem] ${TEXT_16_DESKTOP} tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-8`}>
             <span className="w-1 h-1 bg-nd-accent-bright rounded-full" />
             {label}
           </div>
@@ -50,7 +50,7 @@ export default function BigCta({
             <em className="not-italic text-nd-accent-bright">{titleAccent}</em>
             {titleAfter}
           </h2>
-          <p className="text-[1.05rem] text-white/50 leading-[1.7] max-w-[480px] mx-auto mb-12">{description}</p>
+          <p className={`text-[0.95rem] ${TEXT_BODY_DESKTOP} text-white/50 ${LEADING_BODY} max-w-[480px] mx-auto mb-12`}>{description}</p>
           <div className="flex gap-3 justify-center flex-wrap">
             <a href="#contact-offer" className="text-[0.72rem] tracking-[0.14em] uppercase font-bold px-8 py-[0.85rem] bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] transition-all duration-200">
               {ctaPrimary}

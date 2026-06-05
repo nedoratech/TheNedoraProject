@@ -1,4 +1,12 @@
-import { SECTION_BLOCK_MT, SECTION_HEADER_GRID, SECTION_PY } from '@/lib/sectionSpacing'
+import {
+  LEADING_BODY,
+  LEADING_HEADING,
+  SECTION_BLOCK_MT,
+  SECTION_HEADER_GRID,
+  SECTION_PY,
+  TEXT_16_DESKTOP,
+  TEXT_BODY_DESKTOP,
+} from '@/lib/sectionSpacing'
 import ScrollReveal from './ScrollReveal'
 
 export interface ProcessStep {
@@ -20,12 +28,12 @@ export default function ProcessSection({ label, title, description, steps }: Pro
     <section className={`${SECTION_PY} bg-nd-white border-t border-nd-grey-100`} id="process">
       <div className="max-w-[1160px] mx-auto px-5 sm:px-8">
         <ScrollReveal>
-          <div className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright">
+          <div className={`text-[0.65rem] ${TEXT_16_DESKTOP} tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-5 flex items-center gap-2 before:content-[''] before:w-6 before:h-0.5 before:bg-nd-accent-bright`}>
             {label}
           </div>
           <div className={SECTION_HEADER_GRID}>
-            <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] leading-[1.08] text-nd-black">{title}</h2>
-            <p className="text-[0.95rem] text-nd-grey-600 leading-[1.75]">{description}</p>
+            <h2 className={`text-[clamp(2rem,3.5vw,3rem)] font-bold tracking-[-0.035em] ${LEADING_HEADING} text-nd-black`}>{title}</h2>
+            <p className={`text-[0.95rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY}`}>{description}</p>
           </div>
         </ScrollReveal>
 
@@ -46,12 +54,12 @@ export default function ProcessSection({ label, title, description, steps }: Pro
               </span>
 
               <div className="relative z-10">
-                <div className="text-[0.62rem] tracking-[0.2em] uppercase font-bold text-nd-accent-mid mb-7">{step.phase}</div>
+                <div className={`text-[0.62rem] ${TEXT_16_DESKTOP} tracking-[0.2em] uppercase font-bold text-nd-accent-mid mb-7`}>{step.phase}</div>
                 <h3 className="text-[1.1rem] font-bold tracking-[-0.015em] mb-3 text-nd-black">{step.title}</h3>
-                <p className="text-[0.85rem] text-nd-grey-600 leading-[1.75] mb-6">{step.body}</p>
+                <p className={`text-[0.85rem] ${TEXT_BODY_DESKTOP} text-nd-grey-600 ${LEADING_BODY} mb-6`}>{step.body}</p>
                 <ul className="flex flex-col gap-1.5">
                   {step.items.map((item) => (
-                    <li key={item} className="text-[0.78rem] text-nd-grey-400 pl-4 relative before:content-['→'] before:absolute before:left-0 before:text-nd-accent-mid before:text-[0.7rem]">
+                    <li key={item} className={`text-[0.78rem] ${TEXT_16_DESKTOP} ${LEADING_BODY} text-nd-grey-400 pl-4 relative before:content-['→'] before:absolute before:left-0 before:text-nd-accent-mid before:text-[0.7rem]`}>
                       {item}
                     </li>
                   ))}
