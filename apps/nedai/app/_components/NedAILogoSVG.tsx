@@ -62,29 +62,16 @@ export default function NedAILogoSVG({ height = 36, className = '' }: Props) {
       </g>
 
       {/* ── Wordmark ── */}
-      {/* "Ned" — dark navy */}
       <text
-        x="185"
+        x="175"
         y="96"
         fontFamily="Futura, 'Century Gothic', 'Trebuchet MS', ui-sans-serif, sans-serif"
         fontWeight="700"
         fontSize="80"
-        fill="#1a1a40"
         letterSpacing="-3"
       >
-        Ned
-      </text>
-      {/* "AI" — magenta */}
-      <text
-        x="372"
-        y="96"
-        fontFamily="Futura, 'Century Gothic', 'Trebuchet MS', ui-sans-serif, sans-serif"
-        fontWeight="700"
-        fontSize="80"
-        fill="#e91e8c"
-        letterSpacing="-3"
-      >
-        AI
+        <tspan fill="#1a1a40">Ned</tspan>
+        <tspan fill="#e91e8c">AI</tspan>
       </text>
     </svg>
   )
