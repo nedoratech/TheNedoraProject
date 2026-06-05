@@ -6,6 +6,8 @@ import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server
 import { routing } from '@/i18n/routing'
 import { preload } from 'react-dom'
 import { CRITICAL_FONTS, CRITICAL_IMAGES } from '@/lib/criticalAssets'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import '../globals.css'
 
 interface Props {
@@ -56,6 +58,8 @@ export default async function LocaleLayout({ children, params }: Props) {
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
