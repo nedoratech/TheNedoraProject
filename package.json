@@ -17,7 +17,9 @@
     "dev:landing": "turbo dev --filter @nedora/landing",
     "dev:cms": "turbo dev --filter @nedora/microcms",
     "dev:crm": "turbo dev --filter @nedora/microcrm",
-    "dev:nedai": "turbo dev --filter @nedora/nedai"
+    "dev:nedai": "turbo dev --filter @nedora/nedai",
+    "build:landing": "turbo build --filter @nedora/landing",
+    "build:nedai": "turbo build --filter @nedora/nedai"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
