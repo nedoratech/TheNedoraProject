@@ -16,7 +16,6 @@ import { createServiceClient } from './server'
 import type { Database, LeadStatus } from './types'
 
 type ContactInsert = Database['public']['Tables']['crm_contacts']['Insert']
-type LeadInsert = Database['public']['Tables']['crm_leads']['Insert']
 type RequestInsert = Database['public']['Tables']['crm_project_requests']['Insert']
 
 export type ContactPiiInput = {
@@ -95,25 +94,11 @@ export async function createProjectRequest(payload: {
 
   const encryptedRequest = await encryptRequestFields(contact.subjectId, payload)
 
-  const { data: lead, error: leadErr } = await db
-    .from('crm_leads')
-    .insert({
-      contact_id: contact.id,
-      status: 'new',
-      project_type: payload.projectType as LeadInsert['project_type'],
-      engagement_model: payload.engagementModel as LeadInsert['engagement_model'],
-      timeline: payload.timeline as LeadInsert['timeline'],
-    })
-    .select('id')
-    .single()
-
-  if (leadErr) throw leadErr
-
   const { data: request, error: reqErr } = await db
     .from('crm_project_requests')
     .insert({
       contact_id: contact.id,
-      lead_id: lead.id,
+      lead_id: null,
       ...encryptedRequest,
       project_type: payload.projectType as RequestInsert['project_type'],
       engagement_model: payload.engagementModel as RequestInsert['engagement_model'],
@@ -129,7 +114,6 @@ export async function createProjectRequest(payload: {
   return {
     contactId: contact.id,
     subjectId: contact.subjectId,
-    leadId: lead.id,
     requestId: request.id,
   }
 }

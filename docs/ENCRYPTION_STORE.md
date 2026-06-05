@@ -4,10 +4,18 @@ CRM contact fields are encrypted with a **unique AES-256 key per subject**, stor
 
 ## Flow
 
-1. **Form submit** (landing) calls `provisionContactSubject()` → creates or finds `auth.users` + `profiles` (`role: contact`).
+1. **Form submit** (landing) calls `provisionContactSubject()` → creates or finds `auth.users` + `profiles`. If a new user is created, it starts as `role: contact`. If the auth user exists but `profiles` was removed, the helper backfills the profile row (without downgrading existing roles).
 2. **`ensureSubjectDek()`** inserts a 32-byte key into `nedora_encryption_store` if missing.
 3. **`encryptContactFields()` / `encryptRequestFields()`** write ciphertext using that subject's DEK.
 4. **microCRM** loads rows and **`decryptContact()`** / **`decryptRequestFields()`** load the DEK by `subject_id` and decrypt.
+
+## Future account activation (same auth user)
+
+The first form submit provisions an `auth.users` row for that email and a DEK for encryption. When the person later registers for Nedora (client portal, NedAI, etc.), **reuse the same `auth.users` record**:
+
+- Never create a second auth user for the same email.
+- “Activation” means attaching credentials to the existing user (invite / magic link / set password), and updating their `profiles.role` (e.g. `contact` → `user`).
+- CRM PII stays linked by `subject_id` and continues using the same DEK in `nedora_encryption_store`.
 
 ## Table
 

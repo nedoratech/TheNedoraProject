@@ -1,7 +1,5 @@
 'use server'
 
-import { createProjectRequest } from '@nedora/db/crm'
-import { getSupabaseConfigHint, getSupabaseConnectionHint } from '@nedora/db/supabaseErrors'
 import {
   buildContactFormSchema,
   flattenContactFormErrors,
@@ -11,6 +9,7 @@ import {
 } from '@/lib/contactFormSchema'
 import { getTranslations } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
+import { createProjectRequest } from '@nedora/db/crm'
 
 export type SubmitProjectRequestState =
   | { status: 'idle' }
@@ -21,13 +20,6 @@ export type SubmitProjectRequestState =
       fieldErrors?: Partial<Record<keyof ContactFormValues, string>>
       values?: ContactFormValues
     }
-
-function isCrmConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
-  )
-}
 
 export async function submitProjectRequest(
   _prev: SubmitProjectRequestState,
@@ -52,34 +44,25 @@ export async function submitProjectRequest(
     }
   }
 
-  const { firstName, lastName, email, company, projectType, engagementModel, timeline, message } = parsed.data
-
-  if (!isCrmConfigured()) {
-    console.info('[submitProjectRequest] CRM not configured — logging submission:', parsed.data)
-    return { status: 'success' }
-  }
-
   try {
     await createProjectRequest({
-      firstName,
-      lastName,
-      email,
-      company,
-      projectType,
-      engagementModel,
-      timeline,
-      message,
+      firstName: parsed.data.firstName,
+      lastName: parsed.data.lastName,
+      email: parsed.data.email,
+      company: parsed.data.company,
+      projectType: parsed.data.projectType,
+      engagementModel: parsed.data.engagementModel,
+      timeline: parsed.data.timeline,
+      message: parsed.data.message,
       locale,
     })
     return { status: 'success' }
   } catch (err) {
-    const configHint = getSupabaseConfigHint(err)
-    const connectionHint = getSupabaseConnectionHint(err)
-    const hint = configHint ?? connectionHint
-    if (hint) {
-      console.error(`[submitProjectRequest] ${hint}`)
+    console.error('[submitProjectRequest] Failed to persist request', err)
+    return {
+      status: 'error',
+      message: t('error_generic'),
+      values,
     }
-    console.error('submitProjectRequest error:', err)
-    return { status: 'error', message: t('error_generic'), values }
   }
 }

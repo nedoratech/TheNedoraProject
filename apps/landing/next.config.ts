@@ -4,8 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin'
 const withNextIntl = createNextIntlPlugin('./i18n/request.ts')
 
 const nextConfig: NextConfig = {
-  transpilePackages: ['@nedora/db'],
-  // Standalone marketing site: pre-rendered per locale; CMS/CRM via server actions when deployed with Node
+  // Standalone marketing site: static per locale from messages/*.json; CRM/CMS not linked yet
   images: {
     unoptimized: true, // static-friendly; logos served from /public/svg
   },

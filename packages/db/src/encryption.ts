@@ -53,7 +53,7 @@ export type DecryptedNewsletterSubscriber = {
   created_at: string
 }
 
-/** Resolve an existing auth subject from profiles (fast, indexed email). */
+/** Resolve an existing landing contact from profiles (fast, indexed email). */
 async function findSubjectIdByProfileEmail(
   db: SupabaseClient<Database>,
   email: string,
@@ -67,6 +67,46 @@ async function findSubjectIdByProfileEmail(
 
   if (error) throw error
   return data?.id ?? null
+}
+
+/** Backfill profiles when auth exists but the row was removed or the trigger did not run. */
+async function ensureContactProfile(
+  db: SupabaseClient<Database>,
+  subjectId: string,
+  email: string,
+  fullName?: string,
+): Promise<void> {
+  const { data: authData, error: authErr } = await db.auth.admin.getUserById(subjectId)
+  if (authErr) throw authErr
+
+  const displayName = fullName ?? email
+  const metadataRole =
+    typeof authData.user.user_metadata?.role === 'string' ? authData.user.user_metadata.role : null
+
+  const { data: profile, error: profErr } = await db
+    .from('profiles')
+    .select('id, role')
+    .eq('id', subjectId)
+    .maybeSingle()
+
+  if (profErr) throw profErr
+
+  if (!profile) {
+    const { error: insertErr } = await db.from('profiles').insert({
+      id: subjectId,
+      email,
+      full_name: displayName,
+      role: metadataRole ?? 'contact',
+    })
+    if (insertErr) throw insertErr
+    return
+  }
+
+  const { error: updateErr } = await db
+    .from('profiles')
+    .update({ email, full_name: displayName })
+    .eq('id', subjectId)
+  if (updateErr) throw updateErr
 }
 
 async function findAuthUserIdByEmail(
@@ -292,6 +332,7 @@ export async function provisionContactSubject(
     }
   }
 
+  await ensureContactProfile(db, subjectId, email, fullName)
   await ensureSubjectDek(subjectId)
   return { subjectId }
 }

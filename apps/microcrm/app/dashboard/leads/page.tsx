@@ -83,7 +83,7 @@ export default async function LeadsPage({ searchParams }: Props) {
             {leads.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-5 py-10 text-center text-[0.82rem] text-nd-grey-600">
-                  No leads{status ? ` in "${status}"` : ''}. Project requests automatically create leads.
+                  No leads{status ? ` in "${status}"` : ''}. Leads are created manually from project requests.
                 </td>
               </tr>
             ) : leads.map(({ lead, contact }) => (
