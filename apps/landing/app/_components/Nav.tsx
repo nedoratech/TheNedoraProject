@@ -62,12 +62,13 @@ export default function Nav({ items, locales, contactHref = '#contact-offer', so
     return pathname
   }, [pathname])
 
-  const localeHref = useMemo(() => `${normalizedPathname}${hash}`, [normalizedPathname, hash])
-
   const switchLocale = (l: string) => {
     if (l === locale) return
     setMenuOpen(false)
-    router.replace(localeHref, { locale: l })
+    // When switching language, drop hash/query and scroll to top (soft reload feel).
+    setHash('')
+    router.replace(normalizedPathname, { locale: l })
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
   }
 
   const barStyle = solid

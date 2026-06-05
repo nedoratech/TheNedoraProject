@@ -390,20 +390,36 @@ export default function ContactForm({ formMode, onFormModeChange }: ContactFormP
 
       <div>
         <FieldLabel htmlFor="formMode">{t('formMode.label')}</FieldLabel>
-        <select
-          id="formMode"
-          name="formMode"
-          value={activeMode}
-          disabled={isPending}
-          className={`${fieldStatusClass('default')} ${inputDisabledClass} appearance-none cursor-pointer`}
-          onChange={(e) => handleModeChange(e.target.value as FormMode)}
-        >
-          {FORM_MODES.map((mode) => (
-            <option key={mode} value={mode}>
-              {t(`formMode.${mode}`)}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            id="formMode"
+            name="formMode"
+            value={activeMode}
+            disabled={isPending}
+            className={`${fieldStatusClass('default')} ${inputDisabledClass} appearance-none cursor-pointer pr-12`}
+            onChange={(e) => handleModeChange(e.target.value as FormMode)}
+          >
+            {FORM_MODES.map((mode) => (
+              <option key={mode} value={mode}>
+                {t(`formMode.${mode}`)}
+              </option>
+            ))}
+          </select>
+          <span
+            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-nd-grey-600"
+            aria-hidden
+          >
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="block">
+              <path
+                d="M3 4.5L6 7.5L9 4.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="square"
+                strokeLinejoin="miter"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
