@@ -8,7 +8,7 @@ import EngagementSection, { type EngagementContent } from '../_components/Engage
 import BigCta, { type BigCtaContent } from '../_components/BigCta'
 import ContactSection, { type ContactInfoContent } from '../_components/ContactSection'
 import Footer from '../_components/Footer'
-import { buildFooterContent, buildHomeNavItems } from '@/lib/landingShell'
+import { buildFooterContent, buildHomeNavItems, buildNavProductsMenu } from '@/lib/landingShell'
 
 // Static phase — content comes entirely from messages/en.json and messages/ro.json.
 // CMS overlay will be wired back in once microCMS is set up.
@@ -42,6 +42,7 @@ export default async function HomePage({ params }: Props) {
   }
 
   const nav = buildHomeNavItems((key) => tNav(key))
+  const productsMenu = buildNavProductsMenu((key) => tNav(key))
 
   const bento: BentoContent = {
     label: tBento('label'),
@@ -114,7 +115,7 @@ export default async function HomePage({ params }: Props) {
 
   return (
     <>
-      <Nav items={nav} locales={['en', 'ro']} />
+      <Nav items={nav} productsMenu={productsMenu} locales={['en', 'ro']} />
       <main>
         <Hero {...hero} />
         <BentoSection {...bento} />

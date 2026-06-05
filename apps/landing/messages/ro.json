@@ -7,7 +7,18 @@
     "services": "Servicii",
     "about": "Despre",
     "contact": "Contact",
-    "cta": "Solicită o ofertă"
+    "cta": "Solicită o ofertă",
+    "solutions": {
+      "label": "Soluții",
+      "products_column": "Produse",
+      "items": {
+        "nedai": {
+          "label": "NedAI",
+          "description": "Un receptionist AI conversațional pentru orice tip de recepție — folosit în prezent în spitale private, dealeri auto și clinici. Ajută companiile să gestioneze solicitările, să califice lead-uri și să rămână disponibile non-stop.",
+          "mobile_description": "Receptionist AI pentru orice recepție."
+        }
+      }
+    }
   },
   "hero": {
     "eyebrow": "Dezvoltare Software Enterprise",

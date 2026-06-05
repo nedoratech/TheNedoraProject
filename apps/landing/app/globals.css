@@ -20,6 +20,11 @@
   /* Hero headline emphasis */
   --color-nd-hero-highlight: #ffb340;
 
+  /* NedAI product brand */
+  --color-nedai-magenta: #e91e8c;
+  --color-nedai-navy: #1a1a40;
+  --color-nedai-purple: #6a0dad;
+
   /* Typography */
   --font-futura: Futura, "Century Gothic", "Trebuchet MS", ui-sans-serif, sans-serif;
 

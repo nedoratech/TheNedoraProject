@@ -7,7 +7,18 @@
     "services": "Services",
     "about": "About",
     "contact": "Contact",
-    "cta": "Request an offer"
+    "cta": "Request an offer",
+    "solutions": {
+      "label": "Solutions",
+      "products_column": "Products",
+      "items": {
+        "nedai": {
+          "label": "NedAI",
+          "description": "A conversational AI receptionist for all kinds of receptions — currently in use at private hospitals, dealerships, and clinics. It helps businesses handle inquiries, qualify leads, and stay responsive around the clock.",
+          "mobile_description": "AI receptionist for any front desk."
+        }
+      }
+    }
   },
   "hero": {
     "eyebrow": "Enterprise Software Development",

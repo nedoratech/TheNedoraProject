@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { usePathname, useRouter } from '@/i18n/navigation'
 import { routing } from '@/i18n/routing'
 import { useLocale, useTranslations } from 'next-intl'
+import type { NavProductsMenu as NavProductsMenuData } from '@/lib/landingShell'
 import NedoraLogo from './NedoraLogo'
+import NavProductsMenu from './NavProductsMenu'
 
 interface NavItem {
   label: string
@@ -13,6 +15,7 @@ interface NavItem {
 
 interface Props {
   items: NavItem[]
+  productsMenu?: NavProductsMenuData | null
   locales: string[]
   /** Contact CTA target — use `/#contact` on inner pages. */
   contactHref?: string
@@ -20,7 +23,13 @@ interface Props {
   solid?: boolean
 }
 
-export default function Nav({ items, locales, contactHref = '#contact-offer', solid = false }: Props) {
+export default function Nav({
+  items,
+  productsMenu = null,
+  locales,
+  contactHref = '#contact-offer',
+  solid = false,
+}: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [hash, setHash] = useState('')
@@ -82,6 +91,9 @@ export default function Nav({ items, locales, contactHref = '#contact-offer', so
     ? { background: 'var(--color-nd-black)' }
     : { background: 'rgba(10,10,10,.97)', backdropFilter: 'blur(20px) saturate(1.8)' }
 
+  const primaryItems = items.slice(0, -1)
+  const contactItem = items.at(-1)
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100]">
       <div
@@ -90,14 +102,32 @@ export default function Nav({ items, locales, contactHref = '#contact-offer', so
       >
         <NedoraLogo variant="light" priority />
 
-        <ul className="hidden md:flex gap-8 text-[0.72rem] tracking-[0.1em] uppercase font-medium">
-          {items.map((item) => (
+        <ul className="hidden md:flex gap-8 text-[0.72rem] tracking-[0.1em] uppercase font-medium overflow-visible">
+          {primaryItems.map((item) => (
             <li key={item.href}>
               <a href={item.href} className="text-white/50 hover:text-nd-white transition-colors duration-200">
                 {item.label}
               </a>
             </li>
           ))}
+          {productsMenu && productsMenu.items.length > 0 && (
+            <NavProductsMenu
+              label={productsMenu.label}
+              productsColumnLabel={productsMenu.productsColumnLabel}
+              items={productsMenu.items}
+              variant="desktop"
+            />
+          )}
+          {contactItem && (
+            <li key={contactItem.href}>
+              <a
+                href={contactItem.href}
+                className="text-white/50 hover:text-nd-white transition-colors duration-200"
+              >
+                {contactItem.label}
+              </a>
+            </li>
+          )}
         </ul>
 
         <div className="flex items-center gap-5">
@@ -142,7 +172,7 @@ export default function Nav({ items, locales, contactHref = '#contact-offer', so
         <div className="sm:hidden border-b border-white/[0.06]" style={mobileMenuStyle}>
           <div className="px-5 py-5 flex flex-col gap-4">
             <div className="flex flex-col gap-3">
-              {items.map((item) => (
+              {primaryItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
@@ -152,6 +182,28 @@ export default function Nav({ items, locales, contactHref = '#contact-offer', so
                   {item.label}
                 </a>
               ))}
+              {contactItem && (
+                <a
+                  key={contactItem.href}
+                  href={contactItem.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="text-[0.72rem] tracking-[0.12em] uppercase font-bold text-white/70 hover:text-white transition-colors duration-200"
+                >
+                  {contactItem.label}
+                </a>
+              )}
+              {productsMenu && productsMenu.items.length > 0 && (
+                <>
+                  <div className="border-t border-white/[0.08] pt-4 mt-1" />
+                  <NavProductsMenu
+                    label={productsMenu.label}
+                    productsColumnLabel={productsMenu.productsColumnLabel}
+                    items={productsMenu.items}
+                    variant="mobile"
+                    onNavigate={() => setMenuOpen(false)}
+                  />
+                </>
+              )}
             </div>
 
             {locales.length > 1 && (

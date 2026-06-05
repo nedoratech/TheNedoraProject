@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server'
 import Nav from '../../_components/Nav'
 import Footer from '../../_components/Footer'
 import PrivacyPolicy, { type PrivacyPolicyContent } from '../../_components/PrivacyPolicy'
-import { buildFooterContent, buildShellNavItems } from '@/lib/landingShell'
+import { buildFooterContent, buildNavProductsMenu, buildShellNavItems } from '@/lib/landingShell'
 
 export const dynamic = 'force-static'
 
@@ -45,6 +45,7 @@ export default async function PrivacyPage({ params }: Props) {
     <>
       <Nav
         items={buildShellNavItems((key) => tNav(key))}
+        productsMenu={buildNavProductsMenu((key) => tNav(key))}
         locales={['en', 'ro']}
         contactHref="/#contact-offer"
         solid
