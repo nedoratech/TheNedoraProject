@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── NedAI light-theme palette ── */
+  /* Backgrounds */
+  --color-na-bg:         #ffffff;        /* primary section bg */
+  --color-na-bg-alt:     #f7f5ff;        /* alternate section bg (very light lavender) */
+  --color-na-bg-deep:    #ede9ff;        /* deeper lavender for callouts */
+  --color-na-card:       #ffffff;        /* card surface */
+  --color-na-card-alt:   #f7f5ff;        /* card alt surface */
+
+  /* Text */
+  --color-na-ink:        #0d0d2b;        /* headings — dark navy from logo */
+  --color-na-ink-mid:    #3d3760;        /* sub-headings */
+  --color-na-ink-body:   #5a5780;        /* body copy */
+  --color-na-ink-muted:  #9493b0;        /* captions, placeholders */
+
+  /* Brand accents (unchanged from logo) */
+  --color-na-purple:        #6a0dad;
+  --color-na-purple-mid:    #7c3aed;
+  --color-na-purple-bright: #9b5cf6;
+  --color-na-magenta:       #e91e8c;
+  --color-na-magenta-soft:  #fce7f3;
+
+  /* Borders & dividers */
+  --color-na-border:     rgba(124,58,237,0.18);
+  --color-na-border-alt: rgba(124,58,237,0.10);
+  --color-na-divider:    rgba(13,13,43,0.08);
+
+  /* Utility */
+  --color-na-white:      #ffffff;
+  --color-na-navy:       #0d0d2b;
+
+  /* Nedora shared */
+  --color-nd-black: #0a0a0a;
+  --color-nd-white: #fafafa;
+  --color-nd-grey-50: #f7f7f7;
+  --color-nd-grey-100: #efefef;
+  --color-nd-grey-200: #dedede;
+  --color-nd-grey-400: #9a9a9a;
+  --color-nd-grey-600: #555555;
+  --color-nd-accent-mid: #3b5bdb;
+  --color-nd-accent-bright: #6473f3;
+
+  --font-futura: Futura, "Century Gothic", "Trebuchet MS", ui-sans-serif, sans-serif;
+  --radius: 0;
+}
+
+/* Futura */
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/futura-regular.woff2") format("woff2");
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/futura-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: block;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  font-size: 18px;
+}
+
+:root {
+  --na-nav-h: 64px;
+}
+@media (min-width: 640px) {
+  :root { --na-nav-h: 76px; }
+}
+
+body {
+  font-family: var(--font-futura);
+  font-size: 1rem;
+  line-height: 1.5;
+  background-color: var(--color-na-bg);
+  color: var(--color-na-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button:not(:disabled), a[href],
+input[type="submit"], input[type="button"], input[type="reset"],
+select, label:has(input[type="checkbox"]), label:has(input[type="radio"]) {
+  cursor: pointer;
+}
+button:disabled, input:disabled, select:disabled, textarea:disabled {
+  cursor: not-allowed;
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.25; }
+  50%       { opacity: 0.7; }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(0.95); opacity: 0.7; }
+  50%  { transform: scale(1.05); opacity: 0.3; }
+  100% { transform: scale(0.95); opacity: 0.7; }
+}

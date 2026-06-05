@@ -25,7 +25,7 @@ export type CrmRequestStatus =
   | 'converted'
   | 'archived'
   | 'spam'
-export type CrmInquiryType = 'contact' | 'project_request'
+export type CrmInquiryType = 'contact' | 'project_request' | 'demo_request'
 export type EngagementModel = 'fixed_scope' | 'time_based' | 'not_sure'
 export type TimelineOption = 'ready_now' | '1_3_months' | '3_6_months' | 'exploring'
 export type InteractionType =

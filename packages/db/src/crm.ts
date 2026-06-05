@@ -78,15 +78,19 @@ export async function createProjectRequest(payload: {
   city?: string
   postalCode?: string
   country?: string
+  /** Submission channel. Defaults to 'landing_contact_form'. Use 'nedai_website' for NedAI demo requests. */
+  source?: 'landing_contact_form' | 'nedai_website' | 'referral' | 'other'
 }) {
   const db = createServiceClient()
   const isProjectRequest = payload.inquiryType === 'project_request'
+  // Demo requests also carry company info; contact-only messages do not.
+  const includesCompany = isProjectRequest || payload.inquiryType === 'demo_request'
 
   const contact = await upsertContact({
     email: payload.email,
     firstName: payload.firstName,
     lastName: payload.lastName,
-    company: isProjectRequest ? payload.company : undefined,
+    company: includesCompany ? payload.company : undefined,
     addressLine1: payload.addressLine1,
     addressLine2: payload.addressLine2,
     city: payload.city,
@@ -99,7 +103,7 @@ export async function createProjectRequest(payload: {
     email: payload.email,
     firstName: payload.firstName,
     lastName: payload.lastName,
-    company: isProjectRequest ? payload.company : undefined,
+    company: includesCompany ? payload.company : undefined,
     message: payload.message,
     addressLine1: payload.addressLine1,
     addressLine2: payload.addressLine2,
@@ -124,7 +128,7 @@ export async function createProjectRequest(payload: {
       timeline: payload.timeline as RequestInsert['timeline'],
       locale: payload.locale ?? 'en',
       ip_address: payload.ipAddress ?? null,
-      source: 'landing_contact_form',
+      source: payload.source ?? 'landing_contact_form',
     })
     .select('id')
     .single()
@@ -177,6 +181,36 @@ export async function subscribeToNewsletter(data: {
   )
 
   if (error) throw error
+}
+
+/** Unsubscribe by email: looks up the subject via email hash, sets status='unsubscribed'. */
+export async function unsubscribeFromNewsletter(email: string): Promise<{ found: boolean }> {
+  const db = createServiceClient()
+
+  // Find the subject via the auth profile (fast email lookup)
+  const { data: profile } = await db
+    .from('profiles')
+    .select('id')
+    .eq('email', email.toLowerCase().trim())
+    .maybeSingle()
+
+  if (!profile) return { found: false }
+
+  const { data: subscriber } = await db
+    .from('crm_newsletter_subscribers')
+    .select('id')
+    .eq('subject_id', profile.id)
+    .maybeSingle()
+
+  if (!subscriber) return { found: false }
+
+  const { error } = await db
+    .from('crm_newsletter_subscribers')
+    .update({ status: 'unsubscribed' })
+    .eq('subject_id', profile.id)
+
+  if (error) throw error
+  return { found: true }
 }
 
 // ── Leads ─────────────────────────────────────────────────────────────────────

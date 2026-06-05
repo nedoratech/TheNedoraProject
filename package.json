@@ -16,7 +16,8 @@
     "db:reset": "supabase db reset",
     "dev:landing": "turbo dev --filter @nedora/landing",
     "dev:cms": "turbo dev --filter @nedora/microcms",
-    "dev:crm": "turbo dev --filter @nedora/microcrm"
+    "dev:crm": "turbo dev --filter @nedora/microcrm",
+    "dev:nedai": "turbo dev --filter @nedora/nedai"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
