@@ -72,6 +72,7 @@ export async function createProjectRequest(payload: {
   timeline: string
   message?: string
   locale?: string
+  ipAddress?: string | null
   addressLine1?: string
   addressLine2?: string
   city?: string
@@ -122,6 +123,7 @@ export async function createProjectRequest(payload: {
         : null,
       timeline: payload.timeline as RequestInsert['timeline'],
       locale: payload.locale ?? 'en',
+      ip_address: payload.ipAddress ?? null,
       source: 'landing_contact_form',
     })
     .select('id')

@@ -10,6 +10,7 @@ import {
 import { getTranslations } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
 import { createProjectRequest } from '@nedora/db/crm'
+import { getClientIp } from '@/lib/getClientIp'
 
 export type SubmitProjectRequestState =
   | { status: 'idle' }
@@ -45,6 +46,8 @@ export async function submitProjectRequest(
   }
 
   try {
+    const ipAddress = await getClientIp()
+
     await createProjectRequest({
       inquiryType: parsed.data.formMode,
       firstName: parsed.data.firstName,
@@ -58,6 +61,7 @@ export async function submitProjectRequest(
       timeline: parsed.data.timeline,
       message: parsed.data.message,
       locale,
+      ipAddress,
     })
     return { status: 'success' }
   } catch (err) {

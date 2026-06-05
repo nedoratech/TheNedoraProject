@@ -15,7 +15,7 @@ async function getRequests() {
     .select(`
       id, subject_id, inquiry_type, project_type, engagement_model, timeline,
       first_name_ciphertext, last_name_ciphertext, email_ciphertext, company_ciphertext, message_ciphertext,
-      created_at,
+      ip_address, created_at,
       crm_contacts ( * )
     `)
     .order('created_at', { ascending: false })
@@ -80,7 +80,10 @@ export default async function RequestsPage() {
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div>
                   <p className="text-[0.95rem] font-bold text-nd-white">{firstName} {lastName}</p>
-                  <p className="text-[0.78rem] text-nd-grey-600">{email} · {company ?? '—'}</p>
+                  <p className="text-[0.78rem] text-nd-grey-600">
+                    {email} · {company ?? '—'}
+                    {req.ip_address ? ` · ${req.ip_address}` : ''}
+                  </p>
                 </div>
                 <time className="text-[0.72rem] text-nd-grey-600 shrink-0">
                   {new Date(req.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
