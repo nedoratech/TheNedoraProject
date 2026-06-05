@@ -13,7 +13,7 @@ import {
   provisionContactSubject,
 } from './encryption'
 import { createServiceClient } from './server'
-import type { Database, LeadStatus } from './types'
+import type { CrmInquiryType, Database, LeadStatus } from './types'
 
 type ContactInsert = Database['public']['Tables']['crm_contacts']['Insert']
 type RequestInsert = Database['public']['Tables']['crm_project_requests']['Insert']
@@ -62,12 +62,13 @@ export async function upsertContact(data: ContactPiiInput) {
 // ── Project requests (from landing page form) ─────────────────────────────────
 
 export async function createProjectRequest(payload: {
+  inquiryType: CrmInquiryType
   firstName: string
   lastName: string
   email: string
   company?: string
-  projectType: string
-  engagementModel: string
+  projectType?: string
+  engagementModel?: string
   timeline: string
   message?: string
   locale?: string
@@ -78,12 +79,13 @@ export async function createProjectRequest(payload: {
   country?: string
 }) {
   const db = createServiceClient()
+  const isProjectRequest = payload.inquiryType === 'project_request'
 
   const contact = await upsertContact({
     email: payload.email,
     firstName: payload.firstName,
     lastName: payload.lastName,
-    company: payload.company,
+    company: isProjectRequest ? payload.company : undefined,
     addressLine1: payload.addressLine1,
     addressLine2: payload.addressLine2,
     city: payload.city,
@@ -92,7 +94,18 @@ export async function createProjectRequest(payload: {
     source: 'website_form',
   })
 
-  const encryptedRequest = await encryptRequestFields(contact.subjectId, payload)
+  const encryptedRequest = await encryptRequestFields(contact.subjectId, {
+    email: payload.email,
+    firstName: payload.firstName,
+    lastName: payload.lastName,
+    company: isProjectRequest ? payload.company : undefined,
+    message: payload.message,
+    addressLine1: payload.addressLine1,
+    addressLine2: payload.addressLine2,
+    city: payload.city,
+    postalCode: payload.postalCode,
+    country: payload.country,
+  })
 
   const { data: request, error: reqErr } = await db
     .from('crm_project_requests')
@@ -100,8 +113,13 @@ export async function createProjectRequest(payload: {
       contact_id: contact.id,
       lead_id: null,
       ...encryptedRequest,
-      project_type: payload.projectType as RequestInsert['project_type'],
-      engagement_model: payload.engagementModel as RequestInsert['engagement_model'],
+      inquiry_type: payload.inquiryType,
+      project_type: isProjectRequest
+        ? (payload.projectType as RequestInsert['project_type'])
+        : null,
+      engagement_model: isProjectRequest
+        ? (payload.engagementModel as RequestInsert['engagement_model'])
+        : null,
       timeline: payload.timeline as RequestInsert['timeline'],
       locale: payload.locale ?? 'en',
       source: 'landing_contact_form',

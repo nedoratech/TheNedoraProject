@@ -16,18 +16,25 @@ import {
   buildContactFormSchema,
   defaultContactFormValues,
   flattenContactFormErrors,
+  FORM_MODES,
   getContactFormValidationMessages,
   ENGAGEMENT_MODELS,
   PROJECT_TYPES,
   TIMELINES,
   type ContactFormField,
   type ContactFormValues,
+  type FormMode,
 } from '@/lib/contactFormSchema'
 import { submitProjectRequest, type SubmitProjectRequestState } from '../_actions/submitProjectRequest'
 
 const initialState: SubmitProjectRequestState = { status: 'idle' }
 
 type FieldStatus = 'default' | 'invalid' | 'valid'
+
+interface ContactFormProps {
+  formMode: FormMode
+  onFormModeChange: (mode: FormMode) => void
+}
 
 function FormSpinner({ label }: { label: string }) {
   return (
@@ -39,7 +46,7 @@ function FormSpinner({ label }: { label: string }) {
   )
 }
 
-function SubmitButton({ pending }: { pending: boolean }) {
+function SubmitButton({ pending, formMode }: { pending: boolean; formMode: FormMode }) {
   const t = useTranslations('contact')
   return (
     <button
@@ -49,7 +56,7 @@ function SubmitButton({ pending }: { pending: boolean }) {
       className="w-full flex items-center justify-center gap-2.5 text-[0.82rem] tracking-[0.14em] uppercase font-bold py-4 bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:shadow-none"
     >
       {pending && <FormSpinner label={t('submitting')} />}
-      {pending ? t('submitting') : t('submit')}
+      {pending ? t('submitting') : t(`modes.${formMode}.submit`)}
     </button>
   )
 }
@@ -143,7 +150,7 @@ function getFieldStatus(
   return 'valid'
 }
 
-export default function ContactForm() {
+export default function ContactForm({ formMode, onFormModeChange }: ContactFormProps) {
   const locale = useLocale()
   const t = useTranslations('contact')
   const [state, formAction, isActionPending] = useActionState(submitProjectRequest, initialState)
@@ -160,6 +167,19 @@ export default function ContactForm() {
     () => buildContactFormSchema(getContactFormValidationMessages(t)),
     [t, locale],
   )
+
+  useEffect(() => {
+    setValues((prev) => ({ ...prev, formMode }))
+    setFieldErrors((prev) => {
+      const copy = { ...prev }
+      if (formMode === 'contact') {
+        delete copy.company
+        delete copy.projectType
+        delete copy.engagementModel
+      }
+      return copy
+    })
+  }, [formMode])
 
   const validateAll = useCallback(
     (next: ContactFormValues) => {
@@ -192,7 +212,10 @@ export default function ContactForm() {
 
   useEffect(() => {
     if (state.status === 'error') {
-      if (state.values) setValues(state.values)
+      if (state.values) {
+        setValues(state.values)
+        onFormModeChange(state.values.formMode)
+      }
       if (state.fieldErrors) {
         setFieldErrors(state.fieldErrors)
         setSubmitAttempted(true)
@@ -202,7 +225,7 @@ export default function ContactForm() {
     if (state.status === 'success' || state.status === 'idle') {
       setBannerMessage(null)
     }
-  }, [state])
+  }, [state, onFormModeChange])
 
   const setValue = <K extends ContactFormField>(field: K, value: ContactFormValues[K]) => {
     setValues((prev) => {
@@ -222,15 +245,25 @@ export default function ContactForm() {
     })
   }
 
+  const handleModeChange = (mode: FormMode) => {
+    onFormModeChange(mode)
+    setValues((prev) => {
+      const next = { ...prev, formMode: mode }
+      if (submitAttempted) validateAll(next)
+      return next
+    })
+  }
+
   const buildFormData = (data: ContactFormValues) => {
     const fd = new FormData()
     fd.set('locale', locale)
+    fd.set('formMode', data.formMode)
     fd.set('firstName', data.firstName)
     fd.set('lastName', data.lastName)
     fd.set('email', data.email)
-    fd.set('company', data.company)
-    fd.set('projectType', data.projectType)
-    fd.set('engagementModel', data.engagementModel)
+    fd.set('company', data.company ?? '')
+    fd.set('projectType', data.projectType ?? 'new_application')
+    fd.set('engagementModel', data.engagementModel ?? 'fixed_scope')
     fd.set('timeline', data.timeline)
     fd.set('message', data.message)
     fd.set('privacyAccepted', data.privacyAccepted ? 'true' : 'false')
@@ -242,7 +275,8 @@ export default function ContactForm() {
     setSubmitAttempted(true)
     setBannerMessage(null)
 
-    const result = validateAll(values)
+    const payload = { ...values, formMode }
+    const result = validateAll(payload)
     if (!result.ok) {
       setFieldErrors(result.errors)
       setBannerMessage(t('error_validation'))
@@ -254,6 +288,9 @@ export default function ContactForm() {
       formAction(buildFormData(result.data))
     })
   }
+
+  const activeMode = values.formMode
+  const isProjectRequest = activeMode === 'project_request'
 
   if (state.status === 'success') {
     return (
@@ -272,8 +309,12 @@ export default function ContactForm() {
             />
           </svg>
         </div>
-        <p className="text-[1rem] font-bold text-lime-600 tracking-[-0.01em]">{t('success_title')}</p>
-        <p className="text-[0.88rem] text-nd-grey-600 mt-2">{t('success_body')}</p>
+        <p className="text-[1rem] font-bold text-lime-600 tracking-[-0.01em]">
+          {t(`modes.${activeMode}.success_title`)}
+        </p>
+        <p className="text-[0.88rem] text-nd-grey-600 mt-2">
+          {t(`modes.${activeMode}.success_body`)}
+        </p>
       </div>
     )
   }
@@ -285,13 +326,14 @@ export default function ContactForm() {
     field: Extract<ContactFormField, 'firstName' | 'lastName' | 'email' | 'company'>,
     type: 'text' | 'email',
     placeholder: string,
+    required = true,
   ) => {
     const status = getFieldStatus(field, fieldErrors, touched, submitAttempted)
     const showIcon = status === 'invalid' || status === 'valid'
 
     return (
       <div>
-        <FieldLabel htmlFor={field} required>
+        <FieldLabel htmlFor={field} required={required}>
           {t(`fields.${field}`)}
         </FieldLabel>
         <div className="relative">
@@ -299,19 +341,17 @@ export default function ContactForm() {
             id={field}
             name={field}
             type={type}
-            value={values[field]}
+            value={(values[field] ?? '') as string}
             placeholder={placeholder}
             disabled={isPending}
             className={`${fieldStatusClass(status)} ${inputDisabledClass}`}
             onChange={(e) => setValue(field, e.target.value)}
             onBlur={() => markTouched(field)}
             aria-invalid={status === 'invalid'}
-            aria-required
-            required
+            aria-required={required}
+            required={required}
           />
-          {showIcon && (
-            <StatusIcon status={status} />
-          )}
+          {showIcon && <StatusIcon status={status} />}
         </div>
         {fieldErrors[field] && (
           <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors[field]}</p>
@@ -340,6 +380,7 @@ export default function ContactForm() {
       )}
 
       <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="formMode" value={activeMode} />
 
       {bannerMessage && (
         <div className="border border-red-300 bg-red-50 px-4 py-3 text-[0.82rem] text-red-700">
@@ -347,89 +388,113 @@ export default function ContactForm() {
         </div>
       )}
 
+      <div>
+        <FieldLabel htmlFor="formMode">{t('formMode.label')}</FieldLabel>
+        <select
+          id="formMode"
+          name="formMode"
+          value={activeMode}
+          disabled={isPending}
+          className={`${fieldStatusClass('default')} ${inputDisabledClass} appearance-none cursor-pointer`}
+          onChange={(e) => handleModeChange(e.target.value as FormMode)}
+        >
+          {FORM_MODES.map((mode) => (
+            <option key={mode} value={mode}>
+              {t(`formMode.${mode}`)}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {renderInput('firstName', 'text', t('placeholders.firstName'))}
         {renderInput('lastName', 'text', t('placeholders.lastName'))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className={`grid grid-cols-1 gap-4 ${isProjectRequest ? 'sm:grid-cols-2' : ''}`}>
         {renderInput('email', 'email', t('placeholders.email'))}
-        {renderInput('company', 'text', t('placeholders.company'))}
+        {isProjectRequest && renderInput('company', 'text', t('placeholders.company'))}
       </div>
 
-      <div>
-        <label className={labelClass}>{t('fields.projectType')}</label>
-        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-1">
-            {PROJECT_TYPES.map((value) => (
-              <label key={value} className={radioLabelClass}>
-                <input
-                  type="radio"
-                  name="projectType"
-                  value={value}
-                  checked={values.projectType === value}
-                  disabled={isPending}
-                  className="accent-nd-accent-mid disabled:cursor-not-allowed"
-                  onChange={() => setValue('projectType', value)}
-                />
-                {t(`projectTypes.${value}`)}
-              </label>
-            ))}
-        </div>
-        {fieldErrors.projectType && (
-          <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.projectType}</p>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label className={labelClass}>{t('fields.engagementModel')}</label>
-          <div className="flex flex-col gap-2 mt-1">
-              {ENGAGEMENT_MODELS.map((value) => (
+      {isProjectRequest && (
+        <>
+          <div>
+            <label className={labelClass}>{t('fields.projectType')}</label>
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mt-1">
+              {PROJECT_TYPES.map((value) => (
                 <label key={value} className={radioLabelClass}>
                   <input
                     type="radio"
-                    name="engagementModel"
+                    name="projectType"
                     value={value}
-                    checked={values.engagementModel === value}
+                    checked={values.projectType === value}
                     disabled={isPending}
                     className="accent-nd-accent-mid disabled:cursor-not-allowed"
-                    onChange={() => setValue('engagementModel', value)}
+                    onChange={() => setValue('projectType', value)}
                   />
-                  {t(`engagementModels.${value}`)}
+                  {t(`projectTypes.${value}`)}
                 </label>
               ))}
+            </div>
+            {fieldErrors.projectType && (
+              <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.projectType}</p>
+            )}
           </div>
-          {fieldErrors.engagementModel && (
-            <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.engagementModel}</p>
-          )}
-        </div>
-        <div>
-          <label className={labelClass}>{t('fields.timeline')}</label>
-          <div className="flex flex-col gap-2 mt-1">
-              {TIMELINES.map((value) => (
-                <label key={value} className={radioLabelClass}>
-                  <input
-                    type="radio"
-                    name="timeline"
-                    value={value}
-                    checked={values.timeline === value}
-                    disabled={isPending}
-                    className="accent-nd-accent-mid disabled:cursor-not-allowed"
-                    onChange={() => setValue('timeline', value)}
-                  />
-                  {t(`timelines.${value}`)}
-                </label>
-              ))}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className={labelClass}>{t('fields.engagementModel')}</label>
+              <div className="flex flex-col gap-2 mt-1">
+                {ENGAGEMENT_MODELS.map((value) => (
+                  <label key={value} className={radioLabelClass}>
+                    <input
+                      type="radio"
+                      name="engagementModel"
+                      value={value}
+                      checked={values.engagementModel === value}
+                      disabled={isPending}
+                      className="accent-nd-accent-mid disabled:cursor-not-allowed"
+                      onChange={() => setValue('engagementModel', value)}
+                    />
+                    {t(`engagementModels.${value}`)}
+                  </label>
+                ))}
+              </div>
+              {fieldErrors.engagementModel && (
+                <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.engagementModel}</p>
+              )}
+            </div>
+            <div>
+              <label className={labelClass}>{t('fields.timeline')}</label>
+              <div className="flex flex-col gap-2 mt-1">
+                {TIMELINES.map((value) => (
+                  <label key={value} className={radioLabelClass}>
+                    <input
+                      type="radio"
+                      name="timeline"
+                      value={value}
+                      checked={values.timeline === value}
+                      disabled={isPending}
+                      className="accent-nd-accent-mid disabled:cursor-not-allowed"
+                      onChange={() => setValue('timeline', value)}
+                    />
+                    {t(`timelines.${value}`)}
+                  </label>
+                ))}
+              </div>
+              {fieldErrors.timeline && (
+                <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.timeline}</p>
+              )}
+            </div>
           </div>
-          {fieldErrors.timeline && (
-            <p className="text-[0.72rem] text-red-600 mt-1">{fieldErrors.timeline}</p>
-          )}
-        </div>
-      </div>
+        </>
+      )}
+
+      {/* Timeline is intentionally hidden in Contact mode. We still submit a safe default value. */}
 
       <div>
         <FieldLabel htmlFor="message" required>
-          {t('fields.message')}
+          {t(`modes.${activeMode}.fields.message`)}
         </FieldLabel>
         <div className="relative">
           <textarea
@@ -437,7 +502,7 @@ export default function ContactForm() {
             name="message"
             rows={5}
             value={values.message}
-            placeholder={t('placeholders.message')}
+            placeholder={t(`modes.${activeMode}.placeholders.message`)}
             disabled={isPending}
             className={`${fieldStatusClass(messageStatus, true)} ${inputDisabledClass}`}
             onChange={(e) => setValue('message', e.target.value)}
@@ -495,7 +560,7 @@ export default function ContactForm() {
         )}
       </div>
 
-      <SubmitButton pending={isPending} />
+      <SubmitButton pending={isPending} formMode={activeMode} />
     </form>
   )
 }

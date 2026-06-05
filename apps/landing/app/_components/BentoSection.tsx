@@ -91,7 +91,7 @@ export default function BentoSection({ label, title, description, quote, quoteAt
 
           <ScrollReveal delay={1} className="col-span-1 sm:col-span-1 lg:col-span-4">
             <a
-              href="#contact"
+              href="#contact-offer"
               className="flex flex-col justify-between p-7 sm:p-10 h-full border bg-nd-accent-light border-nd-grey-100 transition-all duration-200 hover:opacity-80"
             >
               <span className="text-[0.65rem] tracking-[0.2em] font-bold text-nd-accent-mid">→</span>

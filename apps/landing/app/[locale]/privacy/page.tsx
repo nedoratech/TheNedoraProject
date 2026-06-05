@@ -46,7 +46,7 @@ export default async function PrivacyPage({ params }: Props) {
       <Nav
         items={buildShellNavItems((key) => tNav(key))}
         locales={['en', 'ro']}
-        contactHref="/#contact"
+        contactHref="/#contact-offer"
         solid
       />
       <main className="bg-nd-white min-h-[calc(100vh-var(--nd-nav-h))] pt-[var(--nd-nav-h)]">

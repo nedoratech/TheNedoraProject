@@ -58,7 +58,7 @@ export default function EngagementSection(props: EngagementContent) {
                     </li>
                   ))}
                 </ul>
-                <a href="#contact" className="mt-auto self-start inline-block text-[0.7rem] tracking-[0.14em] uppercase font-bold px-6 py-3 bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright transition-colors duration-200">
+                <a href="#contact-offer" className="mt-auto self-start inline-block text-[0.7rem] tracking-[0.14em] uppercase font-bold px-6 py-3 bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright transition-colors duration-200">
                   {fixedCta}
                 </a>
               </div>
@@ -81,7 +81,7 @@ export default function EngagementSection(props: EngagementContent) {
                     </li>
                   ))}
                 </ul>
-                <a href="#contact" className="mt-auto self-start inline-flex items-center gap-2 text-[0.7rem] tracking-[0.12em] uppercase font-bold text-nd-accent border-[1.5px] border-nd-accent px-6 py-3 hover:bg-nd-accent hover:text-nd-white transition-all duration-200">
+                <a href="#contact-offer" className="mt-auto self-start inline-flex items-center gap-2 text-[0.7rem] tracking-[0.12em] uppercase font-bold text-nd-accent border-[1.5px] border-nd-accent px-6 py-3 hover:bg-nd-accent hover:text-nd-white transition-all duration-200">
                   {timeCta}
                 </a>
               </div>

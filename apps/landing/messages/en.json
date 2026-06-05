@@ -7,7 +7,7 @@
     "services": "Services",
     "about": "About",
     "contact": "Contact",
-    "cta": "Contact"
+    "cta": "Request an offer"
   },
   "hero": {
     "eyebrow": "Enterprise Software Development",
@@ -156,23 +156,57 @@
   },
   "contact": {
     "label": "Contact",
-    "heading": "Request an offer",
-    "description": "Tell us about your project. We typically respond within two business days. For straightforward enquiries, we'll often suggest a 30-minute call before preparing a written proposal.",
     "location_title": "Location",
     "location_value": "Bucharest, Romania",
     "linkedin_title": "LinkedIn",
     "linkedin_value": "linkedin.com/company/nedora-tech",
     "response_title": "Response time",
     "response_value": "Within two business days",
-    "submit": "Send request →",
     "submitting": "Sending…",
-    "success_title": "Request received.",
-    "success_body": "We'll review your submission and get back to you as soon as we can.",
     "privacy_accept_before": "I have read and accept the",
     "privacy_link": "Privacy Policy",
     "privacy_accept_after": "and agree that Nedora may process my data to respond to my enquiry.",
     "error_generic": "Something went wrong. Please try again.",
     "error_validation": "Please fix the errors below.",
+    "formMode": {
+      "label": "I want to",
+      "contact": "Contact",
+      "project_request": "Project Request"
+    },
+    "modes": {
+      "contact": {
+        "heading": "Contact us",
+        "description": "Send us a message. We typically respond within two business days.",
+        "submit": "Send us a message",
+        "success_title": "Message received.",
+        "success_body": "We'll read your message and get back to you as soon as we can.",
+        "fields": {
+          "message": "Message"
+        },
+        "placeholders": {
+          "message": "How can we help?"
+        },
+        "validation": {
+          "message_required": "Please enter a message"
+        }
+      },
+      "project_request": {
+        "heading": "Request an offer",
+        "description": "Tell us about your project. We typically respond within two business days. For straightforward enquiries, we'll often suggest a 30-minute call before preparing a written proposal.",
+        "submit": "Send request →",
+        "success_title": "Request received.",
+        "success_body": "We'll review your submission and get back to you as soon as we can.",
+        "fields": {
+          "message": "Tell us about your project"
+        },
+        "placeholders": {
+          "message": "Describe what you're building, your current stack, and any key constraints…"
+        },
+        "validation": {
+          "message_required": "Please tell us about your project"
+        }
+      }
+    },
     "fields": {
       "firstName": "First name",
       "lastName": "Last name",
@@ -180,15 +214,13 @@
       "company": "Company",
       "projectType": "Project type",
       "engagementModel": "Engagement model",
-      "timeline": "Timeline",
-      "message": "Tell us about your project"
+      "timeline": "Timeline"
     },
     "placeholders": {
       "firstName": "Maria",
       "lastName": "Ionescu",
       "email": "maria@company.com",
-      "company": "Nedora",
-      "message": "Describe what you're building, your current stack, and any key constraints…"
+      "company": "Nedora"
     },
     "projectTypes": {
       "new_application": "New application",
@@ -213,7 +245,6 @@
       "email_required": "Work email is required",
       "email_invalid": "Enter a valid email address",
       "company_required": "Company is required",
-      "message_required": "Please tell us about your project",
       "message_min": "Please add at least 10 characters",
       "privacy_required": "You must accept the Privacy Policy to submit this form"
     }

@@ -25,6 +25,7 @@ export type CrmRequestStatus =
   | 'converted'
   | 'archived'
   | 'spam'
+export type CrmInquiryType = 'contact' | 'project_request'
 export type EngagementModel = 'fixed_scope' | 'time_based' | 'not_sure'
 export type TimelineOption = 'ready_now' | '1_3_months' | '3_6_months' | 'exploring'
 export type InteractionType =
@@ -321,6 +322,7 @@ export type Database = {
           read: boolean
           status: CrmRequestStatus
           source: string
+          inquiry_type: CrmInquiryType
           updated_at: string
           assigned_to: string | null
           read_at: string | null
@@ -349,6 +351,7 @@ export type Database = {
           read?: boolean
           status?: CrmRequestStatus
           source?: string
+          inquiry_type?: CrmInquiryType
           updated_at?: string
           assigned_to?: string | null
           read_at?: string | null
@@ -366,6 +369,7 @@ export type Database = {
           read?: boolean
           status?: CrmRequestStatus
           source?: string
+          inquiry_type?: CrmInquiryType
           updated_at?: string
           assigned_to?: string | null
           read_at?: string | null
@@ -527,6 +531,7 @@ export type Database = {
       timeline_option: TimelineOption
       interaction_type: InteractionType
       crm_request_status: CrmRequestStatus
+      crm_inquiry_type: CrmInquiryType
     }
     CompositeTypes: {
       [_ in never]: never

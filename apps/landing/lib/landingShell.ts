@@ -20,7 +20,7 @@ export function buildFooterContent(t: FooterTranslator, locale: string): FooterC
       {
         label: t('columns.connect.label'),
         links: [
-          { text: t('columns.connect.links.offer'), href: '/#contact' },
+          { text: t('columns.connect.links.offer'), href: '/#contact-offer' },
           { text: t('columns.connect.links.linkedin'), href: 'https://linkedin.com/company/nedora-tech', external: true },
           { text: t('columns.connect.links.privacy'), href: '/privacy' },
         ],

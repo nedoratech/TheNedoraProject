@@ -102,8 +102,6 @@ export default async function HomePage({ params }: Props) {
 
   const contact: ContactInfoContent = {
     label: tContact('label'),
-    heading: tContact('heading'),
-    description: tContact('description'),
     locationTitle: tContact('location_title'),
     locationValue: tContact('location_value'),
     linkedinTitle: tContact('linkedin_title'),

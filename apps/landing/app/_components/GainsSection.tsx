@@ -31,7 +31,7 @@ export default function GainsSection({ label, titleBefore, titleAccent, titleAft
             </h2>
             <p className="text-[1rem] text-white/55 leading-[1.75] mb-6 sm:mb-12 max-w-[360px]">{description}</p>
             <a
-              href="#contact"
+              href="#contact-offer"
               className="inline-flex items-center gap-2 text-[0.72rem] tracking-[0.14em] uppercase font-bold text-nd-accent-bright border-b border-[rgba(99,115,243,0.3)] pb-1 hover:border-nd-accent-bright transition-colors duration-200"
             >
               {cta}

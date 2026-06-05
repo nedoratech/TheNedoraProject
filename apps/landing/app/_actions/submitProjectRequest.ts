@@ -46,12 +46,15 @@ export async function submitProjectRequest(
 
   try {
     await createProjectRequest({
+      inquiryType: parsed.data.formMode,
       firstName: parsed.data.firstName,
       lastName: parsed.data.lastName,
       email: parsed.data.email,
-      company: parsed.data.company,
-      projectType: parsed.data.projectType,
-      engagementModel: parsed.data.engagementModel,
+      company: parsed.data.formMode === 'project_request' ? parsed.data.company : undefined,
+      projectType:
+        parsed.data.formMode === 'project_request' ? parsed.data.projectType : undefined,
+      engagementModel:
+        parsed.data.formMode === 'project_request' ? parsed.data.engagementModel : undefined,
       timeline: parsed.data.timeline,
       message: parsed.data.message,
       locale,

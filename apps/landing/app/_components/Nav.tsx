@@ -20,7 +20,7 @@ interface Props {
   solid?: boolean
 }
 
-export default function Nav({ items, locales, contactHref = '#contact', solid = false }: Props) {
+export default function Nav({ items, locales, contactHref = '#contact-offer', solid = false }: Props) {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [hash, setHash] = useState('')

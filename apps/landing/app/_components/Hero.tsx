@@ -83,7 +83,7 @@ export default function Hero({
             <p className="text-[1rem] leading-[1.75] text-white/55">{subheading}</p>
             <div className="flex gap-3 flex-wrap">
               <a
-                href="#contact"
+                href="#contact-offer"
                 className="text-[0.72rem] tracking-[0.14em] uppercase font-bold px-8 py-[0.85rem] bg-nd-accent-mid text-nd-white border-0 cursor-pointer transition-all duration-200 hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] hover:-translate-y-px"
               >
                 {ctaPrimary}

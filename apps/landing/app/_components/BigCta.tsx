@@ -52,7 +52,7 @@ export default function BigCta({
           </h2>
           <p className="text-[1.05rem] text-white/50 leading-[1.7] max-w-[480px] mx-auto mb-12">{description}</p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <a href="#contact" className="text-[0.72rem] tracking-[0.14em] uppercase font-bold px-8 py-[0.85rem] bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] transition-all duration-200">
+            <a href="#contact-offer" className="text-[0.72rem] tracking-[0.14em] uppercase font-bold px-8 py-[0.85rem] bg-nd-accent-mid text-nd-white hover:bg-nd-accent-bright hover:shadow-[0_0_32px_rgba(99,115,243,0.5)] transition-all duration-200">
               {ctaPrimary}
             </a>
             <a href="#process" className="text-[0.72rem] tracking-[0.14em] uppercase font-bold px-8 py-[0.85rem] bg-transparent text-white/70 border border-white/20 hover:bg-white/[0.06] hover:border-white/40 hover:text-nd-white transition-all duration-200">

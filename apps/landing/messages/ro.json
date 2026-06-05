@@ -7,7 +7,7 @@
     "services": "Servicii",
     "about": "Despre",
     "contact": "Contact",
-    "cta": "Contact"
+    "cta": "Solicită o ofertă"
   },
   "hero": {
     "eyebrow": "Dezvoltare Software Enterprise",
@@ -156,23 +156,57 @@
   },
   "contact": {
     "label": "Contact",
-    "heading": "Solicită o ofertă",
-    "description": "Spune-ne despre proiectul tău. De obicei răspundem în două zile lucrătoare. Pentru solicitări simple, propunem adesea un call de 30 de minute înainte de o propunere scrisă.",
     "location_title": "Locație",
     "location_value": "București, România",
     "linkedin_title": "LinkedIn",
     "linkedin_value": "linkedin.com/company/nedora-tech",
     "response_title": "Timp de răspuns",
     "response_value": "În două zile lucrătoare",
-    "submit": "Trimite cererea →",
     "submitting": "Se trimite…",
-    "success_title": "Cerere primită.",
-    "success_body": "Vom analiza cererea ta și te vom contacta cât mai curând posibil.",
     "privacy_accept_before": "Am citit și accept",
     "privacy_link": "Politica de confidențialitate",
     "privacy_accept_after": "și sunt de acord ca Nedora să prelucreze datele mele pentru a răspunde solicitării.",
     "error_generic": "Ceva nu a funcționat. Încearcă din nou.",
     "error_validation": "Corectează erorile de mai jos.",
+    "formMode": {
+      "label": "Vreau să",
+      "contact": "Contact",
+      "project_request": "Solicitare proiect"
+    },
+    "modes": {
+      "contact": {
+        "heading": "Contactează-ne",
+        "description": "Trimite-ne un mesaj. De obicei răspundem în două zile lucrătoare.",
+        "submit": "Trimite mesajul",
+        "success_title": "Mesaj primit.",
+        "success_body": "Vom citi mesajul tău și te vom contacta cât mai curând posibil.",
+        "fields": {
+          "message": "Mesaj"
+        },
+        "placeholders": {
+          "message": "Cu ce te putem ajuta?"
+        },
+        "validation": {
+          "message_required": "Introdu un mesaj"
+        }
+      },
+      "project_request": {
+        "heading": "Solicită o ofertă",
+        "description": "Spune-ne despre proiectul tău. De obicei răspundem în două zile lucrătoare. Pentru solicitări simple, propunem adesea un call de 30 de minute înainte de o propunere scrisă.",
+        "submit": "Trimite cererea →",
+        "success_title": "Cerere primită.",
+        "success_body": "Vom analiza cererea ta și te vom contacta cât mai curând posibil.",
+        "fields": {
+          "message": "Spune-ne despre proiect"
+        },
+        "placeholders": {
+          "message": "Descrie ce construiești, stack-ul actual și constrângerile principale…"
+        },
+        "validation": {
+          "message_required": "Spune-ne despre proiect"
+        }
+      }
+    },
     "fields": {
       "firstName": "Prenume",
       "lastName": "Nume",
@@ -180,15 +214,13 @@
       "company": "Companie",
       "projectType": "Tip proiect",
       "engagementModel": "Model de colaborare",
-      "timeline": "Timeline",
-      "message": "Spune-ne despre proiect"
+      "timeline": "Timeline"
     },
     "placeholders": {
       "firstName": "Maria",
       "lastName": "Ionescu",
       "email": "maria@companie.ro",
-      "company": "Nedora",
-      "message": "Descrie ce construiești, stack-ul actual și constrângerile principale…"
+      "company": "Nedora"
     },
     "projectTypes": {
       "new_application": "Aplicație nouă",
@@ -213,7 +245,6 @@
       "email_required": "Emailul de serviciu este obligatoriu",
       "email_invalid": "Introdu o adresă de email validă",
       "company_required": "Compania este obligatorie",
-      "message_required": "Spune-ne despre proiect",
       "message_min": "Adaugă cel puțin 10 caractere",
       "privacy_required": "Trebuie să accepți Politica de confidențialitate pentru a trimite formularul"
     }

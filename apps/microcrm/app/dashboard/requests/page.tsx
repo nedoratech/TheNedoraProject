@@ -13,7 +13,7 @@ async function getRequests() {
   const { data } = await supabase
     .from('crm_project_requests')
     .select(`
-      id, subject_id, project_type, engagement_model, timeline,
+      id, subject_id, inquiry_type, project_type, engagement_model, timeline,
       first_name_ciphertext, last_name_ciphertext, email_ciphertext, company_ciphertext, message_ciphertext,
       created_at,
       crm_contacts ( * )
@@ -50,11 +50,16 @@ export default async function RequestsPage() {
     }),
   )
 
+  const inquiryLabels: Record<string, string> = {
+    contact: 'Contact',
+    project_request: 'Project request',
+  }
+
   return (
     <div className="p-8 max-w-5xl">
       <div className="mb-8">
         <p className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-1">Inbound</p>
-        <h1 className="text-[1.8rem] font-bold tracking-[-0.025em] text-nd-white">Project requests</h1>
+        <h1 className="text-[1.8rem] font-bold tracking-[-0.025em] text-nd-white">Requests</h1>
         <p className="text-[0.85rem] text-nd-grey-400 mt-1">Submitted via the landing page contact form.</p>
       </div>
 
@@ -83,9 +88,16 @@ export default async function RequestsPage() {
               </div>
 
               <div className="flex gap-2 flex-wrap mb-4">
-                {[typeLabels[req.project_type ?? ''], modelLabels[req.engagement_model ?? ''], timelineLabels[req.timeline ?? '']].map((tag, i) => (
-                  <span key={i} className="text-[0.6rem] tracking-[0.12em] uppercase font-bold border border-white/10 text-nd-grey-400 px-2 py-0.5">{tag}</span>
-                ))}
+                {[
+                  inquiryLabels[req.inquiry_type ?? ''],
+                  typeLabels[req.project_type ?? ''],
+                  modelLabels[req.engagement_model ?? ''],
+                  timelineLabels[req.timeline ?? ''],
+                ]
+                  .filter(Boolean)
+                  .map((tag, i) => (
+                    <span key={i} className="text-[0.6rem] tracking-[0.12em] uppercase font-bold border border-white/10 text-nd-grey-400 px-2 py-0.5">{tag}</span>
+                  ))}
               </div>
 
               {message && (
