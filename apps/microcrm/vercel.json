@@ -2,5 +2,5 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd ../.. && node .yarn/releases/yarn-4.6.0.cjs install --immutable",
   "buildCommand": "cd ../.. && yarn build:crm",
-  "ignoreCommand": "cd ../.. && npx turbo-ignore @nedora/microcrm"
+  "ignoreCommand": "cd ../.. && bash scripts/vercel-ignore.sh microcrm"
 }
