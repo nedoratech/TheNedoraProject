@@ -106,7 +106,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fortawesome/react-fontawesome@npm:^0.2.2":
+"@fortawesome/react-fontawesome@npm:^0.2.2, @fortawesome/react-fontawesome@npm:^0.2.6":
   version: 0.2.6
   resolution: "@fortawesome/react-fontawesome@npm:0.2.6"
   dependencies:
@@ -490,6 +490,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@nedora/microcrm@workspace:apps/microcrm"
   dependencies:
+    "@fortawesome/fontawesome-svg-core": "npm:^6.7.2"
+    "@fortawesome/free-regular-svg-icons": "npm:^6.7.2"
+    "@fortawesome/free-solid-svg-icons": "npm:^6.7.2"
+    "@fortawesome/react-fontawesome": "npm:^0.2.6"
     "@hookform/resolvers": "npm:^3.9.1"
     "@nedora/config": "npm:*"
     "@nedora/db": "npm:*"
