@@ -2,7 +2,10 @@ import { createServerClient } from '@nedora/db/client'
 import { decryptContactFromJoin } from '@nedora/db/encryption'
 import type { Database, LeadStatus } from '@nedora/db/types'
 import LeadStatusBadge from '../../_components/LeadStatusBadge'
+import Topbar from '../../_components/Topbar'
 import Link from 'next/link'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faChartBar } from '@fortawesome/free-solid-svg-icons'
 
 const STAGES = ['new', 'qualified', 'proposal', 'negotiation', 'won', 'lost'] as const
 
@@ -44,65 +47,82 @@ export default async function LeadsPage({ searchParams }: Props) {
   )
 
   return (
-    <div className="p-8 max-w-5xl">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <p className="text-[0.65rem] tracking-[0.22em] uppercase font-bold text-nd-accent-bright mb-1">Pipeline</p>
-          <h1 className="text-[1.8rem] font-bold tracking-[-0.025em] text-nd-white">Leads</h1>
-        </div>
-      </div>
+    <div className="flex-1 overflow-y-auto">
+      <Topbar title="Leads" subtitle="Pipeline — all active and closed leads" />
 
-      <div className="flex gap-1 mb-6 flex-wrap">
-        <Link
-          href="/dashboard/leads"
-          className={`text-[0.65rem] tracking-[0.12em] uppercase font-bold px-3 py-1.5 border transition-colors ${!status ? 'border-nd-accent-mid text-nd-accent-bright' : 'border-white/[0.1] text-nd-grey-600 hover:text-nd-white'}`}
-        >
-          All
-        </Link>
-        {STAGES.map((s) => (
+      <div className="p-7">
+        {/* Filter chips */}
+        <div className="flex gap-1.5 mb-6 flex-wrap">
           <Link
-            key={s}
-            href={`/dashboard/leads?status=${s}`}
-            className={`text-[0.65rem] tracking-[0.12em] uppercase font-bold px-3 py-1.5 border transition-colors ${status === s ? 'border-nd-accent-mid text-nd-accent-bright' : 'border-white/[0.1] text-nd-grey-600 hover:text-nd-white'}`}
+            href="/dashboard/leads"
+            className={
+              !status
+                ? 'text-xs font-medium px-4 py-1.5 rounded-full bg-accent-m text-white shadow-sm transition-all duration-150'
+                : 'text-xs font-medium px-4 py-1.5 rounded-full border b-bdr c2 hover:bg-panel2 transition-all duration-150 bg-panel'
+            }
           >
-            {s}
+            All
           </Link>
-        ))}
-      </div>
+          {STAGES.map((s) => (
+            <Link
+              key={s}
+              href={`/dashboard/leads?status=${s}`}
+              className={
+                status === s
+                  ? 'text-xs font-medium px-4 py-1.5 rounded-full bg-accent-m text-white shadow-sm transition-all duration-150'
+                  : 'text-xs font-medium px-4 py-1.5 rounded-full border b-bdr c2 hover:bg-panel2 transition-all duration-150 bg-panel'
+              }
+            >
+              {s}
+            </Link>
+          ))}
+        </div>
 
-      <div className="border border-white/[0.08]">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-white/[0.06]">
-              {['Contact', 'Company', 'Status', 'Updated'].map((h) => (
-                <th key={h} className="px-5 py-3 text-[0.6rem] tracking-[0.18em] uppercase font-bold text-nd-grey-600">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {leads.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-5 py-10 text-center text-[0.82rem] text-nd-grey-600">
-                  No leads{status ? ` in "${status}"` : ''}. Leads are created manually from project requests.
-                </td>
+        {/* Table */}
+        <div className="bg-panel rounded-2xl shadow-card border b-bdr overflow-hidden">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-panel2 border-b b-bdr">
+                {['Contact', 'Company', 'Status', 'Updated'].map((h) => (
+                  <th
+                    key={h}
+                    className="px-6 py-3.5 text-left text-[0.65rem] font-semibold c3 uppercase tracking-wider"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ) : leads.map(({ lead, contact }) => (
-                <tr key={lead.id} className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors">
-                  <td className="px-5 py-3.5">
-                    <div className="text-[0.85rem] text-nd-white">{contact?.first_name} {contact?.last_name}</div>
-                    <div className="text-[0.72rem] text-nd-grey-600">{contact?.email}</div>
-                  </td>
-                  <td className="px-5 py-3.5 text-[0.82rem] text-nd-grey-400">{contact?.company ?? '—'}</td>
-                  <td className="px-5 py-3.5">
-                    <LeadStatusBadge status={lead.status as typeof STAGES[number]} />
-                  </td>
-                  <td className="px-5 py-3.5 text-[0.78rem] text-nd-grey-600">
-                    {new Date(lead.updated_at).toLocaleDateString()}
+            </thead>
+            <tbody>
+              {leads.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center text-[0.82rem] c3">
+                    <FontAwesomeIcon icon={faChartBar} className="w-8 h-8 c3 mb-3 block mx-auto opacity-30" />
+                    No leads{status ? ` in "${status}"` : ''}. Leads are created manually from project requests.
                   </td>
                 </tr>
-              ))}
-          </tbody>
-        </table>
+              ) : (
+                leads.map(({ lead, contact }) => (
+                  <tr key={lead.id} className="border-b row-bdr border row-hover transition-colors duration-100 cursor-pointer">
+                    <td className="px-6 py-4">
+                      <div className="text-[0.85rem] font-medium c1">
+                        {contact?.first_name} {contact?.last_name}
+                      </div>
+                      <div className="text-[0.72rem] c3 mt-0.5">{contact?.email}</div>
+                    </td>
+                    <td className="px-6 py-4 text-[0.82rem] c2">{contact?.company ?? '—'}</td>
+                    <td className="px-6 py-4">
+                      <LeadStatusBadge status={lead.status as typeof STAGES[number]} />
+                    </td>
+                    <td className="px-6 py-4 text-[0.78rem] c3">
+                      {new Date(lead.updated_at).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

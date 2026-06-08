@@ -316,7 +316,7 @@ export async function provisionContactSubject(
   if (!subjectId) {
     const { data: created, error: createErr } = await db.auth.admin.createUser({
       email,
-      email_confirm: true,
+      email_confirm: false,
       user_metadata: {
         role: 'contact',
         full_name: fullName ?? email,

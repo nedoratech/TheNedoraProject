@@ -1,35 +1,7 @@
 @import "tailwindcss";
 
-@theme {
-  /* Brand colors */
-  --color-nd-black: #0a0a0a;
-  --color-nd-white: #fafafa;
-  --color-nd-grey-50: #f7f7f7;
-  --color-nd-grey-100: #efefef;
-  --color-nd-grey-200: #dedede;
-  --color-nd-grey-400: #9a9a9a;
-  --color-nd-grey-600: #555555;
+/* ─── Font faces ─────────────────────────────────────────────────────────── */
 
-  /* Accent — deep indigo */
-  --color-nd-accent: #1e3a8a;
-  --color-nd-accent-mid: #3b5bdb;
-  --color-nd-accent-bright: #6473f3;
-  --color-nd-accent-light: #eef2ff;
-  --color-nd-accent-dark: #0d1b3e;
-
-  /* Typography */
-  --font-futura: Futura, "Century Gothic", "Trebuchet MS", ui-sans-serif, sans-serif;
-
-  /* No border radius — architectural feel */
-  --radius: 0;
-
-  /* Letter spacing */
-  --letter-spacing-label: 0.2em;
-  --letter-spacing-wide: 0.12em;
-  --letter-spacing-widest: 0.22em;
-}
-
-/* Futura font faces — files placed in /public/fonts/ */
 @font-face {
   font-family: Futura;
   src: url("/fonts/futura-light.woff2") format("woff2");
@@ -59,7 +31,88 @@
   font-display: swap;
 }
 
-/* Base resets */
+/* ─── Static Tailwind design tokens ──────────────────────────────────────── */
+
+@theme {
+  --color-accent:   #1e3a8a;
+  --color-accent-m: #3b5bdb;
+  --color-accent-b: #6473f3;
+  --color-accent-l: #eff6ff;
+  --font-futura: Futura, "Century Gothic", "Trebuchet MS", ui-sans-serif, sans-serif;
+}
+
+/* ─── Runtime theme variables ────────────────────────────────────────────── */
+
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface2: #f9fafb;
+  --border: #e4e4e7;
+  --border2: #d1d1d6;
+  --text: #09090b;
+  --text2: #52525b;
+  --text3: #a1a1aa;
+  --hover: #eff6ff;
+  --tr-bdr: #f4f4f5;
+  --in-bg: #ffffff;
+  --in-bdr: #d1d1d6;
+  --sidebar: #1e3a8a;
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --sidebar-active: rgba(255,255,255,0.12);
+  --sidebar-bdr: rgba(255,255,255,0.10);
+  --sidebar-text: rgba(255,255,255,0.70);
+  --sidebar-dim: rgba(255,255,255,0.28);
+}
+
+[data-theme="dark"] {
+  --bg: #0f0f10;
+  --surface: #18181b;
+  --surface2: #111113;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #f4f4f5;
+  --text2: #a1a1aa;
+  --text3: #52525b;
+  --hover: rgba(255,255,255,0.03);
+  --tr-bdr: rgba(255,255,255,0.05);
+  --in-bg: #09090b;
+  --in-bdr: rgba(255,255,255,0.15);
+  --sidebar: #162d6d;
+  --sidebar-hover: rgba(255,255,255,0.08);
+  --sidebar-active: rgba(255,255,255,0.14);
+  --sidebar-bdr: rgba(255,255,255,0.10);
+  --sidebar-text: rgba(255,255,255,0.65);
+  --sidebar-dim: rgba(255,255,255,0.24);
+  --shadow-color: rgba(0,0,0,0.4);
+}
+
+/* ─── Semantic utility classes ───────────────────────────────────────────── */
+
+@layer utilities {
+  .bg-page   { background-color: var(--bg); }
+  .bg-panel  { background-color: var(--surface); }
+  .bg-panel2 { background-color: var(--surface2); }
+  .b-bdr     { border-color: var(--border); }
+  .b-bdr2    { border-color: var(--border2); }
+  .c1        { color: var(--text); }
+  .c2        { color: var(--text2); }
+  .c3        { color: var(--text3); }
+  .row-hover:hover { background-color: var(--hover); }
+  .row-bdr   { border-color: var(--tr-bdr); }
+  .in-bg     { background-color: var(--in-bg); }
+  .in-bdr    { border-color: var(--in-bdr); }
+  .sidebar-bg          { background-color: var(--sidebar); }
+  .sidebar-hover:hover { background-color: var(--sidebar-hover); }
+  .sidebar-active      { background-color: var(--sidebar-active); }
+  .sidebar-bdr         { border-color: var(--sidebar-bdr); }
+  .sidebar-text        { color: var(--sidebar-text); }
+  .sidebar-dim         { color: var(--sidebar-dim); }
+  .shadow-card    { box-shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04); }
+  .shadow-card-md { box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.05); }
+}
+
+/* ─── Base resets ────────────────────────────────────────────────────────── */
+
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -70,8 +123,17 @@ html {
 
 body {
   font-family: var(--font-futura);
-  background-color: var(--color-nd-black);
-  color: var(--color-nd-white);
+  background-color: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+  animation: fade-up 0.18s ease-out both;
 }

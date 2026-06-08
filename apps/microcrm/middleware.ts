@@ -11,6 +11,16 @@ export async function middleware(request: NextRequest) {
   if (!session && !isPublic) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
+
+  // If the user has MFA enrolled but hasn't completed the second factor yet
+  // (AAL1 session, AAL2 required), send them back to the login page.
+  if (session && !isLoginPage) {
+    const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
+    if (aal?.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') {
+      return NextResponse.redirect(new URL('/login', request.url))
+    }
+  }
+
   if (session && isLoginPage) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
