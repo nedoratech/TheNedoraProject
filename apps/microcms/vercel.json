@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "installCommand": "cd ../.. && corepack enable && yarn install --immutable",
-  "buildCommand": "cd ../.. && yarn build:nedai",
-  "ignoreCommand": "cd ../.. && npx turbo-ignore @nedora/nedai"
+  "buildCommand": "cd ../.. && yarn build:cms",
+  "ignoreCommand": "cd ../.. && npx turbo-ignore @nedora/microcms"
 }
